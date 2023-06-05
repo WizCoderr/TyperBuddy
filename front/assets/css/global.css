@@ -31,9 +31,10 @@
     --color-primary-variant: #D33396;
     --color-secondary: White;
     --color-on-secondary: #210053b6;
-    --surface-color: #F5F5F5;
+    --color-surface: #F5F5F5;
+    --keyboard-color: #e9e9e9;
+    --keyboard-key-radius: 4px;
     
-
     --big-font: 24px;
     --medium-font: 16px;
     --small-font: 14px;
@@ -42,6 +43,12 @@
 p {
     font-size: 18px;
     line-height: 1.6;
+}
+
+
+.container{
+    max-width: var(--max-page-width);
+    margin: auto;
 }
 
 .reveal {
