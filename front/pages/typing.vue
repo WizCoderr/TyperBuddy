@@ -3,7 +3,12 @@ import Keyboard from '~/components/Keyboard.vue';
 
 </script>
 <template>
-    <h1>Hello starter</h1>
+    <HeaderComponent/>
+    <section class="container">
+        ddd
+        <h1>Hello starter</h1>
+    </section>
+
     <Keyboard/>
 </template>
 <style scoped>
