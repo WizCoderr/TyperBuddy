@@ -178,7 +178,7 @@ function highlightKey(key: string, className: string = '') {
                     <span>:</span>
                     <span>;</span>
                 </div>
-                <div data-key="quote" class="square multi">
+                <div data-key="Quote" class="square multi">
                     <span>"</span>
                     <span>'</span>
                 </div>
