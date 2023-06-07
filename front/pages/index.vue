@@ -2,7 +2,7 @@
 </script>
 <template>
     <main>
-        <div class="sidebar">
+        <nav class="sidebar">
             <div class="heading">
                 <img src="../public/favicon.ico" alt="TyperBuddy">
                 <h2>TyperBuddy</h2>
@@ -74,13 +74,29 @@
                 </li>
 
             </ul>
-        </div>
+        </nav>
         <section class="main">
-            dd
+            <div class="status-bar">
+                <h3>Speed: 10% ( +0% )</h3>
+                <h3>Accuracy: 10% ( +0% )</h3>
+            </div>
+            <div class="key-status">
+                <h3>All Keys:</h3>
+                <div class="keys">
+                    <div v-for="item in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'">
+                        <span>{{ item }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="typing-progress">
+                <span class="track"></span>
+                <span class="progress"></span>
+            </div>
         </section>
     </main>
 </template>
 <style scoped>
+
 main {
     background-color: var(--color-surface);
     display: grid;
@@ -88,6 +104,127 @@ main {
     width: 100%;
     overflow: auto;
 }
+
+
+/* --------------------- Main ----------------- */
+
+.main .status-bar{
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+}
+
+.main .status-bar h3{
+    white-space: nowrap;
+}
+
+.main .key-status{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.main .key-status h3{
+    white-space: nowrap;
+}
+
+.main .key-status .keys{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+.main .key-status .keys div{
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--color-surface-variant);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.main .key-status span{
+    font-size: var(--average-font);
+    color: var(--color-on-surface);
+}
+
+
+.typing-progress{
+    position: relative;
+    height: 5rem;
+    margin: 0 1rem;
+}
+.typing-progress .track{
+    width: 100%;
+    background-color: var(--color-surface-dark);
+    height: 4px;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    top: 50%;
+    translate: 0 -50%;
+}
+
+
+
+.typing-progress .track::after{
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 1rem;
+    display: inline-block;
+    background-color: var(--color-surface-dark);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    z-index: 1;
+    translate: 50% -50%;
+}
+
+.typing-progress .progress{
+    width: 30%;
+    background-color: var(--color-secondary);
+    height: 6px;
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    translate: 0 -50%;
+}
+.typing-progress .progress::before{
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 1rem;
+    display: inline-block;
+    background-color: var(--color-secondary);
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    translate: -50% -50%;
+}
+
+.typing-progress .progress::after{
+    content: "";
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 2rem;
+    display: inline-block;
+    background-color: white;
+    border: 4px solid var(--color-secondary);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    z-index: 2;
+    translate: 50% -50%;
+}
+
+
+
+
+
+
+
+/*  ------------------- side bar----------------- */
 
 .sidebar {
     padding: var(--page-margin) 0;
@@ -134,12 +271,12 @@ main {
     background-color: var(--color-primary);
     height: 0;
     position: absolute;
-    left: 0;
+    left: -6px;
     top: 50%;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     translate: 0 -50%;
-    transition: height 200ms;
+    transition: all 200ms;
 }
 
 .sidebar li svg {
@@ -148,6 +285,7 @@ main {
 
 .sidebar li.active .marker {
     height: 80%;
+    left: 0;
     background-color: var(--color-secondary);
 }
 
@@ -161,12 +299,14 @@ main {
 }
 
 .sidebar li:hover .marker{
+    left: 0;
     height: 80%;
 }
 
 .sidebar li.active svg {
     fill: var(--color-secondary);
 }
+
 
 
 </style>
