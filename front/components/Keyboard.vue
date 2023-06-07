@@ -252,7 +252,7 @@ function highlightKey(key: string, className: string = '') {
     background-color: var(--keyboard-color);
     max-width: max-content;
     width: 100%;
-    margin: auto;
+    margin: 2rem auto;
 }
 
 
