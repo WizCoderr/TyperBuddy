@@ -11,8 +11,6 @@ interface CursorPos {
 }
 
 
-
-const cursor = ref<HTMLSpanElement>()
 const typingTextarea = ref<HTMLTextAreaElement>()
 
 onMounted(function () {
@@ -136,14 +134,11 @@ function manipulateText(text: string) {
 <template>
     <div class="typing-content">
         <div class="content-holder">
-            <span ref="cursor" class="cursor"></span>
-
+            <textarea ref="typingTextarea" id="typing-textarea"
+                @input="event => manipulateText((event.target as any).value)"></textarea>
             <div class="content">
                 <span v-for="word in allWords" :class="word.class">{{ word.text }}</span>
             </div>
-
-            <textarea ref="typingTextarea" id="typing-textarea"
-                @input="event => manipulateText((event.target as any).value)"></textarea>
 
         </div>
     </div>
@@ -190,19 +185,11 @@ function manipulateText(text: string) {
     color: white;
 }
 
-.typing-content .cursor {
-    position: absolute;
-    top: 6px;
-    left: 0;
-    width: 3px;
-    height: 2.5rem;
-    background-color: var(--color-secondary);
-    display: none;
-}
 
 .typing-content .content {
     height: 300px;
     overflow: hidden;
+    filter: blur(2px);
 }
 
 .typing-content textarea {
@@ -212,12 +199,17 @@ function manipulateText(text: string) {
     top: 0;
     left: 0;
     outline: none;
+    z-index: 5;
     border: none;
     opacity: 0;
     font-family: monospace !important;
     letter-spacing: 3px;
     line-height: 1.8;
     font-size: var(--big-2-font);
+}
+
+.typing-content textarea:focus + .content {
+    filter: blur(0) !important;
 }
 
 .sample-text {
