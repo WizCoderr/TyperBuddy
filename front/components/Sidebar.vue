@@ -155,4 +155,16 @@
 .sidebar li.active svg {
     fill: var(--color-secondary);
 }
+
+
+@media only screen and (max-width: 1200px) {
+    .sidebar li {
+        padding: 0.8rem 1rem;
+    }
+
+    .heading h2 {
+        font-size: var(--average-font);
+    }
+
+}
 </style>

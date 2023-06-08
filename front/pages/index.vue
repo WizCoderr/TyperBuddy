@@ -24,7 +24,7 @@
                 <span class="progress"></span>
             </div>
 
-            <TypingArea/>
+            <TypingArea />
             <Keyboard />
 
         </section>
@@ -161,4 +161,9 @@ main {
 
 
 
+@media only screen and (max-width: 1200px) {
+    main {
+        grid-template-columns: 220px auto;
+    }
+}
 </style>
