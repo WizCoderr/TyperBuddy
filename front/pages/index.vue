@@ -1,4 +1,7 @@
 <script setup lang='ts'>
+
+
+
 </script>
 <template>
     <main>
@@ -21,17 +24,9 @@
                 <span class="progress"></span>
             </div>
 
-            <div class="typing-content">
-                <div class="content">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
-                scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like
-                Aldus PageMaker including versions of Lorem Ipsum.
-                </div>
-            </div>
+            <TypingArea/>
             <Keyboard />
+
         </section>
     </main>
 </template>
@@ -127,7 +122,7 @@ main {
 }
 
 .typing-progress .progress {
-    width: 30%;
+    width: 10%;
     background-color: var(--color-secondary);
     height: 6px;
     position: absolute;
@@ -165,23 +160,5 @@ main {
 }
 
 
-/* -------------------- Typing content ------------------- */
-.typing-content {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    background-color: white;
-    border-radius: 0.6rem;
-    color: var(--color-on-surface);
-    line-height: 1.8;
-    padding: 1rem 1.6rem;
-}
 
-.typing-content .content{
-    font-size: var(--big-2-font);
-    height: 300px;
-    overflow: hidden;
-    font-family: monospace;
-
-}
 </style>

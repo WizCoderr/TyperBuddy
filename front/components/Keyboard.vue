@@ -3,30 +3,21 @@
 let allKeyElements: NodeListOf<Element>
 
 onMounted(function () {
-    window.onkeydown = onKeyDown
-    window.onkeyup = onKeyUp
+
     allKeyElements = document.querySelectorAll("#keyboard .row>div")
 })
 
 
-function onKeyDown(event: KeyboardEvent) {
-    console.log(event.code)
-    highlightKey(event.code, "active")
-}
 
-function onKeyUp(event: KeyboardEvent) {
-    //console.log(event.code)
-    highlightKey(event.code)
-}
 
 function highlightKey(key: string, className: string = '') {
 
     allKeyElements.forEach(keyElement => {
         if (keyElement.getAttribute("data-key") == key) {
 
-            if(className == ''){
+            if (className == '') {
                 keyElement.classList.remove("active")
-            }else{
+            } else {
                 keyElement.classList.add("active")
             }
             return
