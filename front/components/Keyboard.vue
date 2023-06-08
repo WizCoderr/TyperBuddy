@@ -5,6 +5,17 @@ let allKeyElements: NodeListOf<Element>
 onMounted(function () {
 
     allKeyElements = document.querySelectorAll("#keyboard .row>div")
+    let textarea = document.querySelector('#typing-textarea') as HTMLTextAreaElement | null
+
+    if(textarea != null){
+        textarea.addEventListener('keydown', function(event){
+            highlightKey(event.code, 'active')
+        })
+
+        textarea.addEventListener('keyup', function(event){
+            highlightKey(event.code)
+        })
+    }
 })
 
 
