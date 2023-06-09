@@ -120,15 +120,15 @@ function manipulateText(text: string) {
 
     emit('onProgressChange')
 
-    nextTick(()=>checkForTypingEnd())
+    nextTick(() => checkForTypingEnd())
 }
 
 
 // scroll the page if content is typed
-function checkForTypingEnd(){
-    if(content == undefined) return
+function checkForTypingEnd() {
+    if (content == undefined) return
     const caret = content.value!!.querySelector('.caret') as HTMLSpanElement | null
-    if(caret == null) return
+    if (caret == null) return
 
     const height = content.value!!.offsetHeight
     const width = content.value!!.offsetWidth
@@ -137,9 +137,9 @@ function checkForTypingEnd(){
     const caretRight = caret.offsetLeft + caret.offsetWidth
 
     const currentScroll = content.value!!.scrollTop
-    if(caretBottom > height){
+    if (caretBottom > height) {
         content.value!!.scrollTo(0, caret.offsetTop)
-    }else if(caret.offsetTop < currentScroll){
+    } else if (caret.offsetTop < currentScroll) {
         content.value!!.scrollTop -= height
     }
 }
@@ -225,7 +225,7 @@ function checkForTypingEnd(){
     font-size: var(--big-2-font);
 }
 
-.typing-content textarea:focus + .content {
+.typing-content textarea:focus+.content {
     filter: blur(0) !important;
 }
 
