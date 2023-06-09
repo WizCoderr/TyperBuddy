@@ -1,17 +1,11 @@
 <script setup lang='ts'>
+import { TyperData } from '~/lib/DataType';
+const emit = defineEmits(['onProgressChange'])
 
-interface TyperData {
-    class: string,
-    text: string
-}
-
-interface CursorPos {
-    row: number,
-    col: number
-}
 
 
 const typingTextarea = ref<HTMLTextAreaElement>()
+const content = ref<HTMLDivElement>()
 
 onMounted(function () {
     setupData()
@@ -37,7 +31,6 @@ onMounted(function () {
 function setupData() {
     manipulateText('')
 }
-
 
 
 var dataContent = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
@@ -123,9 +116,32 @@ function manipulateText(text: string) {
                 text: normalText
             })
         }
-
     }
 
+    emit('onProgressChange')
+
+    nextTick(()=>checkForTypingEnd())
+}
+
+
+// scroll the page if content is typed
+function checkForTypingEnd(){
+    if(content == undefined) return
+    const caret = content.value!!.querySelector('.caret') as HTMLSpanElement | null
+    if(caret == null) return
+
+    const height = content.value!!.offsetHeight
+    const width = content.value!!.offsetWidth
+
+    const caretBottom = caret.offsetTop + caret.offsetHeight
+    const caretRight = caret.offsetLeft + caret.offsetWidth
+
+    const currentScroll = content.value!!.scrollTop
+    if(caretBottom > height){
+        content.value!!.scrollTo(0, caret.offsetTop)
+    }else if(caret.offsetTop < currentScroll){
+        content.value!!.scrollTop -= height
+    }
 }
 
 
@@ -134,9 +150,9 @@ function manipulateText(text: string) {
 <template>
     <div class="typing-content">
         <div class="content-holder">
-            <textarea ref="typingTextarea" id="typing-textarea"
+            <textarea ref="typingTextarea" id="typing-textarea" :maxlength="dataContent.length"
                 @input="event => manipulateText((event.target as any).value)"></textarea>
-            <div class="content">
+            <div ref="content" class="content">
                 <span v-for="word in allWords" :class="word.class">{{ word.text }}</span>
             </div>
 
@@ -190,6 +206,7 @@ function manipulateText(text: string) {
     height: 300px;
     overflow: hidden;
     filter: blur(2px);
+    scroll-behavior: smooth;
 }
 
 .typing-content textarea {
