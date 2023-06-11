@@ -120,7 +120,7 @@ function updateTypingReport(reportData: TypingReport) {
         </section>
     </main>
 
-    <PracticeCompleteDialog />
+    <!-- <PracticeCompleteDialog /> -->
 </template>
 <style scoped>
 main {
