@@ -73,15 +73,13 @@ function updateTypingReport(reportData: TypingReport) {
         typingAccuracyPerformance.value = `${accuracyChange}%`
     }
 
-
-
     console.log(reportData)
 }
 
 </script>
 <template>
     <main>
-        <Sidebar />
+        <Sidebar :activeTabIndex="0" />
         <section class="main">
             <div class="status-bar">
                 <h3>Speed: {{ currentTypingReport.averageSpeed }} ( <span
@@ -123,14 +121,6 @@ function updateTypingReport(reportData: TypingReport) {
     <!-- <PracticeCompleteDialog /> -->
 </template>
 <style scoped>
-main {
-    background-color: var(--color-surface);
-    display: grid;
-    grid-template-columns: 300px auto;
-    width: 100%;
-    overflow: auto;
-}
-
 
 /* --------------------- Main ----------------- */
 
@@ -291,9 +281,4 @@ main {
 
 
 
-@media only screen and (max-width: 1200px) {
-    main {
-        grid-template-columns: 220px auto;
-    }
-}
 </style>
