@@ -1,6 +1,80 @@
 <script setup lang='ts'>
+import { TypingReport } from '~/lib/DataType';
+import { getKeyColor } from '~/lib/utils';
 
 
+const progressElement = ref<HTMLSpanElement>()
+function updateProgress(progress: number) {
+    if (progress == undefined) return
+    progressElement.value!!.style.width = `${progress}%`
+
+}
+
+
+
+const previousTypingReport: TypingReport = {
+    dateTime: 0,
+    totalWords: 0,
+    totalCharCount: 0,
+    errorCount: 10,
+    keysReport: [],
+    averageSpeed: 10
+}
+
+const currentTypingReport = ref<TypingReport>({
+    dateTime: 0,
+    totalWords: 0,
+    totalCharCount: 0,
+    errorCount: 0,
+    keysReport: [],
+    averageSpeed: 0
+})
+
+const typingSpeedPerformance = ref('+0%')
+const typingAccuracyPerformance = ref('+0%')
+var keysMaxValue = 0
+var keysMinValue = 0
+
+function updateTypingReport(reportData: TypingReport) {
+
+    // calculating maxValue and minValue
+    reportData.keysReport.forEach(data => {
+        const change = data.correctCount - data.errorCount
+        if(change > keysMaxValue){
+            keysMaxValue = change
+        }else if(change < keysMinValue){
+            keysMinValue = change
+        }
+    });
+
+    // update key report
+    currentTypingReport.value.keysReport = reportData.keysReport
+
+    // calculating speed change percentage
+    currentTypingReport.value.averageSpeed = reportData.averageSpeed
+
+    const speedChange = Math.round((previousTypingReport.averageSpeed - currentTypingReport.value.averageSpeed) / previousTypingReport.averageSpeed * 100)
+    if (speedChange <= 0) {
+        typingSpeedPerformance.value = `+${Math.abs(speedChange)}%`
+    } else {
+        typingSpeedPerformance.value = `-${speedChange}%`
+    }
+
+
+    // calculating typing accuracy percentage
+    currentTypingReport.value.errorCount = reportData.errorCount
+
+    const accuracyChange = Math.round((previousTypingReport.errorCount - currentTypingReport.value.errorCount) / previousTypingReport.errorCount * 100)
+    if (accuracyChange >= 0) {
+        typingAccuracyPerformance.value = `+${accuracyChange}%`
+    } else {
+        typingAccuracyPerformance.value = `${accuracyChange}%`
+    }
+
+
+
+    console.log(reportData)
+}
 
 </script>
 <template>
@@ -8,23 +82,24 @@
         <Sidebar />
         <section class="main">
             <div class="status-bar">
-                <h3>Speed: 10% ( +0% )</h3>
-                <h3>Accuracy: 10% ( +0% )</h3>
+                <h3>Speed: {{ currentTypingReport.averageSpeed }} ( {{ typingSpeedPerformance }})</h3>
+                <h3>Error: {{ currentTypingReport.errorCount }} ( {{ typingAccuracyPerformance }} )</h3>
             </div>
             <div class="key-status">
                 <h3>All Keys:</h3>
                 <div class="keys">
-                    <div v-for="item in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'">
-                        <span>{{ item }}</span>
+                    <div v-for="item in currentTypingReport.keysReport" :style="'background-color:' + getKeyColor(keysMinValue, keysMaxValue, item.correctCount - item.errorCount)">
+                        <span>{{ item.key }}</span>
                     </div>
                 </div>
             </div>
             <div class="typing-progress">
                 <span class="track"></span>
-                <span class="progress"></span>
+                <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea />
+            <TypingArea :onSubmitTypingReport="(data) => updateTypingReport(data)"
+                :onProgressChange="(progress) => updateProgress(progress)" />
             <Keyboard />
 
         </section>
@@ -122,7 +197,7 @@ main {
 }
 
 .typing-progress .progress {
-    width: 10%;
+    width: 0%;
     background-color: var(--color-secondary);
     height: 6px;
     position: absolute;

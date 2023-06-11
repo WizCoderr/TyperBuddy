@@ -1,14 +1,34 @@
 <script setup lang='ts'>
-import { TyperData } from '~/lib/DataType';
-const emit = defineEmits(['onProgressChange'])
+import { TyperData, TypingReport } from '~/lib/DataType';
+import { getUniqueCharacters } from '~/lib/utils';
 
+const emit = defineEmits({
+    ProgressChange: (progress: number) => {
+        return progress
+    },
+
+    SubmitTypingReport: (data: TypingReport) => {
+        return data
+    }
+})
+
+
+const typingReport: TypingReport = {
+    totalWords: 0,
+    totalCharCount: 0,
+    errorCount: 0,
+    keysReport: [],
+    averageSpeed: 0,
+    dateTime: 0
+}
 
 
 const typingTextarea = ref<HTMLTextAreaElement>()
 const content = ref<HTMLDivElement>()
+var isTypingFocus = false
 
 onMounted(function () {
-    setupData()
+    setupData(tempData)
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
@@ -25,20 +45,128 @@ onMounted(function () {
         event.preventDefault();
     });
 
+
+    typingTextarea.value!!.addEventListener('focusin', function () {
+        isTypingFocus = true
+        setTimeout(updateReport, 1000)
+    })
+
+    typingTextarea.value!!.addEventListener('focusout', function () {
+        isTypingFocus = false
+    })
+
 })
 
 
-function setupData() {
+const tempData = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+var dataContent = ''
+var wordList = Array<string>()
+var seconds = 0
+var previousTextLength = 0
+
+
+function setupData(paragraph: string) {
+    dataContent = paragraph
+    wordList = dataContent.split(' ')
+    previousTextLength = 0
+
+    typingReport.dateTime = new Date().getUTCMilliseconds()
+    typingReport.totalWords = wordList.length
+    typingReport.totalCharCount = paragraph.length
+    typingReport.errorCount = 0
+    typingReport.averageSpeed = 0
+    seconds = 0
+
+    typingReport.keysReport = []
+    getUniqueCharacters(paragraph).forEach(char => {
+        typingReport.keysReport.push({
+            key: char,
+            errorCount: 0,
+            correctCount: 0
+        })
+    });
+
     manipulateText('')
+    updateReport()
 }
 
 
-var dataContent = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+// return all typed words
+function getTotalTypedWords(totalCharTyped: number) {
+    let lengthCount = 0
+    let wordCount = 0
+
+    wordList.forEach(word => {
+        lengthCount += word.length
+        if (lengthCount >= totalCharTyped) {
+            return wordCount
+        }
+        wordCount++
+        lengthCount++               // adding one space
+    });
+
+    return wordCount
+}
+
+
+
+function updateReport() {
+    if (isTypingFocus) {
+        seconds++
+        setTimeout(updateReport, 1000)
+    }
+
+    // calculating word per minntes
+    const wpm = getTotalTypedWords(typingTextarea.value!!.value.length) * 60 / seconds
+    typingReport.averageSpeed = Math.round(wpm)
+
+    emit('SubmitTypingReport', typingReport)
+}
+
+
 const allWords = ref(Array<TyperData>())
 
-
 function manipulateText(text: string) {
+
     if (typingTextarea == undefined) return
+
+
+    // checking if last text is error | storing report for error data
+    if (text.length > 0) {
+        const lastIndex = text.length - 1
+        if (text[lastIndex] != dataContent[lastIndex]) {
+
+            // increase incorrect
+            // skip if user is undo
+            if (text.length > previousTextLength) {
+                previousTextLength = text.length
+                typingReport.errorCount++
+                const key = dataContent[lastIndex].toUpperCase()
+
+                for (let index = 0; index < typingReport.keysReport.length; index++) {
+                    if (typingReport.keysReport[index].key == key) {
+                        typingReport.keysReport[index].errorCount++
+                        break
+                    }
+                }
+            }
+        } else {
+
+            // increase correct 
+            const key = dataContent[lastIndex].toUpperCase()
+
+            for (let index = 0; index < typingReport.keysReport.length; index++) {
+                if (typingReport.keysReport[index].key == key) {
+                    typingReport.keysReport[index].correctCount++
+                    break
+                }
+            }
+        }
+
+        previousTextLength = text.length
+    }
+
+
 
     allWords.value = Array<TyperData>()
     // parsing text
@@ -118,10 +246,15 @@ function manipulateText(text: string) {
         }
     }
 
-    emit('onProgressChange')
+    // calculating progress
+    const progress = text.length / dataContent.length * 100
+    emit('ProgressChange', progress)
+
 
     nextTick(() => checkForTypingEnd())
 }
+
+
 
 
 // scroll the page if content is typed
@@ -131,10 +264,7 @@ function checkForTypingEnd() {
     if (caret == null) return
 
     const height = content.value!!.offsetHeight
-    const width = content.value!!.offsetWidth
-
     const caretBottom = caret.offsetTop + caret.offsetHeight
-    const caretRight = caret.offsetLeft + caret.offsetWidth
 
     const currentScroll = content.value!!.scrollTop
     if (caretBottom > height) {
