@@ -319,6 +319,7 @@ function checkForTypingEnd() {
 .typing-content span {
     font-family: monospace !important;
     letter-spacing: 3px;
+    white-space: pre-wrap;
 }
 
 .typing-content .content-holder {
