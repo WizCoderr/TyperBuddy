@@ -19,7 +19,8 @@ export interface TypingReport {
     totalCharCount: number,
     errorCount: number,
     keysReport: KeyReport[],
-    averageSpeed: number
+    averageSpeed: number,
+    topSpeed: number
 
 }
 // export interface 

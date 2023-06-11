@@ -18,7 +18,8 @@ const previousTypingReport: TypingReport = {
     totalCharCount: 0,
     errorCount: 10,
     keysReport: [],
-    averageSpeed: 10
+    averageSpeed: 10,
+    topSpeed: 0
 }
 
 const currentTypingReport = ref<TypingReport>({
@@ -27,7 +28,8 @@ const currentTypingReport = ref<TypingReport>({
     totalCharCount: 0,
     errorCount: 0,
     keysReport: [],
-    averageSpeed: 0
+    averageSpeed: 0,
+    topSpeed: 0
 })
 
 const typingSpeedPerformance = ref('+0%')
@@ -117,6 +119,8 @@ function updateTypingReport(reportData: TypingReport) {
 
         </section>
     </main>
+
+    <PracticeCompleteDialog />
 </template>
 <style scoped>
 main {
@@ -142,12 +146,12 @@ main {
     margin-bottom: 1rem;
 }
 
-.main .status-bar div{
+.main .status-bar div {
     display: flex;
     margin-left: auto;
 }
 
-.main .status-bar button{
+.main .status-bar button {
     display: flex;
     align-items: center;
     background-color: var(--color-secondary);
@@ -160,11 +164,11 @@ main {
     gap: 1rem;
 }
 
-.main .status-bar button:hover{
+.main .status-bar button:hover {
     background-color: var(--color-secondary-variant);
 }
 
-.main .status-bar button svg{
+.main .status-bar button svg {
     fill: inherit;
 }
 
@@ -291,4 +295,5 @@ main {
     main {
         grid-template-columns: 220px auto;
     }
-}</style>
+}
+</style>

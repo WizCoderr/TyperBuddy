@@ -26,6 +26,8 @@
 :root {
     --page-margin: 2rem;
     --border-radius: 4px;
+    --border-radius-3: 8px;
+
     --color-primary: #448bd2;
     --color-primary-light: #448bd225;
     --color-primary-variant: #337ac2;
