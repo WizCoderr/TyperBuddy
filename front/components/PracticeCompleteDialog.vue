@@ -1,5 +1,10 @@
 <script setup lang='ts'>
+import { TypingReport } from '~/lib/DataType';
+import { timeToWord } from '~/lib/utils';
 
+defineProps<{
+    testData: TypingReport
+}>()
 
 </script>
 <template>
@@ -11,27 +16,27 @@
             <div class="chips">
                 <div>
                     <span>Time</span>
-                    <span>10 min</span>
+                    <span>{{ timeToWord(testData.dateTime) }}</span>
                 </div>
                 <div>
                     <span>Total Words</span>
-                    <span>50</span>
+                    <span>{{ testData.totalWords }}</span>
                 </div>
                 <div>
                     <span>Total Character</span>
-                    <span>200</span>
+                    <span>{{ testData.totalCharCount }}</span>
                 </div>
                 <div>
                     <span>Error</span>
-                    <span>12</span>
+                    <span>{{ testData.errorCount }}</span>
                 </div>
                 <div>
                     <span>Average Speed</span>
-                    <span>23 WPM</span>
+                    <span>{{ testData.averageSpeed }} wpm</span>
                 </div>
                 <div>
                     <span>Top Speed</span>
-                    <span>30 WPM</span>
+                    <span>{{ testData.topSpeed }} wpm</span>
                 </div>
             </div>
             <hr>

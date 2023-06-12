@@ -24,3 +24,64 @@ export function getKeyColor(minValue: number, maxValue: number, currentValue: nu
     }
 
 }
+export function timeToWord(seconds: number) {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    const sec = Math.floor(seconds - hours * 3600 - minutes * 60)
+
+    let word = ''
+    if (hours != 0) {
+        word += hours + 'hrs '
+    }
+    if (minutes != 0) {
+        word += minutes + 'mins '
+    }
+
+    if (sec != 0) {
+        word += sec + 'secs'
+    }
+
+    return word
+}
+
+
+export function countCorrectWords(testSentence: string, correctSentence: string){
+    let count = 0
+    let tempWord = ''
+    let isWaiting = false
+    for (let index = 0; index < correctSentence.length; index++) {
+        const testChar = testSentence[index]
+        const correctChar = correctSentence[index]
+
+        // wating for next whitespace if error text found
+        if(isWaiting){
+            if(' ' == testChar){
+                tempWord = ''
+                isWaiting = false
+            }
+            continue
+        }
+
+        // add count if we found success text with whitespace
+        if(' ' == testChar && testChar == correctChar){
+            if(tempWord != ''){
+                count++
+                tempWord = ''
+            }
+
+        }else if(testChar == correctChar){
+            tempWord += testChar
+
+        }else{
+            // set isWaiting if we found error
+            isWaiting = true
+        }
+    }
+
+    // add count if anything present in temp
+    if(!isWaiting && tempWord != ''){
+        count++
+    }
+
+    return count
+}

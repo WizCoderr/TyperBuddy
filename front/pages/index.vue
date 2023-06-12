@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { TypingReport } from '~/lib/DataType';
+import { timeToWord } from '~/lib/utils';
 import { getKeyColor } from '~/lib/utils';
 
 
@@ -73,8 +74,40 @@ function updateTypingReport(reportData: TypingReport) {
         typingAccuracyPerformance.value = `${accuracyChange}%`
     }
 
-    console.log(reportData)
+    // console.log(reportData)
 }
+
+
+function onPracticeComplete(reportData: TypingReport) {
+    console.log(reportData)
+    dialogTypingReport.value.dateTime = reportData.dateTime
+    dialogTypingReport.value.totalWords = reportData.totalWords
+    dialogTypingReport.value.totalCharCount = reportData.totalCharCount
+    dialogTypingReport.value.errorCount = reportData.errorCount
+    dialogTypingReport.value.averageSpeed = reportData.averageSpeed
+    dialogTypingReport.value.topSpeed = reportData.topSpeed
+    dialogTypingReport.value.keysReport = reportData.keysReport
+
+    isCompleteDialogVisible.value = true
+}
+
+
+
+
+
+
+// ------------------------ Dialog --------------------
+
+const isCompleteDialogVisible = ref(false)
+const dialogTypingReport = ref<TypingReport>({
+    dateTime: 0,
+    totalWords: 0,
+    totalCharCount: 0,
+    errorCount: 0,
+    keysReport: [],
+    averageSpeed: 0,
+    topSpeed: 0
+})
 
 </script>
 <template>
@@ -111,18 +144,17 @@ function updateTypingReport(reportData: TypingReport) {
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :onSubmitTypingReport="(data) => updateTypingReport(data)"
+            <TypingArea :onTypingCompleted="(data) => onPracticeComplete(data)"
+                :onSubmitTypingReport="(data) => updateTypingReport(data)"
                 :onProgressChange="(progress) => updateProgress(progress)" />
             <Keyboard />
 
         </section>
     </main>
 
-    <!-- <PracticeCompleteDialog /> -->
+    <PracticeCompleteDialog :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
 </template>
 <style scoped>
-
-
 .main .status-bar {
     display: flex;
     flex-direction: row;
@@ -273,7 +305,4 @@ function updateTypingReport(reportData: TypingReport) {
     z-index: 2;
     translate: 50% -50%;
 }
-
-
-
 </style>

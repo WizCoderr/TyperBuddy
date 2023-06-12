@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { TyperData, TypingReport } from '~/lib/DataType';
-import { getUniqueCharacters } from '~/lib/utils';
+import { countCorrectWords, getUniqueCharacters, timeToWord } from '~/lib/utils';
 
 const emit = defineEmits({
     ProgressChange: (progress: number) => {
@@ -8,6 +8,10 @@ const emit = defineEmits({
     },
 
     SubmitTypingReport: (data: TypingReport) => {
+        return data
+    },
+
+    TypingCompleted: (data: TypingReport) => {
         return data
     }
 })
@@ -29,6 +33,7 @@ const content = ref<HTMLDivElement>()
 var isTypingFocus = false
 
 onMounted(function () {
+    console.log(timeToWord(65))
     setupData(tempData)
 
     if (typingTextarea == undefined) return
@@ -59,24 +64,22 @@ onMounted(function () {
 })
 
 
-const tempData = "Lorem Ipsum is simply dummy text of the printing and type setting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."
+const tempData = "Lorem Ipsum is simply dummy text of the printing and type setting industry."
 var dataContent = ''
-var wordList = Array<string>()
-var seconds = 0
+var startTime = 0
 var previousTextLength = 0
 
 
 function setupData(paragraph: string) {
     dataContent = paragraph
-    wordList = dataContent.split(' ')
     previousTextLength = 0
 
-    typingReport.dateTime = new Date().getUTCMilliseconds()
-    typingReport.totalWords = wordList.length
+    typingReport.dateTime = 0
+    typingReport.totalWords = dataContent.split(' ').length
     typingReport.totalCharCount = paragraph.length
     typingReport.errorCount = 0
     typingReport.averageSpeed = 0
-    seconds = 0
+    startTime = new Date().getTime()
 
     typingReport.keysReport = []
     getUniqueCharacters(paragraph).forEach(char => {
@@ -92,34 +95,23 @@ function setupData(paragraph: string) {
 }
 
 
-// return all typed words
-function getTotalTypedWords(totalCharTyped: number) {
-    let lengthCount = 0
-    let wordCount = 0
-
-    wordList.forEach(word => {
-        lengthCount += word.length
-        if (lengthCount >= totalCharTyped) {
-            return wordCount
-        }
-        wordCount++
-        lengthCount++               // adding one space
-    });
-
-    return wordCount
-}
-
-
 
 function updateReport() {
     if (isTypingFocus) {
-        seconds++
         setTimeout(updateReport, 1000)
     }
 
+    const seconds = Math.floor((new Date().getTime() - startTime) / 1000)
+    typingReport.dateTime = seconds
+
     // calculating word per minntes
-    const wpm = getTotalTypedWords(typingTextarea.value!!.value.length) * 60 / seconds
+    const wpm = countCorrectWords(typingTextarea.value!!.value, dataContent.slice(0, typingTextarea.value!!.value.length)) * 60 / seconds
     typingReport.averageSpeed = Math.round(wpm)
+
+    // update top speed
+    if(typingReport.averageSpeed > typingReport.topSpeed){
+        typingReport.topSpeed = typingReport.averageSpeed
+    }
 
     emit('SubmitTypingReport', typingReport)
 }
@@ -163,8 +155,12 @@ function manipulateText(text: string) {
                 }
             }
         }
-
         previousTextLength = text.length
+
+        if (dataContent.length != 0 && text.length == dataContent.length) {
+            isTypingFocus = false
+            emit('TypingCompleted', typingReport)
+        }
     }
 
 
