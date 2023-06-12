@@ -255,11 +255,16 @@ function highlightKey(key: string, className: string = '') {
     max-width: max-content;
     width: 100%;
     margin: 2rem auto;
+    display: flex;
+    overflow: hidden;
+
 }
 
 
 .keyboard {
     padding: 12px;
+    scale: 1;
+    scroll-snap-align: center;
 }
 
 .keyboard span {
