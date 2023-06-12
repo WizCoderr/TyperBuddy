@@ -132,7 +132,7 @@ function getThemeColor(name: string) {
             </div>
 
             <hr>
-            <h3>Statistics for Today:</h3>
+            <h3>All Time Statistics:</h3>
             <div class="status-chips">
                 <div>
                     <span>Total Time</span>
