@@ -112,7 +112,7 @@ h4{
 main {
     background-color: var(--color-surface);
     display: grid;
-    grid-template-columns: 300px auto;
+    grid-template-columns: max-content auto;
     width: 100%;
     overflow: auto;
     color: var(--color-on-surface);
@@ -127,14 +127,6 @@ main hr{
 
 .main {
     margin: var(--page-margin);
-}
-
-
-
-@media only screen and (max-width: 1200px) {
-    main {
-        grid-template-columns: 220px auto;
-    }
 }
 
 

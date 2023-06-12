@@ -229,7 +229,6 @@ main .status-chips div span:first-child {
 .chart-holder {
     margin-top: 2rem;
     padding-top: 1rem;
-    aspect-ratio: 4/1;
     padding-left: 0.4rem;
     background-color: var(--color-surface-variant);
     border-radius: var(--border-radius-2);
@@ -237,6 +236,6 @@ main .status-chips div span:first-child {
 
 .chart-holder canvas {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 5/1;
 }
 </style>
