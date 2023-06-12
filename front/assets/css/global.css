@@ -135,3 +135,10 @@ main hr{
         --page-margin: 12px;
     }
 }
+
+@media only screen and (max-width: 900px) {
+    main {
+        grid-template-columns: 100%;
+        width: 100%;
+    }
+}

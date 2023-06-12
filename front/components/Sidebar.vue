@@ -107,6 +107,7 @@ defineProps({
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 5;
     width: inherit;
     padding: var(--page-margin) 0;
     height: 100vh;
@@ -201,6 +202,16 @@ defineProps({
     }
     .sidebar-container{
         width: 220px;
+    }
+
+}
+
+@media only screen and (max-width: 900px) {
+
+    .sidebar{
+        left: -300px;
+        width: 300px;
+        background-color: var(--color-surface-variant);
     }
 
 }
