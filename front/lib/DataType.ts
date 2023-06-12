@@ -23,4 +23,12 @@ export interface TypingReport {
     topSpeed: number
 
 }
+
+export interface MyChartData{
+    chartLabel: String,
+    labels: Array<String>,
+    labelData: Array<Number>,
+    borderColor: String,
+    backgroundColor: String,
+}
 // export interface 

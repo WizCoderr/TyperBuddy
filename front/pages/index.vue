@@ -122,11 +122,6 @@ function updateTypingReport(reportData: TypingReport) {
 </template>
 <style scoped>
 
-/* --------------------- Main ----------------- */
-
-.main {
-    margin: var(--page-margin);
-}
 
 .main .status-bar {
     display: flex;
