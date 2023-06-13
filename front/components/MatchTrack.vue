@@ -9,7 +9,7 @@
                 <col style="width: auto;">
             </colgroup>
             <tbody>
-                <tr v-for="item in 4">
+                <tr v-for="item in 5">
                     <td>
                         <div class="profile">
                             <img src="../public/extra/no_image.png" alt="no_image">
@@ -39,7 +39,11 @@
 <style scoped>
 
 section {
+    margin: auto;
     margin-bottom: 2rem;
+    max-width: 1200px;
+    width: 100%;
+    
 }
 h2 {
     text-align: center;
