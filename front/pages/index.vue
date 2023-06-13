@@ -1,6 +1,5 @@
 <script setup lang='ts'>
 import { TypingReport } from '~/lib/DataType';
-import { timeToWord } from '~/lib/utils';
 import { getKeyColor } from '~/lib/utils';
 
 
