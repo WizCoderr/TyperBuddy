@@ -88,7 +88,7 @@ table .track svg {
     top: 50%;
     z-index: 1;
     translate: -50% -50%;
-    left: 100%;
+    left: 45%;
 }
 
 table .status{
