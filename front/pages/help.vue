@@ -6,14 +6,12 @@
         <section class="main">
             <h2>Helps</h2>
 
-
             <h3>About</h3>
             <p>This web application will help you to learn touch typing, which means typing through muscle memory without
                 using your eyesight to find the keys on the keyboard. It can improve your typing speed and accuracy
                 dramatically. The opposite is hunt-and-peck typing, a method of typing in which you look at the keyboard
                 instead of the screen, and use only the index fingers.
             </p>
-
 
             <h3>How algorithm help you in learning?</h3>
             <p>This application uses a unique approach. It employs statistics and smart algorithms to automatically create
@@ -31,13 +29,11 @@
             </ol>
             <p>At each stage you just type the provided lists of words, and the algorithms does the rest.</p>
 
-
             <h3>The right way to use keyboard</h3>
             <p>Put all your fingers on the home row, the one containing the Caps Lock key. There are small bumps on the keys
                 <b>F</b> and <b>J</b>, put your index fingers on the bumps. Each finger is responsible for its own set of
                 keys.
             </p>
-
 
             <h3>See your statistics</h3>
             <p>The algorithms will collect your progress and report. It will store it on the server and you can see your
