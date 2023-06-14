@@ -1,6 +1,5 @@
 
 <script setup lang='ts'>
-import { Vue2 } from 'nuxt/dist/app/compat/vue-demi';
 import { MyChartData } from '~/lib/DataType';
 
 const isGraphHidden = ref(true)
@@ -10,7 +9,7 @@ const graphType = ref('bar')
 // --------------------- data --------------------------------
 const todayFirstDataset = ref<MyChartData>({
     chartLabel: 'Accuracy Keys',
-    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    labels:  ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'],
     labelData: [20, 30, 40, 10, 5, 25, 23],
     borderColor: '',
     backgroundColor: ''
@@ -18,7 +17,7 @@ const todayFirstDataset = ref<MyChartData>({
 
 const todaySecondDataset = ref<MyChartData>({
     chartLabel: 'Problematic Keys',
-    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'],
     labelData: [10, 50, 15, 5, 5, 80, 45],
     borderColor: '',
     backgroundColor: ''

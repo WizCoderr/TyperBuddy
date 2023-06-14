@@ -1,6 +1,11 @@
 <script setup lang='ts'>
 import { TyperData, TypingReport } from '~/lib/DataType';
-import { countCorrectWords, getUniqueCharacters, timeToWord } from '~/lib/utils';
+import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
+
+const prop = defineProps<{
+    sentence: string
+}>()
+
 
 const emit = defineEmits({
     ProgressChange: (progress: number) => {
@@ -15,6 +20,7 @@ const emit = defineEmits({
         return data
     }
 })
+
 
 
 const typingReport: TypingReport = {
@@ -33,8 +39,12 @@ const content = ref<HTMLDivElement>()
 var isTypingFocus = false
 
 onMounted(function () {
-    console.log(timeToWord(65))
-    setupData(tempData)
+    console.log(prop.sentence)
+    if(prop.sentence == undefined){
+        alert("Something went wrong")
+        return
+    }
+    setupData(prop.sentence!!)
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
@@ -63,8 +73,6 @@ onMounted(function () {
 
 })
 
-
-const tempData = "Lorem Ipsum is simply dummy text of the printing and type setting industry."
 var dataContent = ''
 var startTime = 0
 var previousTextLength = 0
@@ -290,7 +298,7 @@ function checkForTypingEnd() {
 /* -------------------- Typing content ------------------- */
 .typing-content {
     width: 100%;
-    max-width: 800px;
+    max-width: 1000px;
     margin: auto;
     background-color: white;
     border-radius: 0.6rem;

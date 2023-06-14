@@ -64,6 +64,10 @@
     --very-small-font: 12px;
 }
 
+body{
+    background-color: var(--color-surface);
+}
+
 p {
     font-size: var(--medium-font);
     line-height: 1.5;
