@@ -4,7 +4,7 @@
         <main>
         <Sidebar :activeTabIndex="2" />
         <section class="main">
-           typing test
+           <h2>Typing Test</h2>
         </section>
     </main>
 </template>

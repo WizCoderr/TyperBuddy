@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+const data = "Lorem Ipsum is simply dummy text of the printing and type setting industry."
 </script>
 <template>
     <main>
@@ -8,7 +9,7 @@
             <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
             <MatchTrack />
-            <TypingArea />
+            <TypingArea :text-data="data"/>
             <button>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -34,7 +35,7 @@ section>button {
     gap: 1rem;
 }
 
-section>button svg{
+section>button svg {
     fill: white;
 }
 
@@ -42,4 +43,5 @@ section>button:hover {
     background-color: var(--color-primary-variant);
     translate: 0 -4px;
     box-shadow: 0 4px 8px #148aff4d;
-}</style>
+}
+</style>
