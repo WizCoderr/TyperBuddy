@@ -2,6 +2,11 @@
 import { TyperData, TypingReport } from '~/lib/DataType';
 import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
 
+const prop = defineProps<{
+    sentence: string
+}>()
+
+
 const emit = defineEmits({
     ProgressChange: (progress: number) => {
         return progress
@@ -16,9 +21,6 @@ const emit = defineEmits({
     }
 })
 
-const prop = defineProps<{
-    textData: string
-}>()
 
 
 const typingReport: TypingReport = {
@@ -37,7 +39,12 @@ const content = ref<HTMLDivElement>()
 var isTypingFocus = false
 
 onMounted(function () {
-    setupData(prop.textData)
+    console.log(prop.sentence)
+    if(prop.sentence == undefined){
+        alert("Something went wrong")
+        return
+    }
+    setupData(prop.sentence!!)
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
