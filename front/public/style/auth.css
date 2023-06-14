@@ -6,12 +6,14 @@
     background-color: var(--color-surface);
 }
 
+
+
+
 .auth form {
     background-color: var(--color-surface-variant);
     max-width: 500px;
     margin: 1rem;
     width: 100%;
-    min-height: 400px;
     box-shadow: 0 2px 20px #b3b3b34d;
     border-radius: var(--border-radius-3);
     padding: 1rem 2rem;
@@ -27,13 +29,18 @@
     color: var(--color-on-surface);
 }
 
-.auth p a {
+.auth a {
     color: var(--color-primary);
     font-weight: 600;
     text-decoration: none;
 }
 
-.auth input {
+.auth form>a{
+    text-align: right;
+    display: block;
+}
+
+.auth form>input {
     display: block;
     width: 100%;
     padding: 0.8rem 1rem;
@@ -47,7 +54,7 @@
 }
 
 
-.auth input:focus {
+.auth form>input:focus {
     outline: 2px solid var(--color-primary);
 }
 
@@ -118,4 +125,41 @@
     background-color: var(--color-surface-variant);
     padding: 0 1rem;
     color: var(--color-on-surface);
+}
+
+
+
+.auth .otp-container{
+    position: relative !important;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.auth .otp-container input{
+    position: absolute !important;
+    top: 0;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    padding: 0.8rem;
+    opacity: 0;
+}
+
+.auth .otp-container div{
+    display: flex;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.auth .otp-container span{
+    background-color: var(--color-surface);
+    font-size: var(--big-font);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    border-radius: var(--border-radius);
+    outline: 1px solid var(--color-surface-dark-2);
 }

@@ -7,6 +7,7 @@
             <p>Welcome back to TyperBuddy</p>
             <input type="email" placeholder="Email">
             <input type="password" placeholder="Password">
+            <a href="#">Forgot password?</a>
             <button class="primary" type="submit">Sign In</button>
             <div class="divider">
                 <hr>
@@ -33,4 +34,4 @@
         </form>
     </div>
 </template>
-<style scoped>@import '../assets/css/auth.css';</style>
+<style scoped>@import '../public/style/auth.css';</style>

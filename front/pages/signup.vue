@@ -36,4 +36,4 @@
         </form>
     </div>
 </template>
-<style scoped>@import '../assets/css/auth.css';</style>
+<style scoped>@import '../public/style/auth.css';</style>
