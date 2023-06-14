@@ -10,7 +10,7 @@ function updateProgress(progress: number) {
 
 }
 
-
+const data = "Hello i am nitesh"
 
 const previousTypingReport: TypingReport = {
     dateTime: 0,
@@ -143,7 +143,7 @@ const dialogTypingReport = ref<TypingReport>({
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :onTypingCompleted="(data) => onPracticeComplete(data)"
+            <TypingArea :sentence="data" :onTypingCompleted="(data) => onPracticeComplete(data)"
                 :onSubmitTypingReport="(data) => updateTypingReport(data)"
                 :onProgressChange="(progress) => updateProgress(progress)" />
             <Keyboard />

@@ -9,7 +9,7 @@ const data = "Lorem Ipsum is simply dummy text of the printing and type setting 
             <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
             <MatchTrack />
-            <TypingArea :text-data="data"/>
+            <TypingArea :sentence="data"/>
             <button>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
