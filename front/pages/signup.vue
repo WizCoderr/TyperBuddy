@@ -1,16 +1,104 @@
 <script setup lang='ts'>
+import Api from '../lib/api.js'
+
+const first = ref('')
+const last = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+
+const otpInput = ref('')
+
+const isOtpVisible = ref(false)
+let token = ''
+
+async function onSignupSubmit(){
+    if(password.value != confirmPassword.value){
+        alert('Password not matching')
+        return
+    }
+
+    let res = await Api.signup(first.value, last.value, email.value, password.value)
+    if(res.isError){
+        alert(res.error)
+    }else{
+        if(res.result != null){
+            token = res.result.token
+            showOtpDialog()
+        }else{
+            alert('something went wrong')
+        }
+    }
+}
+
+
+async function onResendOtp(){
+
+}
+
+let secondsLeft = ref(59)
+function showOtpDialog(){
+    secondsLeft.value = 59
+    isOtpVisible.value = true
+    otpCountdown()
+}
+
+
+function otpCountdown(){
+    secondsLeft.value -= 1
+    if(secondsLeft.value > 0){
+        setTimeout(otpCountdown, 1000)
+    }
+}
+
+async function resendOtp(){
+    secondsLeft.value = 59
+
+    let res = await Api.signupOtpResend(token)
+    if(res.isError){
+        alert(res.error)
+    }else{
+        otpCountdown()
+    }
+}
+
+async function verifyOTP(){
+    if(otpInput.value.toString().length < 6){
+        alert('Invalid OTP')
+        return
+    }
+
+    const otp = otpInput.value.toString().slice(0, 7)
+
+    let res = await Api.signupVerify(token, otp)
+    if(res.isError){
+        alert(res.error)
+    }else{
+        if(res.result != null){
+            localStorage.setItem('token', res.result.token)
+            window.location.href = '/'
+        }else{
+            alert('something went wrong')
+        }
+    }
+    
+}
+
 </script>
 <template>
     <div class="auth">
-        <form>
+
+        <!-- Sign up form -->
+        <form v-if="!isOtpVisible" method="post" @submit.prevent="onSignupSubmit()">
             <h2>Sign Up</h2>
             <p>Welcome to TyperBuddy</p>
-            <input type="text" placeholder="First name">
-            <input type="text" placeholder="Last name">
-            <input type="email" placeholder="Email">
-            <input type="password" placeholder="Password">
-            <input type="password" placeholder="Confirm password">
+            <input v-model="first" type="text" placeholder="First name" required>
+            <input v-model="last" type="text" placeholder="Last name" required>
+            <input v-model="email" type="email" placeholder="Email" required>
+            <input v-model="password" type="password" placeholder="Password" required>
+            <input v-model="confirmPassword" type="password" placeholder="Confirm password" required>
             <button class="primary" type="submit">Sign Up</button>
+
             <div class="divider">
                 <hr>
                 <span>Or</span>
@@ -33,6 +121,25 @@
                 <span>Sign up with Google</span>
             </button>
             <p>Already have an account? <a href="#">Sign in</a></p>
+        </form>
+
+
+        <!-- OTP Form -->
+        <form v-else method="post" @submit.prevent="verifyOTP()">
+            <h2>OTP</h2>
+            <p>We have sent the OTP on your email, type the OTP to verify the email.</p>
+            <div class="otp-container">
+                <div>
+                    <span v-for="item, index in 6">{{ otpInput.toString()[index] }}</span>
+                </div>
+                <input v-model="otpInput" type="number">
+            </div>
+            <div class="resend">
+                <span v-if="secondsLeft > 0">Resend code in 00:{{ secondsLeft }}</span>
+                <span v-else class="button" @click="resendOtp()">Resend</span>
+            </div>
+            
+            <button class="primary" type="submit">Verify</button>
         </form>
     </div>
 </template>

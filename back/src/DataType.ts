@@ -22,7 +22,8 @@ export interface PendingAccountData {
     lastName: string,
     email: string,
     password: string,
-    otp: string
+    otp: string,
+    token: string
 }
 
 

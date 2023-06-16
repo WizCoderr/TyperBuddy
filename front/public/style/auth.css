@@ -8,6 +8,21 @@
 
 
 
+.auth .resend{
+    margin: 1.5rem 0;
+}
+
+.auth .resend span{
+    display: block;
+    color: var(--color-on-surface);
+    font-weight: 600;
+}
+
+.auth .resend .button{
+    color: var(--color-primary);
+    cursor: context-menu;
+}
+
 
 .auth form {
     background-color: var(--color-surface-variant);
