@@ -1,14 +1,42 @@
 <script setup lang='ts'>
+import Api from '../lib/api.js'
+
+const email = ref('')
+const password = ref('')
+const isProcessing = ref(false)
+
+
+async function signIn(){
+    if(isProcessing.value) return
+    isProcessing.value = true
+    let res = await Api.signin(email.value, password.value)
+    isProcessing.value = false
+    if(res.isError){
+        alert(res.error)
+    }else{
+        if(res.result != null){
+            localStorage.setItem('token', res.result.token)
+            window.location.href = '/'
+        }else{
+            alert('Something went wrong')
+        }
+    }
+
+}
+
 </script>
 <template>
     <div class="auth">
-        <form>
+        <form method="post" @submit.prevent="signIn">
             <h2>Sign In</h2>
             <p>Welcome back to TyperBuddy</p>
-            <input type="email" placeholder="Email">
-            <input type="password" placeholder="Password">
-            <a href="#">Forgot password?</a>
-            <button class="primary" type="submit">Sign In</button>
+            <input v-model="email" type="email" placeholder="Email">
+            <input v-model="password" type="password" placeholder="Password">
+            <NuxtLink to="/forgot">Forgot password?</NuxtLink>
+            <button class="primary" type="submit">
+                <span v-if="!isProcessing">Sign In</span>
+                <div v-else class="loader2"></div>
+            </button>
             <div class="divider">
                 <hr>
                 <span>Or</span>
@@ -30,7 +58,7 @@
                 </svg> 
                 <span>Sign in with Google</span>
             </button>
-            <p>Don't have an account? <a href="#">Sign up</a></p>
+            <p>Don't have an account? <NuxtLink to="/signup">Sign up</NuxtLink></p>
         </form>
     </div>
 </template>

@@ -43,20 +43,22 @@ app.use('/public', express.static('public'));
 
 // ---------------------- account handling------------------------
 app.post('/sign-in', async (req, res) => {
-    let email = req.body.email as string
-    let password = req.body.password as string
+    try {
+        let email = req.body.email as string
+        let password = req.body.password as string
 
-    let account = await mongoApi.getAccount(email)
-    if (account != null) {
-        if (account.email != email) {
-            res.status(400).send('No account exist with this email!')
-        } else if (account.email == email && account.password != password) {
-            res.status(400).send('Wrong password!')
+        let account = await mongoApi.getAccount(email)
+        if (account != null) {
+            if(account.password != password) {
+                res.status(400).send('Wrong password!')
+            } else {
+                res.status(200).send({ token: account._id })
+            }
         } else {
-            res.status(200).send({ token: account._id })
+            res.status(400).send('No account found with this email, try sign up')
         }
-    } else {
-        res.status(400).send('Something went wrong!')
+    } catch (error) {
+        res.status(400).send('Bad request')
     }
 })
 
@@ -160,7 +162,7 @@ app.post('/resend-verify-otp', async (req, res) => {
         let token = req.body.token as string
 
         for (let index = 0; index < pendingReg.length; index++) {
-            let account  = pendingReg[index]
+            let account = pendingReg[index]
             if (token == account.token) {
 
                 // update data

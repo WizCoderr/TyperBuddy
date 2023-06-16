@@ -7,63 +7,78 @@ const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 
+const isProcessing = ref(false)
 const otpInput = ref('')
 
 const isOtpVisible = ref(false)
 let token = ''
 
-async function onSignupSubmit(){
-    if(password.value != confirmPassword.value){
+async function onSignupSubmit() {
+
+    if (isProcessing.value) return
+    isProcessing.value = true
+
+    if (password.value != confirmPassword.value) {
         alert('Password not matching')
         return
     }
 
     let res = await Api.signup(first.value, last.value, email.value, password.value)
-    if(res.isError){
+    isProcessing.value = false
+    if (res.isError) {
         alert(res.error)
-    }else{
-        if(res.result != null){
+    } else {
+        if (res.result != null) {
             token = res.result.token
+            isProcessing.value = false
             showOtpDialog()
-        }else{
+        } else {
             alert('something went wrong')
         }
     }
 }
 
 
-async function onResendOtp(){
+async function onResendOtp() {
 
 }
 
 let secondsLeft = ref(59)
-function showOtpDialog(){
+function showOtpDialog() {
     secondsLeft.value = 59
     isOtpVisible.value = true
     otpCountdown()
 }
 
 
-function otpCountdown(){
+function otpCountdown() {
     secondsLeft.value -= 1
-    if(secondsLeft.value > 0){
+    if (secondsLeft.value > 0) {
         setTimeout(otpCountdown, 1000)
     }
 }
 
-async function resendOtp(){
+async function resendOtp() {
     secondsLeft.value = 59
 
     let res = await Api.signupOtpResend(token)
-    if(res.isError){
+    if (res.isError) {
         alert(res.error)
-    }else{
-        otpCountdown()
+    } else {
+        if (res.result != null) {
+            token = res.result.token
+            otpCountdown()
+        }else{
+            alert('something went wrong')
+        }
     }
 }
 
-async function verifyOTP(){
-    if(otpInput.value.toString().length < 6){
+async function verifyOTP() {
+    if (isProcessing.value) return
+    isProcessing.value = true
+
+    if (otpInput.value.toString().length < 6) {
         alert('Invalid OTP')
         return
     }
@@ -71,17 +86,18 @@ async function verifyOTP(){
     const otp = otpInput.value.toString().slice(0, 7)
 
     let res = await Api.signupVerify(token, otp)
-    if(res.isError){
+    isProcessing.value = false
+    if (res.isError) {
         alert(res.error)
-    }else{
-        if(res.result != null){
+    } else {
+        if (res.result != null) {
             localStorage.setItem('token', res.result.token)
             window.location.href = '/'
-        }else{
+        } else {
             alert('something went wrong')
         }
     }
-    
+
 }
 
 </script>
@@ -97,7 +113,10 @@ async function verifyOTP(){
             <input v-model="email" type="email" placeholder="Email" required>
             <input v-model="password" type="password" placeholder="Password" required>
             <input v-model="confirmPassword" type="password" placeholder="Confirm password" required>
-            <button class="primary" type="submit">Sign Up</button>
+            <button class="primary" type="submit">
+                <span v-if="!isProcessing">Sign Up</span>
+                <div v-else class="loader2"></div>
+            </button>
 
             <div class="divider">
                 <hr>
@@ -117,10 +136,10 @@ async function verifyOTP(){
                     <path
                         d="M166667 64444c31296 0 52406 13519 64444 24816l47037-45926C249260 16482 211666 1 166667 1 101481 1 45185 37408 17777 91852l53889 41853c13520-40185 50927-69260 95001-69260m0 0z"
                         fill="#ea4335" />
-                </svg> 
+                </svg>
                 <span>Sign up with Google</span>
             </button>
-            <p>Already have an account? <a href="#">Sign in</a></p>
+            <p>Already have an account? <NuxtLink to="/signin">Sign in</NuxtLink></p>
         </form>
 
 
@@ -138,9 +157,14 @@ async function verifyOTP(){
                 <span v-if="secondsLeft > 0">Resend code in 00:{{ secondsLeft }}</span>
                 <span v-else class="button" @click="resendOtp()">Resend</span>
             </div>
-            
-            <button class="primary" type="submit">Verify</button>
+
+            <button class="primary" type="submit">
+                <span v-if="!isProcessing">Verify</span>
+                <div v-else class="loader2"></div>
+            </button>
         </form>
     </div>
 </template>
-<style scoped>@import '../public/style/auth.css';</style>
+<style scoped>
+@import '../public/style/auth.css';
+</style>

@@ -16,6 +16,8 @@ namespace Api {
 
 
     // ---------------------- Account ---------------------
+
+    
     export async function signup(first: string, last: string, email: string, password: string) {
         let signupData = {
             first: first,
