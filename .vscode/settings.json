@@ -2,6 +2,7 @@
     "files.exclude": {
         // "*/.nuxt": true,
         "*/node_modules": true,
+        "*/out": true,
     },
     "cSpell.words": [
         "Typer"
