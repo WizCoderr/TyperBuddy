@@ -66,60 +66,83 @@ app.post('/sign-in', async (req, res) => {
 
 let pendingReg = Array<PendingAccountData>()
 
-app.post('/sign-up', async (req, res) => {
-    let firstName = req.body.first as string
-    let lastName = req.body.last as string
-    let email = req.body.email as string
-    let password = req.body.password as string
+app.post('/sign-up', (req, res) => {
+    try {
+        let firstName = req.body.first as string
+        let lastName = req.body.last as string
+        let email = req.body.email as string
+        let password = req.body.password as string
 
-    const newAccount: PendingAccountData = {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-        otp: generateOTP()
-    }
-
-    // check if pending reg already have email in list then remove the previous and add new
-    for (let index = 0; index < pendingReg.length; index++) {
-        if (email == pendingReg[index].email) {
-
-            pendingReg = pendingReg.splice(index, 1)  // remove
-            pendingReg.push(newAccount)
-            break
+        const newAccount: PendingAccountData = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            otp: generateOTP()
         }
-    }
 
-    // sending mail
-    let status = await sendMail({
-        from: mailerEmail,
-        to: email,
-        subject: 'Verify your account',
-        html: getEmailVerifyHtml(newAccount.otp)
-    })
+        // check if pending reg already have email in list then remove the previous and add new
+        for (let index = 0; index < pendingReg.length; index++) {
+            if (email == pendingReg[index].email) {
 
+                pendingReg = pendingReg.splice(index, 1)  // remove
+                break
+            }
+        }
 
-    // check mail status
-    if(status == 'accepted' || status == 'pending'){
-        res.status(200).json({ email: email })
-    }else{
-        res.status(400).send('Unable to create your account at this moment, please try again later')
+        // add new reg
+        pendingReg.push(newAccount)
+
+        // sending mail
+        sendMail({
+            from: mailerEmail,
+            to: email,
+            subject: `Confirm Your Account Registration: ${email}`,
+            html: getEmailVerifyHtml(newAccount.otp, email)
+        })
+
+        res.status(200).send({ email: email })
+
+    } catch (error) {
+        res.status(400).send('Bad request')
     }
 
 })
 
 
-app.post('/verify-signup', (req, res) => {
-    const email = req.body.email as string
-    const otp = req.body.otp as string
+app.post('/verify-signup', async (req, res) => {
+    try {
+        const email = req.body.email as string
+        const otp = req.body.otp as string
 
-    for (let index = 0; index < pendingReg.length; index++) {
+        for (let index = 0; index < pendingReg.length; index++) {
 
-        let reg = pendingReg[index]
-        if (reg.email == email && reg.otp == otp) {
-            
+            let reg = pendingReg[index]
+            if (reg.email == email && reg.otp == otp) {
+
+                let account: AccountData = {
+                    _id: generateId(),
+                    firstName: reg.firstName,
+                    lastName: reg.lastName,
+                    email: reg.email,
+                    password: reg.password,
+                    mode: 'none',
+                    roomId: generateId()
+                }
+                let response = await mongoApi.createAccount(account)
+                if (response != null) {
+                    res.status(200).send({ token: account._id })
+                }else{
+                    res.status(400).send('Something went wrong')
+                }
+
+                return
+            }
         }
 
+        res.status(400).send('Unable to verify, check your OTP')
+    } catch (error) {
+        res.status(400).send('Bad request')
     }
 })
 
