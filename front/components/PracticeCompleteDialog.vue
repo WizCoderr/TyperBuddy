@@ -9,7 +9,7 @@ defineProps<{
 <template>
     <div class="dialog">
         <div class="content">
-            <img class="logo" src="../extra/success.png" alt="success">
+            <img class="logo" src="../public/extra/success.png" alt="success">
             <h2>Successful</h2>
             <p>You have successfully completed this challenge.</p>
             <div class="chips">
