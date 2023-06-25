@@ -17,7 +17,7 @@ namespace Api {
 
     // ---------------------- Account ---------------------
 
-    
+
     export async function signup(first: string, last: string, email: string, password: string) {
         let signupData = {
             first: first,
@@ -49,6 +49,21 @@ namespace Api {
             password: password
         }
         return post<{ token: string }>("sign-in", "", signinData)
+    }
+
+    export async function resetPasswordRequest(email: string) {
+        let data = {
+            email: email
+        }
+        return post<{ email: string }>("forgot-password", "", data)
+    }
+
+    export async function resetPassword(token: string, password: string) {
+        let data = {
+            token: token,
+            password: password
+        }
+        return post<{ email: string }>("reset-password", "", data)
     }
 
 

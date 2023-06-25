@@ -26,4 +26,12 @@ export interface PendingAccountData {
     token: string
 }
 
+export interface PendingResetPassword {
+    accountId: string,
+    email: string,
+    token: string,
+    expiry: number
+}
+
+
 

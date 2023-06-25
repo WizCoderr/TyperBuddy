@@ -3,9 +3,9 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import { sendMail } from './EmailManger.js'
-import { AccountData, MailData, PendingAccountData } from './DataType.js'
+import { AccountData, MailData, PendingAccountData, PendingResetPassword } from './DataType.js'
 import MongoAPI from './Mongo.js'
-import { generateId, generateOTP, getEmailVerifyHtml } from './Utils.js'
+import { generateId, generateOTP, getEmailVerifyHtml, getResetPasswordHtml } from './Utils.js'
 
 dotenv.config()
 
@@ -189,15 +189,87 @@ app.post('/resend-verify-otp', async (req, res) => {
     }
 })
 
-app.post('/forgot', async (req, res) => {
 
+
+let pendingReset = Array<PendingResetPassword>()
+app.post('/forgot-password', async (req, res) => {
+    try {
+        const email = req.body.email as string
+        let account = await mongoApi.getAccount(email)
+        if (account == null) {
+            res.status(400).send('No account exist with this email')
+            return
+        }
+
+        let pending: PendingResetPassword = {
+            accountId: account._id,
+            email: email,
+            token: generateId(),
+            expiry: new Date().getTime() + 10 * 60000       // expire after 10 min
+        }
+
+        let isUpdated = false
+        // check and update if pending reset already exist
+        for (let index = 0; index < pendingReset.length; index++) {
+
+            // update previous 
+            if(pendingReset[index].email == email){
+                pendingReset[index] = pending
+                isUpdated = true
+                break
+            }
+        }
+
+        // add new if not updated
+        if(!isUpdated){
+            pendingReset.push(pending)
+        }
+
+        // sending mail
+        sendMail({
+            from: mailerEmail,
+            to: email,
+            subject: `Reset Your Account Password: ${email}`,
+            html: getResetPasswordHtml(account.firstName, `http://localhost:3000/resetpassword?token=${pending.token}`)
+        })
+
+        res.status(200).send({email: email})
+
+    } catch (error) {
+        res.status(400).send('Bad request')
+    }
 
 })
 
-app.post('/forgot-otp', async (req, res) => {
+app.post('/reset-password', async (req, res) => {
+    try {
+        const token = req.body.token as string
+        const password = req.body.password as string
 
+        // matching token, expiry and then reset the password 
+        const currentTime = new Date().getTime()
 
+        for (let index = 0; index < pendingReset.length; index++) {
+            if(pendingReset[index].token == token && currentTime < pendingReset[index].expiry){
+                
+                const result = await mongoApi.resetAccountPassword(pendingReset[index].accountId, password)
+                if(result == null){
+                    res.status(400).send('Unable to reset your password')
+                }else{
+                    res.status(200).send({email: pendingReset[index].email})
+                }
+
+                pendingReset = pendingReset.splice(index, 1)
+                return
+            } 
+        }
+
+        res.status(400).send('Invalid credential')
+    } catch (error) {
+        res.status(400).send('Bad request')
+    }
 })
+
 
 
 
