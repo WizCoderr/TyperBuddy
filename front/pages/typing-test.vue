@@ -11,7 +11,7 @@ function updateProgress(progress: number) {
 
 }
 
-const data = generateSentence(1000, true, true)
+const data = generateSentence(100, false, true)
 
 const previousTypingReport: TypingReport = {
     dateTime: 0,

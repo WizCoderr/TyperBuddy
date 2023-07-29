@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { generateSentence } from '~/data/wordSample';
 import { TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 
@@ -10,7 +11,8 @@ function updateProgress(progress: number) {
 
 }
 
-const data = "Hello i am nitesh"
+const data = generateSentence(100, false, true)
+
 
 const previousTypingReport: TypingReport = {
     dateTime: 0,
