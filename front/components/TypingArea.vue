@@ -40,7 +40,7 @@ var isTypingFocus = false
 
 onMounted(function () {
     console.log(prop.sentence)
-    if(prop.sentence == undefined){
+    if (prop.sentence == undefined) {
         alert("Something went wrong")
         return
     }
@@ -117,7 +117,7 @@ function updateReport() {
     typingReport.averageSpeed = Math.round(wpm)
 
     // update top speed
-    if(typingReport.averageSpeed > typingReport.topSpeed){
+    if (typingReport.averageSpeed > typingReport.topSpeed) {
         typingReport.topSpeed = typingReport.averageSpeed
     }
 
