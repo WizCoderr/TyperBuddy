@@ -119,6 +119,7 @@
     z-index: 2;
     top: 50%;
     translate: 0 -50%;
+    transition: width 500ms;
 }
 
 .typing-progress .progress::before {
