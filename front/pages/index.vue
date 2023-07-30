@@ -11,6 +11,8 @@ function updateProgress(progress: number) {
 
 }
 
+// &#x21B5; - line break symbol
+
 const data = generateSentence(100, false, true)
 
 

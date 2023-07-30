@@ -112,7 +112,7 @@ function updateReport() {
     const seconds = Math.floor((new Date().getTime() - startTime) / 1000)
     typingReport.dateTime = seconds
 
-    // calculating word per minntes
+    // calculating word per minutes
     const wpm = countCorrectWords(typingTextarea.value!!.value, dataContent.slice(0, typingTextarea.value!!.value.length)) * 60 / seconds
     typingReport.averageSpeed = Math.round(wpm)
 
@@ -310,6 +310,7 @@ function checkForTypingEnd() {
 
 .typing-content .success {
     color: var(--color-on-surface);
+    opacity: 0.5;
 }
 
 .typing-content .error {
@@ -318,7 +319,7 @@ function checkForTypingEnd() {
 }
 
 .typing-content .normal {
-    opacity: 0.75;
+    opacity: 1;
 }
 
 .typing-content span {
@@ -330,6 +331,9 @@ function checkForTypingEnd() {
 .typing-content .content-holder {
     position: relative;
 }
+
+
+
 
 
 .typing-content .caret {
