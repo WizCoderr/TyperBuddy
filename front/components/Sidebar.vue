@@ -1,7 +1,23 @@
 <script setup lang='ts'>
+import SignInDialog from './dialog/SignInDialog.vue';
+
+
 defineProps({
     activeTabIndex: Number
 })
+
+
+
+// --------------- dialog -------------
+
+const isSignInDialogVisible = ref(false)
+function openSignInDialog(){
+    isSignInDialogVisible.value = true
+}
+
+function closeSignInDialog(){
+    isSignInDialogVisible.value = false
+}
 
 </script>
 <template>
@@ -94,15 +110,27 @@ defineProps({
                 </li>
 
             </ul>
+
+            <hr>
+            <button @click="openSignInDialog()" class="button primary">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z" />
+                </svg>
+                <span>SignIn</span>
+            </button>
         </nav>
     </div>
+
+    <SignInDialog :is-visible="isSignInDialogVisible" :onClose="closeSignInDialog"/>
 </template>
 <style scoped>
 /*  ------------------- side bar----------------- */
 
-.sidebar-container{
+.sidebar-container {
     width: 300px;
 }
+
 .sidebar {
     position: fixed;
     top: 0;
@@ -112,6 +140,12 @@ defineProps({
     padding: var(--page-margin) 0;
     height: 100vh;
     background-color: var(--color-surface-variant);
+}
+
+.sidebar button{
+    width: 90%;
+    margin: auto;
+
 }
 
 
@@ -200,7 +234,8 @@ defineProps({
     .heading h2 {
         font-size: var(--average-font);
     }
-    .sidebar-container{
+
+    .sidebar-container {
         width: 220px;
     }
 
@@ -208,13 +243,10 @@ defineProps({
 
 @media only screen and (max-width: 900px) {
 
-    .sidebar{
+    .sidebar {
         left: -300px;
         width: 300px;
         background-color: var(--color-surface-variant);
     }
 
-}
-
-
-</style>
+}</style>
