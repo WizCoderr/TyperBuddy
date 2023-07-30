@@ -310,7 +310,7 @@ function checkForTypingEnd() {
 
 .typing-content .success {
     color: var(--color-on-surface);
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .typing-content .error {

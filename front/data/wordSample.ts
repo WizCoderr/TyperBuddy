@@ -159,13 +159,15 @@ const commonWords = [
 
 const character = 'abcdefghijklmnopqrstuvwxyz'
 const punctuation = '.,!?;:"\'-_';
+const brackets = '{}[]()'
+const numbers = '0123456789'
 
 
-function random(to: number){
+function random(to: number) {
     return Math.floor(Math.random() * to)
 }
 
-export function generateSentence(count: number, addPunctuation: boolean, addCapital: boolean) {
+export function generateSentence(count: number, addPunctuation: boolean, addCapital: boolean, addBracket: boolean = false, addNumber: boolean = false) {
     let sentence = ''
     for (let index = 0; index < count; index++) {
 
@@ -177,12 +179,12 @@ export function generateSentence(count: number, addPunctuation: boolean, addCapi
         let mixWord = ''
 
         // word mix probability is 50%
-        if(Math.random() > 0.5){
+        if (Math.random() > 0.5) {
             for (let index2 = 0; index2 < wordMixCount; index2++) {
                 mixWord += character[random(character.length - 1)]
             }
         }
-        
+
 
         // word mix position
         const wordMixIndex = random(word.length - 1)
@@ -193,20 +195,37 @@ export function generateSentence(count: number, addPunctuation: boolean, addCapi
         let newWord = left + mixWord + right
 
 
-        // make capital
-        if(addCapital){
-            if(Math.random() > 0.5){        // capital add probability
+        // add capital
+        if (addCapital) {
+            if (Math.random() > 0.5) {        // capital add probability
                 newWord = newWord[0].toUpperCase() + newWord.slice(1, newWord.length)
             }
         }
 
-        if(addPunctuation){
-            if(Math.random() > 0.5){            // punctuation add probability
+        // add bracket
+        if (addBracket) {
+            if (Math.random() > 0.5) {        // add probability
+                newWord = newWord.slice(1, newWord.length) + brackets[random(brackets.length - 1)]
+            }
+        }
+
+        // add number
+        if (addNumber) {
+            if (Math.random() > 0.5) {        // add probability
+                newWord = newWord.slice(1, newWord.length) + numbers[random(numbers.length - 1)]
+            }
+        }
+
+
+
+        // add punctuation
+        if (addPunctuation) {
+            if (Math.random() > 0.5) {            // punctuation add probability
                 sentence += newWord + punctuation[random(punctuation.length - 1)] + ' '
-            }else{
+            } else {
                 sentence += newWord + ' '
             }
-        }else{
+        } else {
             sentence += newWord + ' '
         }
     }

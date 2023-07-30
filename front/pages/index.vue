@@ -2,6 +2,7 @@
 import { generateSentence } from '~/data/wordSample';
 import { TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
+import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -13,7 +14,7 @@ function updateProgress(progress: number) {
 
 // &#x21B5; - line break symbol
 
-const data = generateSentence(100, false, true)
+const data = generateSentence(100, false, true, false)
 
 
 const previousTypingReport: TypingReport = {
@@ -155,6 +156,7 @@ const dialogTypingReport = ref<TypingReport>({
         </section>
     </main>
 
+    <PracticeSettingDialog :test-data="dialogTypingReport"/>
     <PracticeCompleteDialog :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
 </template>
 <style scoped>
