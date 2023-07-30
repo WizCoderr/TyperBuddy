@@ -1,20 +1,32 @@
 <script setup lang='ts'>
-import { TypingReport } from '~/lib/DataType';
 import { generateSentence } from '~/data/wordSample';
 import CheckBox from '../widgets/CheckBox.vue';
 import RadioGroup from '../widgets/RadioGroup.vue';
 
+const props = defineProps<{
+    isVisible: boolean
+}>()
 
+const emit = defineEmits<{
+  (event: 'close', isSaved: boolean): void
+}>()
+
+function saveAndClose(isSaved: boolean){
+    emit('close', isSaved)
+}
+
+
+// tab 1
 const isCapitalEnabled = ref(false)
 const isPunctuationEnabled = ref(false)
 const isBracketEnabled = ref(false)
 const isNumberEnabled = ref(false)
 
+// tab 2
 const isStopCursorEnabled = ref(false)
 const isForgiveErrorEnabled = ref(false)
 
 const tabActiveIndex = ref(0)
-
 
 function changeTab(index: number) {
     tabActiveIndex.value = index
@@ -22,7 +34,7 @@ function changeTab(index: number) {
 
 </script>
 <template>
-    <div class="dialog">
+    <div v-if="isVisible" class="dialog">
         <div class="content">
             <h2>Settings</h2>
 
@@ -92,8 +104,8 @@ function changeTab(index: number) {
 
             <hr>
             <div class="buttons">
-                <button class="button primary outline">close</button>
-                <button class="button primary">Save</button>
+                <button @click="saveAndClose(false)" class="button primary outline">close</button>
+                <button @click="saveAndClose(true)" class="button primary">Save</button>
 
             </div>
 

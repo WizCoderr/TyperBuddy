@@ -11,27 +11,6 @@
     margin-left: auto;
 }
 
-.main .status-bar button {
-    display: flex;
-    align-items: center;
-    background-color: var(--color-secondary);
-    border: none;
-    color: var(--color-on-secondary);
-    font-size: var(--average-font);
-    padding: 0.6rem 1rem;
-    border-radius: var(--border-radius);
-    fill: var(--color-on-secondary);
-    gap: 1rem;
-}
-
-.main .status-bar button:hover {
-    background-color: var(--color-secondary-variant);
-}
-
-.main .status-bar button svg {
-    fill: inherit;
-}
-
 .main .status-bar h3 {
     white-space: nowrap;
     margin: 0;
