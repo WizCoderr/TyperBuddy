@@ -36,14 +36,14 @@ const chartData = ref({
         data: prop.firstDataset.labelData as number[],
         borderColor: prop.firstDataset.borderColor as string,
         backgroundColor: prop.firstDataset.backgroundColor as string,
-        borderWidth: 2,
+        borderWidth: 1,
     },
     {
         label: prop.secondDataset.chartLabel as string,
         data: prop.secondDataset.labelData as number[],
         borderColor: prop.secondDataset.borderColor as string,
         backgroundColor: prop.secondDataset.backgroundColor as string,
-        borderWidth: 2,
+        borderWidth: 1,
     }]
 })
 
@@ -51,13 +51,15 @@ const chartOptions = {
     scales: {
         x: {
             grid: {
-                display: false
-            }
+                display: true
+            },
+            stacked: true
         },
         y: {
             grid: {
-                display: false
+                display: true
             }
+            
         }
     },
 }
