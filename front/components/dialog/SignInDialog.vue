@@ -1,0 +1,133 @@
+<script setup lang='ts'>
+
+
+</script>
+<template>
+    <div class="dialog">
+        <div class="content">
+            <img src="../../public/images/planet.png" alt="planet">
+            <h2>Welcome</h2>
+            <p>Create an account and access<br>cool features</p>
+            <button class="google">
+                <svg width="24" height="24" viewBox="0 0 57 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_101_17)">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M56.9999 29.6445C56.9999 27.26 56.8058 25.52 56.386 23.7156H29.0815V34.4777H45.1086C44.7856 37.1522 43.0407 41.18 39.163 43.8865L39.1088 44.2469L47.7418 50.9162L48.34 50.9757C53.8331 45.9168 56.9999 38.4734 56.9999 29.6445Z"
+                            fill="#4285F4" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M29.0816 57.9999C36.9334 57.9999 43.5251 55.4221 48.34 50.9756L39.1631 43.8864C36.7073 45.5943 33.4114 46.7865 29.0816 46.7865C21.3911 46.7865 14.864 41.7278 12.5372 34.7356L12.1962 34.7645L3.21924 41.6923L3.10181 42.0177C7.88404 51.4909 17.7073 57.9999 29.0816 57.9999Z"
+                            fill="#34A853" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M12.5373 34.7357C11.9235 32.9314 11.568 30.9979 11.568 29.0002C11.568 27.0023 11.9233 25.069 12.505 23.2646L12.4888 22.8802L3.39948 15.8411L3.10215 15.9822C1.13111 19.9134 0.000244141 24.3277 0.000244141 29C0.000244141 33.6723 1.13129 38.0865 3.10215 42.0177L12.5375 34.7356"
+                            fill="#FBBC04" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M29.0816 11.2133C34.5424 11.2133 38.2259 13.5656 40.3264 15.5313L48.5338 7.54019C43.4932 2.86794 36.9334 0.000244141 29.0816 0.000244141C17.7073 0.000244141 7.88422 6.50907 3.10181 15.9823L12.5049 23.2648C14.864 16.2726 21.3911 11.2135 29.0816 11.2135"
+                            fill="#EA4335" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_101_17">
+                            <rect width="57" height="58" fill="white" />
+                        </clipPath>
+                    </defs>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+
+            <button class="facebook">
+                <svg width="24" height="24" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_101_22)">
+                        <path
+                            d="M70 35C70 15.6694 54.3292 0 35 0C15.6708 0 0 15.6694 0 35C0 52.4689 12.7996 66.9493 29.531 69.5746V45.1176H20.644V35H29.531V27.2896C29.531 18.5171 34.7569 13.6724 42.7505 13.6724C46.5801 13.6724 50.5852 14.3629 50.5852 14.3629V22.9752H46.1727C41.8238 22.9752 40.469 25.6738 40.469 28.4414V35.0069H50.175L48.6241 45.1245H40.4648V69.5746C57.2004 66.9493 70 52.4689 70 35Z"
+                            fill="#1877F2" />
+                        <path
+                            d="M48.6242 45.1175L50.1751 34.9999H40.4649V28.4344C40.4649 25.6723 41.8197 22.9682 46.1686 22.9682H50.5811V14.3629C50.5811 14.3629 46.5761 13.6724 42.7464 13.6724C34.7529 13.6724 29.527 18.5171 29.527 27.2895V34.9999H20.644V45.1175H29.5311V69.5746C33.155 70.1417 36.8451 70.1417 40.469 69.5746V45.1175H48.6242Z"
+                            fill="white" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_101_22">
+                            <rect width="70" height="70" fill="white" />
+                        </clipPath>
+                    </defs>
+                </svg>
+                <span>Continue with Facebook</span>
+            </button>
+
+            <button class="github">
+                <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_101_35)">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M31.9988 0.797421C14.3293 0.797421 0 15.1243 0 32.7961C0 46.9353 9.1678 58.9259 21.8826 63.1591C23.483 63.4555 24.0712 62.4634 24.0712 61.6177C24.0712 60.8547 24.0393 58.3342 24.0263 55.6625C15.1231 57.5984 13.2463 51.8853 13.2463 51.8853C11.7911 48.186 9.6934 47.2022 9.6934 47.2022C6.7902 45.2143 9.9143 45.258 9.9143 45.258C13.1269 45.4825 14.8183 48.5534 14.8183 48.5534C17.6743 53.4456 22.3066 52.0294 24.1314 51.2132C24.4196 49.1451 25.2464 47.7325 26.1629 46.9329C19.0549 46.1262 11.5832 43.3813 11.5832 31.1189C11.5832 27.6263 12.8352 24.7704 14.8797 22.5309C14.5467 21.7231 13.4506 18.4703 15.188 14.0635C15.188 14.0635 17.875 13.2025 23.9909 17.3435C26.5421 16.636 29.2787 16.2793 31.9965 16.2675C34.7165 16.2793 37.4579 16.6348 40.0127 17.3435C46.1203 13.2049 48.8049 14.0635 48.8049 14.0635C50.5447 18.4715 49.4534 21.7266 49.1203 22.531C51.1719 24.7704 52.4133 27.6263 52.4133 31.1189C52.4133 43.4096 44.925 46.1119 37.8016 46.9045C38.9497 47.8966 39.9749 49.8443 39.9749 52.8278C39.9749 57.107 39.9383 60.5558 39.9383 61.6082C39.9383 62.4598 40.5147 63.4555 42.1375 63.1436C54.8451 58.9082 64.0012 46.9162 64.0012 32.7854C64.0012 15.1159 49.6743 0.786621 32.0012 0.786621L31.9989 0.797321L31.9988 0.797421Z"
+                            fill="white" />
+                    </g>
+                    <defs>
+                        <clipPath id="clip0_101_35">
+                            <rect width="64" height="64" fill="white" />
+                        </clipPath>
+                    </defs>
+                </svg>
+
+                <span>Continue with Github</span>
+            </button>
+
+        </div>
+    </div>
+</template>
+<style scoped>
+@import '~/public/style/dialog.css';
+
+
+.dialog>.content {
+    max-width: 400px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: var(--color-surface-variant);
+    min-height: 400px;
+    border-radius: var(--border-radius-3);
+}
+
+.dialog h2{
+    margin-bottom: 0.5em;
+}
+
+.dialog img {
+    width: 100%;
+    border-top-left-radius: var(--border-radius-3);
+    border-top-right-radius: var(--border-radius-3);
+}
+
+.dialog button {
+    display: flex;
+    align-items: center;
+    padding: 1em 1rem;
+    border: none;
+    background-color: #ebebeb;
+    gap: 1rem;
+    width: 70%;
+    margin: 0.5rem auto;
+    border-radius: 6px;
+}
+
+.dialog button span {
+    font-size: var(--medium-font);
+}
+
+button.facebook {
+    background-color: #1877F2;
+}
+
+button.github {
+    background-color: #000000;
+    margin-bottom: 2rem;
+}
+
+button.facebook svg{
+    transform: translateY(-4px);
+}
+
+
+button.facebook span, button.github span {
+    color: white;
+}
+</style>

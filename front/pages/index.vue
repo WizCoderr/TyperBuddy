@@ -3,6 +3,7 @@ import { generateSentence } from '~/data/wordSample';
 import { TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
+import SignInDialog from '~/components/dialog/SignInDialog.vue';
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -169,6 +170,7 @@ function onSettingClose(isSaved: boolean){
 
     <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)"/>
     <PracticeCompleteDialog :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
+    <SignInDialog/>
 </template>
 <style scoped>
 @import '../assets/css/common.css';
