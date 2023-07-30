@@ -5,10 +5,18 @@
 <template>
     <div class="dialog">
         <div class="content">
+
+            <button class="close">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24px" height="24px" viewBox="0 0 24 24">
+                    <path
+                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
+            </button>
+
             <img src="../../public/images/planet.png" alt="planet">
             <h2>Welcome</h2>
             <p>Create an account and access<br>cool features</p>
-            <button class="google">
+            <button class="btn google">
                 <svg width="24" height="24" viewBox="0 0 57 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_101_17)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -33,26 +41,17 @@
                 <span>Continue with Google</span>
             </button>
 
-            <button class="facebook">
-                <svg width="24" height="24" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_101_22)">
-                        <path
-                            d="M70 35C70 15.6694 54.3292 0 35 0C15.6708 0 0 15.6694 0 35C0 52.4689 12.7996 66.9493 29.531 69.5746V45.1176H20.644V35H29.531V27.2896C29.531 18.5171 34.7569 13.6724 42.7505 13.6724C46.5801 13.6724 50.5852 14.3629 50.5852 14.3629V22.9752H46.1727C41.8238 22.9752 40.469 25.6738 40.469 28.4414V35.0069H50.175L48.6241 45.1245H40.4648V69.5746C57.2004 66.9493 70 52.4689 70 35Z"
-                            fill="#1877F2" />
-                        <path
-                            d="M48.6242 45.1175L50.1751 34.9999H40.4649V28.4344C40.4649 25.6723 41.8197 22.9682 46.1686 22.9682H50.5811V14.3629C50.5811 14.3629 46.5761 13.6724 42.7464 13.6724C34.7529 13.6724 29.527 18.5171 29.527 27.2895V34.9999H20.644V45.1175H29.5311V69.5746C33.155 70.1417 36.8451 70.1417 40.469 69.5746V45.1175H48.6242Z"
-                            fill="white" />
-                    </g>
-                    <defs>
-                        <clipPath id="clip0_101_22">
-                            <rect width="70" height="70" fill="white" />
-                        </clipPath>
-                    </defs>
+            <button class="btn facebook">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24"
+                    shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
+                    image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 640 640">
+                    <path
+                        d="M380.001 120.001h99.993V0h-99.993c-77.186 0-139.986 62.8-139.986 139.986v60h-80.009V320h79.985v320h120.013V320h99.994l19.996-120.013h-119.99v-60.001c0-10.843 9.154-19.996 19.996-19.996v.012z" />
                 </svg>
                 <span>Continue with Facebook</span>
             </button>
 
-            <button class="github">
+            <button class="btn github">
                 <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_101_35)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -76,18 +75,14 @@
 @import '~/public/style/dialog.css';
 
 
-.dialog>.content {
+.dialog .content {
+    position: relative;
     max-width: 400px;
-    width: 100%;
     margin: 0;
     padding: 0;
-    width: 100%;
-    background-color: var(--color-surface-variant);
-    min-height: 400px;
-    border-radius: var(--border-radius-3);
 }
 
-.dialog h2{
+.dialog h2 {
     margin-bottom: 0.5em;
 }
 
@@ -97,7 +92,25 @@
     border-top-right-radius: var(--border-radius-3);
 }
 
-.dialog button {
+button.close{
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    right: 8px;
+    top: 8px;
+    background-color: rgba(255, 255, 255, 0.219);
+    border: none;
+}
+
+button.close:hover{
+    scale: 1.1;
+}
+
+.dialog button.btn {
     display: flex;
     align-items: center;
     padding: 1em 1rem;
@@ -111,23 +124,32 @@
 
 .dialog button span {
     font-size: var(--medium-font);
+    color: var(--color-on-surface);
 }
 
-button.facebook {
+button.btn.facebook {
     background-color: #1877F2;
 }
 
-button.github {
+button.btn.github {
     background-color: #000000;
     margin-bottom: 2rem;
 }
 
-button.facebook svg{
-    transform: translateY(-4px);
-}
 
-
-button.facebook span, button.github span {
+button.facebook span,
+button.github span {
     color: white;
 }
-</style>
+
+button.google:hover {
+    background-color: #e0e0e0;
+}
+
+button.facebook:hover {
+    background-color: #055bcc;
+}
+
+button.github:hover {
+    background-color: #2c2c2c;
+}</style>
