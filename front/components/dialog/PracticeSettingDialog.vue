@@ -4,12 +4,6 @@ import { generateSentence } from '~/data/wordSample';
 import CheckBox from '../widgets/CheckBox.vue';
 import RadioGroup from '../widgets/RadioGroup.vue';
 
-defineProps<{
-    testData: TypingReport
-}>()
-
-
-
 
 const isCapitalEnabled = ref(false)
 const isPunctuationEnabled = ref(false)

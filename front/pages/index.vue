@@ -12,6 +12,7 @@ function updateProgress(progress: number) {
 
 }
 
+
 // &#x21B5; - line break symbol
 
 const data = generateSentence(100, false, true, false)
@@ -156,7 +157,7 @@ const dialogTypingReport = ref<TypingReport>({
         </section>
     </main>
 
-    <PracticeSettingDialog :test-data="dialogTypingReport"/>
+    <PracticeSettingDialog />
     <PracticeCompleteDialog :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
 </template>
 <style scoped>
