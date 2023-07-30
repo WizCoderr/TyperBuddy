@@ -47,7 +47,6 @@ function changeTab(index: number) {
                                 <CheckBox :onChange="(isChecked) => { isNumberEnabled = isChecked }" text="Enable numbers"
                                     :isChecked="isNumberEnabled" />
                             </div>
-                            {{ isCapitalEnabled }}
 
                             <h4>Sample</h4>
                             <div class="demo-text" style="">{{ generateSentence(25, isPunctuationEnabled, isCapitalEnabled,

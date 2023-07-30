@@ -18,7 +18,7 @@ function emitData() {
 
 </script>
 <template>
-    <div class="toggle-group">
+    <div class="toggle-group" style="grid-template-columns: repeat(3, 1fr);">
         <div class="toggle-text" v-for="item, index in checkValues">
             <div class="toggle">
                 <input :for="radioFor" :value="item" type="radio" @click="emitData()" v-model="checkedValue">
@@ -39,8 +39,7 @@ function emitData() {
 <style scoped>
 
 .toggle-group{
-    display: flex;
-    justify-content: space-between;
+    display: grid;
 }
 .toggle-text {
     display: flex;
