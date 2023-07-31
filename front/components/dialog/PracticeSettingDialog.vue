@@ -106,7 +106,8 @@ function changeTab(index: number) {
                             <br>
                             <h4>Text Appearance</h4>
                             <div class="demo-text"><span class="success">The quick brown</span> <span
-                                    class="caret">f</span><span>ox jumps over the lazy dog.</span>
+                                    :class="{ 'caret-block': settingData.cursorType == 'block', 'caret-box': settingData.cursorType == 'box', 'caret-underline': settingData.cursorType == 'underline' }">f</span><span>ox
+                                    jumps over the lazy dog.</span>
                             </div>
                             <br>
                             <!-- options -->
@@ -178,9 +179,21 @@ function changeTab(index: number) {
     white-space: pre-wrap;
 }
 
-.dialog .demo-text .caret {
-    background-color: var(--color-on-surface);
+.dialog .demo-text .caret-block {
+    background-color: var(--color-secondary);
     color: white;
+}
+
+.dialog .demo-text .caret-box {
+    background-color: transparent;
+    color: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+}
+
+.dialog .demo-text .caret-underline {
+    background-color: transparent;
+    color: var(--color-secondary);
+    border-bottom: 2px solid var(--color-secondary);
 }
 
 .dialog .options {

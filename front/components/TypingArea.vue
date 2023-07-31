@@ -12,7 +12,7 @@ watch(() => prop.sentence, (newValue, oldValue) => {
     if (newValue != oldValue) {
 
         if(typingTextarea.value != undefined ) typingTextarea.value!!.value = ''   // clear textarea value
-        setupData(prop.sentence)
+        setupData(prop.sentence + '⸱')
     }
 });
 
