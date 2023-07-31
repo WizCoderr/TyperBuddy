@@ -11,11 +11,11 @@ defineProps({
 // --------------- dialog -------------
 
 const isSignInDialogVisible = ref(false)
-function openSignInDialog(){
+function openSignInDialog() {
     isSignInDialogVisible.value = true
 }
 
-function closeSignInDialog(){
+function closeSignInDialog() {
     isSignInDialogVisible.value = false
 }
 
@@ -38,7 +38,6 @@ function closeSignInDialog(){
                         </svg>
                         <p>Practice</p>
                     </NuxtLink>
-
                 </li>
 
                 <li :class="{ 'active': activeTabIndex == 1 }">
@@ -122,7 +121,7 @@ function closeSignInDialog(){
         </nav>
     </div>
 
-    <SignInDialog :is-visible="isSignInDialogVisible" :onClose="closeSignInDialog"/>
+    <SignInDialog :is-visible="isSignInDialogVisible" :onClose="closeSignInDialog" />
 </template>
 <style scoped>
 /*  ------------------- side bar----------------- */
@@ -142,7 +141,7 @@ function closeSignInDialog(){
     background-color: var(--color-surface-variant);
 }
 
-.sidebar button{
+.sidebar button {
     width: 90%;
     margin: auto;
 
@@ -169,13 +168,13 @@ function closeSignInDialog(){
 }
 
 .sidebar li {
-    padding: 0;
-    padding: 0.8rem 2rem;
+    padding: 0 !important;
     position: relative;
     color: var(--color-primary);
 }
 
 .sidebar li a {
+    padding: 1rem 1rem;
     display: flex;
     gap: 0.6rem;
     align-items: center;
@@ -249,4 +248,5 @@ function closeSignInDialog(){
         background-color: var(--color-surface-variant);
     }
 
-}</style>
+}
+</style>
