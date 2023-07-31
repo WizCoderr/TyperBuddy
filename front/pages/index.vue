@@ -1,8 +1,9 @@
 <script setup lang='ts'>
 import { generateSentence } from '~/data/wordSample';
-import { TypingReport } from '~/lib/DataType';
+import { SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
+import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -13,11 +14,9 @@ function updateProgress(progress: number) {
 }
 
 
-// &#x21B5; - line break symbol
-
-const data = generateSentence(45, false, true, false)
 
 
+// ----------------------- report ----------------
 const previousTypingReport: TypingReport = {
     dateTime: 0,
     totalWords: 0,
@@ -83,18 +82,30 @@ function updateTypingReport(reportData: TypingReport) {
 }
 
 
-function onPracticeComplete(reportData: TypingReport) {
-    console.log(reportData)
-    dialogTypingReport.value.dateTime = reportData.dateTime
-    dialogTypingReport.value.totalWords = reportData.totalWords
-    dialogTypingReport.value.totalCharCount = reportData.totalCharCount
-    dialogTypingReport.value.errorCount = reportData.errorCount
-    dialogTypingReport.value.averageSpeed = reportData.averageSpeed
-    dialogTypingReport.value.topSpeed = reportData.topSpeed
-    dialogTypingReport.value.keysReport = reportData.keysReport
 
-    isCompleteDialogVisible.value = true
+
+
+// &#x21B5; - line break symbol
+
+// ------------------- lesson -----------------------
+const lesson = ref('Loading...')
+
+function updateLesson(){
+    const settings = getLocalData<SettingData>('setting-data')
+    if(settings == null){
+        lesson.value = generateSentence(40, false, false, false, false)
+    }else{
+        lesson.value = generateSentence(40, settings.isPunctuationEnabled, settings.isCapitalEnabled, settings.isBracketEnabled, settings.isNumberEnabled)
+    }
+    
 }
+
+onMounted(function(){
+
+    // set up lesson
+    updateLesson()
+
+})
 
 
 
@@ -122,7 +133,25 @@ function openSetting(){
 
 function onSettingClose(isSaved: boolean){
     isSettingDialogVisible.value = false
+    
+    if(isSaved) updateLesson()
 }
+
+
+function onPracticeComplete(reportData: TypingReport) {
+    console.log(reportData)
+    dialogTypingReport.value.dateTime = reportData.dateTime
+    dialogTypingReport.value.totalWords = reportData.totalWords
+    dialogTypingReport.value.totalCharCount = reportData.totalCharCount
+    dialogTypingReport.value.errorCount = reportData.errorCount
+    dialogTypingReport.value.averageSpeed = reportData.averageSpeed
+    dialogTypingReport.value.topSpeed = reportData.topSpeed
+    dialogTypingReport.value.keysReport = reportData.keysReport
+
+    isCompleteDialogVisible.value = true
+}
+
+
 
 </script>
 <template>
@@ -159,9 +188,9 @@ function onSettingClose(isSaved: boolean){
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="data" :onTypingCompleted="(data) => onPracticeComplete(data)"
-                :onSubmitTypingReport="(data) => updateTypingReport(data)"
-                :onProgressChange="(progress) => updateProgress(progress)" />
+            <TypingArea :sentence="lesson" :onTypingCompleted="data => onPracticeComplete(data)"
+                :onSubmitTypingReport="data => updateTypingReport(data)"
+                :onProgressChange="progress => updateProgress(progress)" />
             <Keyboard />
 
         </section>

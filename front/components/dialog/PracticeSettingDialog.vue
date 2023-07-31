@@ -33,7 +33,7 @@ const settingData = ref<SettingData>({
 })
 
 
-
+// watch for props changes
 watch(() => props.isVisible, (newValue, oldValue) => {
     if (newValue == true && newValue != oldValue) {
 

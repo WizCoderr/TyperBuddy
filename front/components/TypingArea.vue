@@ -7,6 +7,16 @@ const prop = defineProps<{
 }>()
 
 
+// watch for props changes
+watch(() => prop.sentence, (newValue, oldValue) => {
+    if (newValue != oldValue) {
+
+        if(typingTextarea.value != undefined ) typingTextarea.value!!.value = ''   // clear textarea value
+        setupData(prop.sentence)
+    }
+});
+
+
 const emit = defineEmits({
     ProgressChange: (progress: number) => {
         return progress
@@ -39,12 +49,6 @@ const content = ref<HTMLDivElement>()
 var isTypingFocus = false
 
 onMounted(function () {
-    console.log(prop.sentence)
-    if (prop.sentence == undefined) {
-        alert("Something went wrong")
-        return
-    }
-    setupData(prop.sentence!!)
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
