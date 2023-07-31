@@ -2,29 +2,47 @@
 import { generateSentence } from '~/data/wordSample';
 import CheckBox from '../widgets/CheckBox.vue';
 import RadioGroup from '../widgets/RadioGroup.vue';
+import { SettingData } from '~/lib/DataType'
+import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
 
 const props = defineProps<{
     isVisible: boolean
 }>()
 
 const emit = defineEmits<{
-  (event: 'close', isSaved: boolean): void
+    (event: 'close', isSaved: boolean): void
 }>()
 
-function saveAndClose(isSaved: boolean){
+async function saveAndClose(isSaved: boolean) {
+    if (isSaved) saveLocal('setting-data', settingData.value)
     emit('close', isSaved)
+
 }
 
 
-// tab 1
-const isCapitalEnabled = ref(false)
-const isPunctuationEnabled = ref(false)
-const isBracketEnabled = ref(false)
-const isNumberEnabled = ref(false)
+const settingData = ref<SettingData>({
+    isCapitalEnabled: false,
+    isPunctuationEnabled: false,
+    isBracketEnabled: false,
+    isNumberEnabled: false,
+    isStopCursorEnabled: false,
+    isForgiveErrorEnabled: false,
+    whitespaceType: 'hidden',
+    cursorType: 'box',
+    isSoundEnabled: false
+})
 
-// tab 2
-const isStopCursorEnabled = ref(false)
-const isForgiveErrorEnabled = ref(false)
+
+
+watch(() => props.isVisible, (newValue, oldValue) => {
+    if (newValue == true && newValue != oldValue) {
+
+        // Dialog became visible, load the data
+        const data = getLocalData<SettingData>('setting-data')
+        if (data != null) settingData.value = data
+    }
+});
+
 
 const tabActiveIndex = ref(0)
 
@@ -48,21 +66,22 @@ function changeTab(index: number) {
                     <!-- tab content 1 -->
                     <template v-if="tabActiveIndex == 0">
                         <div class="content">
-
+                            <h4>Options</h4>
                             <div class="flex-wrap">
-                                <CheckBox :onChange="(isChecked) => { isCapitalEnabled = isChecked }"
-                                    text="Enable capital letter" :isChecked="isCapitalEnabled" />
-                                <CheckBox :onChange="(isChecked) => { isPunctuationEnabled = isChecked }"
-                                    text="Enable punctuation characters" :isChecked="isPunctuationEnabled" />
-                                <CheckBox :onChange="(isChecked) => { isBracketEnabled = isChecked }" text="Enable brackets"
-                                    :isChecked="isBracketEnabled" />
-                                <CheckBox :onChange="(isChecked) => { isNumberEnabled = isChecked }" text="Enable numbers"
-                                    :isChecked="isNumberEnabled" />
+                                <CheckBox :onChange="event => settingData.isCapitalEnabled = event"
+                                    text="Enable capital letter" :isChecked="settingData.isCapitalEnabled" />
+                                <CheckBox :onChange="event => settingData.isPunctuationEnabled = event"
+                                    text="Enable punctuation characters" :isChecked="settingData.isPunctuationEnabled" />
+                                <CheckBox :onChange="event => settingData.isBracketEnabled = event" text="Enable brackets"
+                                    :isChecked="settingData.isBracketEnabled" />
+                                <CheckBox :onChange="event => settingData.isNumberEnabled = event" text="Enable numbers"
+                                    :isChecked="settingData.isNumberEnabled" />
                             </div>
 
                             <h4>Sample</h4>
-                            <div class="demo-text" style="">{{ generateSentence(25, isPunctuationEnabled, isCapitalEnabled,
-                                isBracketEnabled, isNumberEnabled) }}</div>
+                            <div class="demo-text" style="">{{ generateSentence(25, settingData.isPunctuationEnabled,
+                                settingData.isCapitalEnabled,
+                                settingData.isBracketEnabled, settingData.isNumberEnabled) }}</div>
 
                         </div>
                     </template>
@@ -70,32 +89,49 @@ function changeTab(index: number) {
                     <!-- tab content 2 -->
                     <template v-if="tabActiveIndex == 1">
                         <div class="content">
-                            <CheckBox :onChange="(isChecked) => { isStopCursorEnabled = isChecked }"
-                                text="Stop the cursor when an error occurs." :isChecked="isStopCursorEnabled" />
+                            <h4>Options</h4>
+                            <CheckBox :onChange="event => settingData.isStopCursorEnabled = event"
+                                text="Stop the cursor when an error occurs." :isChecked="settingData.isStopCursorEnabled" />
                             <p class="hint">If enabled, the text cursor stops advancing until the right key is pressed at
                                 the current position. If disabled, all errors will be accumulated in the text input field
                                 and must be cleared with the delete key.</p>
 
                             <br>
-                            <CheckBox :onChange="(isChecked) => { isForgiveErrorEnabled = isChecked }" text="Forgive errors"
-                                :isChecked="isForgiveErrorEnabled" />
+                            <CheckBox :onChange="event => settingData.isForgiveErrorEnabled = event" text="Forgive errors"
+                                :isChecked="settingData.isForgiveErrorEnabled" />
                             <p class="hint">Enabling this option makes the text input field forgive some kinds of errors by
                                 automatically fixing them. These are errors such as typing a wrong character or skipping a
                                 character.</p>
 
+                            <br>
                             <h4>Text Appearance</h4>
                             <div class="demo-text"><span class="success">The quick brown</span> <span
-                                    class="caret">f</span><span>ox jumps over the lazy dog.</span></div>
-
+                                    class="caret">f</span><span>ox jumps over the lazy dog.</span>
+                            </div>
+                            <br>
                             <!-- options -->
                             <div class="options">
                                 <span>Whitespace</span>
-                                <RadioGroup radioFor="whitespace" checked="whitespace" :text="['Hidden', 'Bar', 'Bullet']" :checkValues="['whitespace', 'bar', 'bullet']"/>
+                                <RadioGroup :onChange="event => settingData.whitespaceType = event" radioFor="whitespace"
+                                    :checked="settingData.whitespaceType" :text="['Hidden', 'Bar', 'Bullet']"
+                                    :checkValues="['hidden', 'bar', 'bullet']" />
                             </div>
                             <div class="options">
                                 <span>Cursor</span>
-                                <RadioGroup radioFor="cursor" checked="block" :text="['Block', 'Box', 'Underline']" :checkValues="['block', 'box', 'underline']"/>
+                                <RadioGroup :onChange="event => settingData.cursorType = event" radioFor="cursor"
+                                    :checked="settingData.cursorType" :text="['Block', 'Box', 'Underline']"
+                                    :checkValues="['block', 'box', 'underline']" />
                             </div>
+
+                            <!-- sound -->
+                            <br>
+                            <h4>Sound</h4>
+                            <CheckBox :onChange="event => settingData.isSoundEnabled = event" text="Enable sounds"
+                                :isChecked="settingData.isSoundEnabled" />
+                            <p class="hint">It will play sounds on the specific event like:- error, success etc</p>
+
+
+
                         </div>
                     </template>
 
@@ -147,10 +183,10 @@ function changeTab(index: number) {
     color: white;
 }
 
-.dialog .options{
+.dialog .options {
     display: grid;
-    grid-template-columns: 200px auto;   
+    grid-template-columns: 200px auto;
     align-items: center;
-    margin: 1.5rem 0; 
+    margin: 1rem 0;
 }
 </style>

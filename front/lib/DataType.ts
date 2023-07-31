@@ -32,3 +32,16 @@ export interface MyChartData{
     backgroundColor: String,
 }
 // export interface 
+
+
+export interface SettingData{
+    isCapitalEnabled: boolean,
+    isPunctuationEnabled: boolean,
+    isBracketEnabled: boolean,
+    isNumberEnabled: boolean,
+    isStopCursorEnabled: boolean,
+    isForgiveErrorEnabled: boolean,
+    whitespaceType: string,                 // 'hidden' | 'bar' | 'bullet'
+    cursorType: string,                     // 'block' | 'box' | 'underline'
+    isSoundEnabled: boolean
+}
