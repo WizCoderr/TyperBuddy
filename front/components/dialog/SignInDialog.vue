@@ -11,8 +11,19 @@ function close() {
     emit('close')
 }
 
+const googleClientID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+const redirectUri = 'https/www.flaxstudio.in'
+
+function signInWithGoogle() {
+
+    
+}
+
 </script>
 <template>
+    <Head>
+
+    </Head>
     <div v-if="isVisible" class="dialog">
         <div class="content">
 
@@ -26,7 +37,7 @@ function close() {
             <img src="../../public/images/planet.png" alt="planet">
             <h2>Welcome</h2>
             <p>Create an account and access<br>cool features</p>
-            <button class="btn google">
+            <button @click="signInWithGoogle()" class="btn google">
                 <svg width="24" height="24" viewBox="0 0 57 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_101_17)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -51,7 +62,7 @@ function close() {
                 <span>Continue with Google</span>
             </button>
 
-            <button class="btn facebook">
+            <button class="btn facebook" @click="signInWithGoogle()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24"
                     shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
                     image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 640 640">
@@ -130,6 +141,8 @@ button.close:hover {
     width: 70%;
     margin: 0.5rem auto;
     border-radius: 6px;
+    cursor: pointer;
+    overflow: auto;
 }
 
 .dialog button span {

@@ -13,6 +13,7 @@ export interface KeyReport {
     errorCount: number,
     correctCount: number
 }
+
 export interface TypingReport {
     dateTime: number,
     totalWords: number,
