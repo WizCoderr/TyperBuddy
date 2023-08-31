@@ -1,4 +1,7 @@
 <script setup lang='ts'>
+import queryString from 'query-string';
+// import { GoogleLogin } from 'vue3-google-login';
+
 const props = defineProps<{
     isVisible: boolean
 }>()
@@ -11,12 +14,34 @@ function close() {
     emit('close')
 }
 
+const githubClientID = import.meta.env.VITE_GITHUB_CLIENT_ID
 const googleClientID = import.meta.env.VITE_GOOGLE_CLIENT_ID
-const redirectUri = 'https/www.flaxstudio.in'
+const hostUrl = import.meta.env.VITE_HOST_URL
 
+// https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES.join(' ')}&response_type=code
 function signInWithGoogle() {
+    const params = queryString.stringify({
+        client_id: googleClientID,
+        redirect_uri: hostUrl + '/auth-verification/google',
+        scope: ['email', 'profile'].join(' '), // space separated string
+        response_type: 'code'
+    });
 
-    
+    const googleLoginUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
+    window.location.href = googleLoginUrl
+
+}
+
+function signInWithGithub() {
+    const params = queryString.stringify({
+        client_id: githubClientID,
+        redirect_uri: hostUrl + '/auth-verification/github',
+        scope: ['read:user', 'user:email'].join(' '), // space separated string
+        allow_signup: true,
+    });
+
+    const githubLoginUrl = `https://github.com/login/oauth/authorize?${params}`;
+    window.location.href = githubLoginUrl
 }
 
 </script>
@@ -37,7 +62,9 @@ function signInWithGoogle() {
             <img src="../../public/images/planet.png" alt="planet">
             <h2>Welcome</h2>
             <p>Create an account and access<br>cool features</p>
-            <button @click="signInWithGoogle()" class="btn google">
+
+
+            <button class="btn google" @click="signInWithGoogle()">
                 <svg width="24" height="24" viewBox="0 0 57 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_101_17)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -62,7 +89,7 @@ function signInWithGoogle() {
                 <span>Continue with Google</span>
             </button>
 
-            <button class="btn facebook" @click="signInWithGoogle()">
+            <!-- <button class="btn facebook">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="24" height="24"
                     shape-rendering="geometricPrecision" text-rendering="geometricPrecision"
                     image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 640 640">
@@ -70,9 +97,9 @@ function signInWithGoogle() {
                         d="M380.001 120.001h99.993V0h-99.993c-77.186 0-139.986 62.8-139.986 139.986v60h-80.009V320h79.985v320h120.013V320h99.994l19.996-120.013h-119.99v-60.001c0-10.843 9.154-19.996 19.996-19.996v.012z" />
                 </svg>
                 <span>Continue with Facebook</span>
-            </button>
+            </button> -->
 
-            <button class="btn github">
+            <button @click="signInWithGithub()" class="btn github">
                 <svg width="24" height="24" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_101_35)">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -176,4 +203,6 @@ button.facebook:hover {
 button.github:hover {
     background-color: #2c2c2c;
 }
+
+
 </style>
