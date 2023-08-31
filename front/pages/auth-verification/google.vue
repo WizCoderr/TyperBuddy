@@ -2,16 +2,24 @@
 import queryString from 'query-string';
 import Api from '~/lib/api';
 
-
-onMounted(function(){
+const router = useRouter();
+onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-
-        const res = Api.signup(code.toString(), 'google')
+        const result = await Api.signup(code.toString(), 'google')
+        if(result.statusText == 'OK'){
+            saveToken(result.data.access_token)
+        }
     }else{
         alert('Something went wrong!')
     }
+
+    router.back()
 })
+
+function saveToken(token: string){
+    localStorage.setItem('access_token', token)
+}
 
 </script>
 <template>
