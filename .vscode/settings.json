@@ -1,8 +1,8 @@
 {
     "files.exclude": {
-        // "*/.nuxt": true,
-        "*/node_modules": true,
-        "*/out": true,
+        ".nuxt": true,
+        "node_modules": false,
+        "out": true,
     },
     "cSpell.words": [
         "signin",

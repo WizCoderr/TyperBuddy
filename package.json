@@ -14,8 +14,10 @@
     "nuxt": "^3.5.2"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.4.11",
     "axios": "^1.5.0",
     "chart.js": "^4.3.0",
+    "pinia": "^2.1.6",
     "query-string": "^8.1.0",
     "vue-chartjs": "^5.2.0",
     "vue3-google-login": "^2.0.20"

@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import queryString from 'query-string';
-import Api from '~/lib/api';
+import Api from '~/lib/api/ApiAuth';
 
 const router = useRouter();
 onMounted(async function(){
