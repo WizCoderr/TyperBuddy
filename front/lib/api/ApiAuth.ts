@@ -1,6 +1,6 @@
-import AxiosInstance from "./axios";
+import AxiosInstance from "../axios";
 
-namespace Api {
+namespace ApiAuth {
   const header = {
     headers: {
       "Content-Type": "application/json",
@@ -16,4 +16,4 @@ namespace Api {
   }
 }
 
-export default Api;
+export default ApiAuth;

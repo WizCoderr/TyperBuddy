@@ -4,6 +4,7 @@ import { SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
+import ApiUser from '~/lib/api/ApiUser';
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -100,10 +101,11 @@ function updateLesson(){
     
 }
 
-onMounted(function(){
+onMounted(async function(){
 
     // set up lesson
     updateLesson()
+    console.log((await ApiUser.getProfile()).data)
 
 })
 
@@ -188,9 +190,9 @@ function onPracticeComplete(reportData: TypingReport) {
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="lesson" :onTypingCompleted="data => onPracticeComplete(data)"
-                :onSubmitTypingReport="data => updateTypingReport(data)"
-                :onProgressChange="progress => updateProgress(progress)" />
+            <TypingArea :sentence="lesson" :onTypingCompleted="onPracticeComplete"
+                :onSubmitTypingReport="updateTypingReport"
+                :onProgressChange="updateProgress" />
             <Keyboard />
 
         </section>

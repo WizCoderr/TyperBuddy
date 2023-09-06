@@ -1,13 +1,13 @@
 <script setup lang='ts'>
 import queryString from 'query-string';
-import Api from '~/lib/api';
+import ApiAuth from '~/lib/api/ApiAuth';
 
 const router = useRouter();
 
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-        const result = await Api.signup(code.toString(), 'github')
+        const result = await ApiAuth.signup(code.toString(), 'github')
         if(result.statusText == 'OK'){
             saveToken(result.data.access_token)
         }
