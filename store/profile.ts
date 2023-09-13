@@ -1,14 +1,15 @@
 import { defineStore } from "pinia";
-import { ProfileData } from "~/lib/DataType";
+import { AxiosResult, ProfileData } from "~/lib/DataType";
 
 import ApiUser from "~/lib/api/ApiUser";
 
 export const useProfileStore = defineStore("profile", {
   // store the state
   state: () => {
-    return{
-        profile: null as ProfileData | null
-    }
+    return {
+      isLoaded: false,
+      profile: null as ProfileData | null,
+    };
   },
 
   // getters
@@ -18,10 +19,20 @@ export const useProfileStore = defineStore("profile", {
 
   // setters
   actions: {
-    async fetchProfile(){
-     const data = await ApiUser.getProfile()
-     console.log(data)
+    async fetchProfile() {
       
-    }
+      const result =
+        (await ApiUser.getProfile()) as any as AxiosResult<ProfileData>;
+
+      if (result.isOk){
+        this.profile = result.data
+      }else{
+        console.log(result.error)
+      }
+
+      this.isLoaded = true
+    },
   },
 });
+
+

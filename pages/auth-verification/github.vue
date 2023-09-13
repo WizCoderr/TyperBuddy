@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import queryString from 'query-string';
+import { AxiosResult } from '~/lib/DataType';
 import ApiAuth from '~/lib/api/ApiAuth';
 
 const router = useRouter();
@@ -7,9 +8,11 @@ const router = useRouter();
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-        const result = await ApiAuth.signup(code.toString(), 'github')
-        if(result.statusText == 'OK'){
-            saveToken(result.data.access_token)
+        const result = await ApiAuth.signup(code.toString(), 'github') as any as AxiosResult<{access_token: string}>
+        if(result.isOk){
+            saveToken(result.data!!.access_token)
+        }else{
+            alert(result.error)
         }
     }else{
         alert('Something went wrong!')
@@ -21,7 +24,6 @@ onMounted(async function(){
 
 
 function saveToken(token: string){
-    console.log(token)
     localStorage.setItem('access_token', token)
 }
 

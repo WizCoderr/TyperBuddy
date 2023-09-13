@@ -1,14 +1,17 @@
 <script setup lang='ts'>
 import queryString from 'query-string';
+import { AxiosResult } from '~/lib/DataType';
 import Api from '~/lib/api/ApiAuth';
 
 const router = useRouter();
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-        const result = await Api.signup(code.toString(), 'google')
-        if(result.statusText == 'OK'){
-            saveToken(result.data.access_token)
+        const result = await Api.signup(code.toString(), 'google')as any as AxiosResult<{access_token: string}>
+        if(result.isOk){
+            saveToken(result.data!!.access_token)
+        }else{
+            alert(result.error)
         }
     }else{
         alert('Something went wrong!')

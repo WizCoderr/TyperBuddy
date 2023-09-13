@@ -1,0 +1,28 @@
+
+.skeleton .text, .skeleton .image{
+    background-color: rgba(153, 153, 153, 0.1);
+    border-radius: 4px;
+    margin: 12px 0;
+}
+
+.skeleton .text{
+    height: 20px;
+}
+
+.skeleton .text.small{
+    height: 14px;
+}
+
+
+
+.skeleton .image.medium{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.skeleton .image.small{
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}

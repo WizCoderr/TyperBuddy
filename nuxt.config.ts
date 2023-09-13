@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
   ],
-  css: ["@/assets/css/global.css"],
+  css: ["@/assets/css/global.css", "@/assets/css/skeleton.css"],
   pinia: {
     autoImports: [
       // automatically imports `defineStore`

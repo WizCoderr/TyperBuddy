@@ -1,3 +1,5 @@
+
+
 export interface TyperData {
     class: string,
     text: string

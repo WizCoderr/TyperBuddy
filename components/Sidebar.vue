@@ -1,17 +1,19 @@
 <script setup lang='ts'>
 import SignInDialog from './dialog/SignInDialog.vue';
-import {useProfileStore} from '~/store/profile'
+import { useProfileStore } from '~/store/profile'
 
 
 defineProps({
     activeTabIndex: Number
 })
 
-
 const profileStore = useProfileStore()
-if(profileStore.profile == null){
-    profileStore.fetchProfile()
-}
+
+onMounted(function () {
+    if (profileStore.profile == null) {
+        profileStore.fetchProfile()
+    }
+})
 
 
 
@@ -36,18 +38,32 @@ function closeSignInDialog() {
             </div>
 
             <hr>
-            <div class="profile">
-                <img src="../public/extra/no_image.png">
-                <h4>Nitesh Kr</h4>
-            </div>
 
-            <button @click="openSignInDialog()" class="button primary">
-                <span>SignIn</span>
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z" />
-                </svg>
-            </button>
+            <div v-if="!profileStore.isLoaded" class="skeleton">
+                <div class="image medium"></div>
+                <div>
+                    <div class="text"></div>
+                    <div class="text small"></div>
+                </div>
+            </div>
+            <template v-else>
+                <div v-if="profileStore.profile != null" class="profile">
+                    <div class="image-holder">
+                        <img :src="profileStore.profile.profileImage">
+                    </div>
+                    <h4>{{ profileStore.profile.name }}</h4>
+                </div>
+
+                <button v-else @click="openSignInDialog()" class="button primary">
+                    <span>SignIn</span>
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M21.25 4.5a.75.75 0 0 1 .743.648L22 5.25v13.5a.75.75 0 0 1-1.493.102l-.007-.102V5.25a.75.75 0 0 1 .75-.75Zm-9.04 1.887.083-.094a1 1 0 0 1 1.32-.083l.094.083 4.997 4.998a1 1 0 0 1 .083 1.32l-.083.093-4.996 5.004a1 1 0 0 1-1.499-1.32l.083-.094L15.581 13H3a1 1 0 0 1-.993-.883L2 12a1 1 0 0 1 .883-.993L3 11h12.584l-3.291-3.293a1 1 0 0 1-.083-1.32l.083-.094-.083.094Z" />
+                    </svg>
+                </button>
+            </template>
+
+
             <hr>
             <ul>
                 <li :class="{ 'active': activeTabIndex == 0 }">
@@ -136,6 +152,23 @@ function closeSignInDialog() {
     <SignInDialog :is-visible="isSignInDialogVisible" :onClose="closeSignInDialog" />
 </template>
 <style scoped>
+/* skeleton */
+
+.skeleton {
+    display: grid;
+    align-items: center;
+    grid-template-columns: max-content 1fr;
+    gap: 12px;
+    margin: 0 16px;
+}
+
+.skeleton .small {
+    width: 40px;
+}
+
+
+
+
 /*  ------------------- side bar----------------- */
 
 .sidebar-container {
@@ -163,24 +196,23 @@ function closeSignInDialog() {
 
 /* ------------ profile ---------- */
 
-.sidebar .profile{
+.sidebar .profile {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin:  0 0.6rem;
+    margin: 0 0.6rem;
     padding: 0 0.4rem;
-    background-color: rgb(238, 238, 238);
     border-radius: var(--border-radius);
 
     /* temp */
-    display: none;
+    /* display: none; */
 }
 
-.sidebar .profile:hover{
+.sidebar .profile:hover {
     background-color: rgb(219, 219, 219);
 }
 
-.sidebar .profile img{
+.sidebar .profile img {
     width: 42px;
     height: 42px;
     object-fit: cover;
@@ -290,4 +322,4 @@ function closeSignInDialog() {
     }
 
 }
-</style>
+</style>~/store/modules/profile

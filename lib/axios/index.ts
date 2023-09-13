@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AxiosResult } from "../DataType";
+import { delay } from "../utils";
 
 const AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
@@ -12,7 +13,9 @@ function getBearerToken() {
 
 // Adding token to every request
 AxiosInstance.interceptors.request.use(
-  function (config) {
+  async function (config) {
+    // await delay(2000) // temp for testing purpose
+    
     const token = getBearerToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
