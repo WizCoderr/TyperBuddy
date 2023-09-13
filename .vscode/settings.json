@@ -5,6 +5,7 @@
         "out": true,
     },
     "cSpell.words": [
+        "pinia",
         "signin",
         "Typer"
     ]

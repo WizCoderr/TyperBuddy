@@ -1,10 +1,17 @@
 <script setup lang='ts'>
 import SignInDialog from './dialog/SignInDialog.vue';
+import {useProfileStore} from '~/store/profile'
 
 
 defineProps({
     activeTabIndex: Number
 })
+
+
+const profileStore = useProfileStore()
+if(profileStore.profile == null){
+    profileStore.fetchProfile()
+}
 
 
 

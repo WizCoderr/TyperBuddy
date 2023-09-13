@@ -21,6 +21,7 @@ onMounted(async function(){
 
 
 function saveToken(token: string){
+    console.log(token)
     localStorage.setItem('access_token', token)
 }
 

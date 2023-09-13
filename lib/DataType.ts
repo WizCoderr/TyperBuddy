@@ -46,3 +46,49 @@ export interface SettingData{
     cursorType: string,                     // 'block' | 'box' | 'underline'
     isSoundEnabled: boolean
 }
+
+
+
+
+
+
+// server-side
+
+export interface ProfileData{
+    id: string,
+    email: string,
+    name: string,
+    roomCode: string,
+    profileImage: string,
+    premiumEnd: string,
+    createdAt: string
+}
+
+export interface AxiosResult<T>{
+    isOk: boolean,
+    data: T | null,
+    error: null | {
+        message: string,
+        error: string,
+        statusCode: number
+    }
+
+}
+
+
+// {
+//     "id": "64f0a9d718e7876de4f252f0",
+//     "email": "niteshdev547@gmail.com",
+//     "name": "Nitesh kumar",
+//     "roomCode": "7BG978",
+//     "profileImage": "https://lh3.googleusercontent.com/a/AAcHTtcNpmzJRmwnGrp5Es7Iwfy0ztI02fGsU7IHmY8vavvW3A=s96-c",
+//     "premiumEnd": "2023-08-31T14:55:19.069Z",
+//     "createdAt": "2023-08-31T14:55:19.072Z"
+// }
+
+
+// {
+//     "message": "test bad",
+//     "error": "Bad Request",
+//     "statusCode": 400
+// }
