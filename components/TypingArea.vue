@@ -78,7 +78,7 @@ onMounted(function () {
 })
 
 var dataContent = ''
-var startTime = 0
+var timeElapsed = 0
 var previousTextLength = 0
 
 
@@ -91,7 +91,7 @@ function setupData(paragraph: string) {
     typingReport.totalCharacter = paragraph.length
     typingReport.totalError = 0
     typingReport.averageWPM = 0
-    startTime = new Date().getTime()
+    timeElapsed = 0
 
     typingReport.keyReport = []
     getUniqueCharacters(paragraph).forEach(char => {
@@ -112,14 +112,13 @@ function updateReport() {
     if (isTypingFocus) {
         setTimeout(updateReport, 1000)
     }
-
-    const seconds = Math.floor((new Date().getTime() - startTime) / 1000)
-    typingReport.timeTaken = seconds
+    timeElapsed += 1
 
     // calculating word per minutes
-    const wpm = countCorrectWords(typingTextarea.value!!.value, dataContent.slice(0, typingTextarea.value!!.value.length)) * 60 / seconds
+    const wpm = countCorrectWords(typingTextarea.value!!.value, dataContent.slice(0, typingTextarea.value!!.value.length)) * 60 / timeElapsed
     typingReport.averageWPM = Math.round(wpm)
 
+    typingReport.timeTaken = timeElapsed
     // update top speed
     if (typingReport.averageWPM > typingReport.highestWPM) {
         typingReport.highestWPM = typingReport.averageWPM

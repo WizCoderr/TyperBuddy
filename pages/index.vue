@@ -4,12 +4,14 @@ import { SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
-import ApiUser from '~/lib/api/ApiUser';
+import ApiStatistics from '~/lib/api/ApiStatistics';
 import {usePracticeReportStore} from '~/store/practiceReport'
 import {usePracticeLessonStore} from '~/store/practiceLesson'
+import {useProfileStore} from '~/store/profile'
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
+const profileStore = useProfileStore()
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -21,7 +23,7 @@ function updateProgress(progress: number) {
 
 
 onMounted(function(){
-    lessonStore.updateLesson()
+    lessonStore.updateLesson(10)
 })
 
 
@@ -53,7 +55,7 @@ function openSetting(){
 function onSettingClose(isSaved: boolean){
     isSettingDialogVisible.value = false
     
-    if(isSaved) lessonStore.updateLesson()
+    if(isSaved) lessonStore.updateLesson(10)
 }
 
 
@@ -68,6 +70,12 @@ function onPracticeComplete(reportData: TypingReport) {
     dialogTypingReport.value.keyReport = reportData.keyReport
 
     isCompleteDialogVisible.value = true
+
+    // sending report to server if user is signed in
+    if(profileStore.profile != null){
+        console.log(ApiStatistics.addStatistics(reportData))
+    }
+
 }
 
 

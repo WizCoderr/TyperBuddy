@@ -41,18 +41,19 @@ AxiosInstance.interceptors.response.use(
   },
   (error) => {
 
-    const res: AxiosResult<any> = {
+    console.log(error)
+
+    let res: AxiosResult<any> = {
       isOk: false,
-      data: null,
+      data: error.data,
       error: null,
     };
 
     if (error.response) {
       // The request was made, and the server responded with an error status
-      const errorMessage = `Server responded with an error status: ${error.response.status}`;
 
       const errorResponse = {
-        message: errorMessage,
+        message: error.message,
         error: error.response.data.error || "Unknown Error",
         statusCode: error.response.status,
       };
@@ -74,7 +75,7 @@ AxiosInstance.interceptors.response.use(
       // Something else happened while setting up the request that triggered an error
 
       const errorResponse = {
-        message: `Error: ${error.message}`,
+        message: error.message,
         error: "Internal server error",
         statusCode: 500,
       };

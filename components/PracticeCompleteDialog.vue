@@ -15,7 +15,7 @@ defineProps<{
             <div class="chips">
                 <div>
                     <span>Time</span>
-                    <span>{{ timeToWord(testData.dateTime) }}</span>
+                    <span>{{ timeToWord(testData.timeTaken) }}</span>
                 </div>
                 <div>
                     <span>Total Words</span>
@@ -23,19 +23,19 @@ defineProps<{
                 </div>
                 <div>
                     <span>Total Character</span>
-                    <span>{{ testData.totalCharCount }}</span>
+                    <span>{{ testData.totalCharacter }}</span>
                 </div>
                 <div>
                     <span>Error</span>
-                    <span>{{ testData.errorCount }}</span>
+                    <span>{{ testData.totalError }}</span>
                 </div>
                 <div>
                     <span>Average Speed</span>
-                    <span>{{ testData.averageSpeed }} wpm</span>
+                    <span>{{ testData.averageWPM }} wpm</span>
                 </div>
                 <div>
-                    <span>Top Speed</span>
-                    <span>{{ testData.topSpeed }} wpm</span>
+                    <span>Highest Speed</span>
+                    <span>{{ testData.highestWPM }} wpm</span>
                 </div>
             </div>
             <hr>

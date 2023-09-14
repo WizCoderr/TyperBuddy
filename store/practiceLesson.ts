@@ -21,13 +21,13 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
 
   // setters
   actions: {
-    updateLesson() {
+    updateLesson(lessonLength: 10) {
       const settings = getLocalData<SettingData>("setting-data");
       if (settings == null) {
-        this.lesson = generateSentence(40, false, false, false, false);
+        this.lesson = generateSentence(lessonLength, false, false, false, false);
       } else {
         this.lesson = generateSentence(
-          40,
+          lessonLength,
           settings.isPunctuationEnabled,
           settings.isCapitalEnabled,
           settings.isBracketEnabled,
