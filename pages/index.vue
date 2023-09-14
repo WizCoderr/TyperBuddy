@@ -59,7 +59,7 @@ function onSettingClose(isSaved: boolean){
 }
 
 
-function onPracticeComplete(reportData: TypingReport) {
+async function onPracticeComplete(reportData: TypingReport) {
     console.log(reportData)
     dialogTypingReport.value.timeTaken = reportData.timeTaken
     dialogTypingReport.value.totalWords = reportData.totalWords
@@ -73,7 +73,7 @@ function onPracticeComplete(reportData: TypingReport) {
 
     // sending report to server if user is signed in
     if(profileStore.profile != null){
-        console.log(ApiStatistics.addStatistics(reportData))
+        console.log( await ApiStatistics.addStatistics(reportData))
     }
 
 }

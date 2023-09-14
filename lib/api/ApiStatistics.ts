@@ -1,5 +1,5 @@
 
-import { ResponseTypingReport, TypingReport } from "../DataType";
+import { AxiosResult, ResponseTypingReport, TypingReport } from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiStatistics {
@@ -20,7 +20,7 @@ namespace ApiStatistics {
       highestWPM: report.highestWPM,
     };
 
-    return await AxiosInstance.post("/statistics", data, header);
+    return await AxiosInstance.post("/statistics", data, header) as AxiosResult<any>;
   }
 }
 
