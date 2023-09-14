@@ -3,6 +3,7 @@ import { generateSentence } from '~/data/wordSample';
 import { SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
+import PracticeCompleteDialog from '~/components/dialog/PracticeCompleteDialog.vue';
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
 import ApiStatistics from '~/lib/api/ApiStatistics';
 import {usePracticeReportStore} from '~/store/practiceReport'
@@ -23,8 +24,20 @@ function updateProgress(progress: number) {
 
 
 onMounted(function(){
-    lessonStore.updateLesson(10)
+    startLesson()
 })
+
+
+
+function startLesson(){
+    isCompleteDialogVisible.value = false
+    lessonStore.updateLesson(40)
+}
+
+function restartLesson(){
+    isCompleteDialogVisible.value = false
+    lessonStore.restartLesson()
+}
 
 
 
@@ -60,7 +73,7 @@ function onSettingClose(isSaved: boolean){
 
 
 async function onPracticeComplete(reportData: TypingReport) {
-    console.log(reportData)
+
     dialogTypingReport.value.timeTaken = reportData.timeTaken
     dialogTypingReport.value.totalWords = reportData.totalWords
     dialogTypingReport.value.totalCharacter = reportData.totalCharacter
@@ -124,7 +137,7 @@ async function onPracticeComplete(reportData: TypingReport) {
     </main>
 
     <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)"/>
-    <PracticeCompleteDialog :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
+    <PracticeCompleteDialog :onRestart="restartLesson" :onStart="startLesson" :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
 
 </template>
 <style scoped>

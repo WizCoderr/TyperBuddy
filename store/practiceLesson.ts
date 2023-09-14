@@ -21,7 +21,7 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
 
   // setters
   actions: {
-    updateLesson(lessonLength: 10) {
+    updateLesson(lessonLength: number) {
       const settings = getLocalData<SettingData>("setting-data");
       if (settings == null) {
         this.lesson = generateSentence(lessonLength, false, false, false, false);
@@ -35,5 +35,13 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
         );
       }
     },
+
+    async restartLesson(){
+      const temp = this.lesson
+      this.lesson = ""
+      await nextTick()
+      this.lesson = temp
+
+    }
   },
 });
