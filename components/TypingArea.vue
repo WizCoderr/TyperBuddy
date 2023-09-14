@@ -12,7 +12,7 @@ watch(() => prop.sentence, (newValue, oldValue) => {
     if (newValue != oldValue) {
 
         if(typingTextarea.value != undefined ) typingTextarea.value!!.value = ''   // clear textarea value
-        setupData(prop.sentence + '⸱')
+        setupData(prop.sentence)
     }
 });
 
@@ -35,12 +35,12 @@ const emit = defineEmits({
 
 const typingReport: TypingReport = {
     totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 0,
-    keysReport: [],
-    averageSpeed: 0,
-    dateTime: 0,
-    topSpeed: 0
+    totalCharacter: 0,
+    totalError: 0,
+    keyReport: [],
+    averageWPM: 0,
+    timeTaken: 0,
+    highestWPM: 0
 }
 
 
@@ -86,16 +86,16 @@ function setupData(paragraph: string) {
     dataContent = paragraph
     previousTextLength = 0
 
-    typingReport.dateTime = 0
+    typingReport.timeTaken = 0
     typingReport.totalWords = dataContent.split(' ').length
-    typingReport.totalCharCount = paragraph.length
-    typingReport.errorCount = 0
-    typingReport.averageSpeed = 0
+    typingReport.totalCharacter = paragraph.length
+    typingReport.totalError = 0
+    typingReport.averageWPM = 0
     startTime = new Date().getTime()
 
-    typingReport.keysReport = []
+    typingReport.keyReport = []
     getUniqueCharacters(paragraph).forEach(char => {
-        typingReport.keysReport.push({
+        typingReport.keyReport.push({
             key: char,
             errorCount: 0,
             correctCount: 0
@@ -114,15 +114,15 @@ function updateReport() {
     }
 
     const seconds = Math.floor((new Date().getTime() - startTime) / 1000)
-    typingReport.dateTime = seconds
+    typingReport.timeTaken = seconds
 
     // calculating word per minutes
     const wpm = countCorrectWords(typingTextarea.value!!.value, dataContent.slice(0, typingTextarea.value!!.value.length)) * 60 / seconds
-    typingReport.averageSpeed = Math.round(wpm)
+    typingReport.averageWPM = Math.round(wpm)
 
     // update top speed
-    if (typingReport.averageSpeed > typingReport.topSpeed) {
-        typingReport.topSpeed = typingReport.averageSpeed
+    if (typingReport.averageWPM > typingReport.highestWPM) {
+        typingReport.highestWPM = typingReport.averageWPM
     }
 
     emit('SubmitTypingReport', typingReport)
@@ -145,12 +145,12 @@ function manipulateText(text: string) {
             // skip if user is undo
             if (text.length > previousTextLength) {
                 previousTextLength = text.length
-                typingReport.errorCount++
+                typingReport.totalError++
                 const key = dataContent[lastIndex].toUpperCase()
 
-                for (let index = 0; index < typingReport.keysReport.length; index++) {
-                    if (typingReport.keysReport[index].key == key) {
-                        typingReport.keysReport[index].errorCount++
+                for (let index = 0; index < typingReport.keyReport.length; index++) {
+                    if (typingReport.keyReport[index].key == key) {
+                        typingReport.keyReport[index].errorCount++
                         break
                     }
                 }
@@ -160,9 +160,9 @@ function manipulateText(text: string) {
             // increase correct 
             const key = dataContent[lastIndex].toUpperCase()
 
-            for (let index = 0; index < typingReport.keysReport.length; index++) {
-                if (typingReport.keysReport[index].key == key) {
-                    typingReport.keysReport[index].correctCount++
+            for (let index = 0; index < typingReport.keyReport.length; index++) {
+                if (typingReport.keyReport[index].key == key) {
+                    typingReport.keyReport[index].correctCount++
                     break
                 }
             }

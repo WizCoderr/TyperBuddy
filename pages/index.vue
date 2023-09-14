@@ -5,6 +5,11 @@ import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
 import ApiUser from '~/lib/api/ApiUser';
+import {usePracticeReportStore} from '~/store/practiceReport'
+import {usePracticeLessonStore} from '~/store/practiceLesson'
+
+const reportStore = usePracticeReportStore()
+const lessonStore = usePracticeLessonStore()
 
 
 const progressElement = ref<HTMLSpanElement>()
@@ -15,72 +20,9 @@ function updateProgress(progress: number) {
 }
 
 
-
-
-// ----------------------- report ----------------
-const previousTypingReport: TypingReport = {
-    dateTime: 0,
-    totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 10,
-    keysReport: [],
-    averageSpeed: 10,
-    topSpeed: 0
-}
-
-const currentTypingReport = ref<TypingReport>({
-    dateTime: 0,
-    totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 0,
-    keysReport: [],
-    averageSpeed: 0,
-    topSpeed: 0
+onMounted(function(){
+    lessonStore.updateLesson()
 })
-
-const typingSpeedPerformance = ref('+0%')
-const typingAccuracyPerformance = ref('+0%')
-var keysMaxValue = 0
-var keysMinValue = 0
-
-function updateTypingReport(reportData: TypingReport) {
-
-    // calculating maxValue and minValue
-    reportData.keysReport.forEach(data => {
-        const change = data.correctCount - data.errorCount
-        if (change > keysMaxValue) {
-            keysMaxValue = change
-        } else if (change < keysMinValue) {
-            keysMinValue = change
-        }
-    });
-
-    // update key report
-    currentTypingReport.value.keysReport = reportData.keysReport
-
-    // calculating speed change percentage
-    currentTypingReport.value.averageSpeed = reportData.averageSpeed
-
-    const speedChange = Math.round((previousTypingReport.averageSpeed - currentTypingReport.value.averageSpeed) / previousTypingReport.averageSpeed * 100)
-    if (speedChange <= 0) {
-        typingSpeedPerformance.value = `+${Math.abs(speedChange)}%`
-    } else {
-        typingSpeedPerformance.value = `-${speedChange}%`
-    }
-
-
-    // calculating typing accuracy percentage
-    currentTypingReport.value.errorCount = reportData.errorCount
-
-    const accuracyChange = Math.round((previousTypingReport.errorCount - currentTypingReport.value.errorCount) / previousTypingReport.errorCount * 100)
-    if (accuracyChange >= 0) {
-        typingAccuracyPerformance.value = `+${accuracyChange}%`
-    } else {
-        typingAccuracyPerformance.value = `${accuracyChange}%`
-    }
-
-    // console.log(reportData)
-}
 
 
 
@@ -88,43 +30,18 @@ function updateTypingReport(reportData: TypingReport) {
 
 // &#x21B5; - line break symbol
 
-// ------------------- lesson -----------------------
-const lesson = ref('Loading...')
-
-function updateLesson(){
-    const settings = getLocalData<SettingData>('setting-data')
-    if(settings == null){
-        lesson.value = generateSentence(40, false, false, false, false)
-    }else{
-        lesson.value = generateSentence(40, settings.isPunctuationEnabled, settings.isCapitalEnabled, settings.isBracketEnabled, settings.isNumberEnabled)
-    }
-    
-}
-
-onMounted(async function(){
-
-    // set up lesson
-    updateLesson()
-    console.log((await ApiUser.getProfile()).data)
-
-})
-
-
-
-
-
 
 // ------------------------ Dialog --------------------
 
 const isCompleteDialogVisible = ref(false)
 const dialogTypingReport = ref<TypingReport>({
-    dateTime: 0,
+    timeTaken: 0,
     totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 0,
-    keysReport: [],
-    averageSpeed: 0,
-    topSpeed: 0
+    totalCharacter: 0,
+    totalError: 0,
+    keyReport: [],
+    averageWPM: 0,
+    highestWPM: 0
 })
 
 
@@ -136,19 +53,19 @@ function openSetting(){
 function onSettingClose(isSaved: boolean){
     isSettingDialogVisible.value = false
     
-    if(isSaved) updateLesson()
+    if(isSaved) lessonStore.updateLesson()
 }
 
 
 function onPracticeComplete(reportData: TypingReport) {
     console.log(reportData)
-    dialogTypingReport.value.dateTime = reportData.dateTime
+    dialogTypingReport.value.timeTaken = reportData.timeTaken
     dialogTypingReport.value.totalWords = reportData.totalWords
-    dialogTypingReport.value.totalCharCount = reportData.totalCharCount
-    dialogTypingReport.value.errorCount = reportData.errorCount
-    dialogTypingReport.value.averageSpeed = reportData.averageSpeed
-    dialogTypingReport.value.topSpeed = reportData.topSpeed
-    dialogTypingReport.value.keysReport = reportData.keysReport
+    dialogTypingReport.value.totalCharacter = reportData.totalCharacter
+    dialogTypingReport.value.totalError = reportData.totalError
+    dialogTypingReport.value.averageWPM = reportData.averageWPM
+    dialogTypingReport.value.highestWPM = reportData.highestWPM
+    dialogTypingReport.value.keyReport = reportData.keyReport
 
     isCompleteDialogVisible.value = true
 }
@@ -161,10 +78,10 @@ function onPracticeComplete(reportData: TypingReport) {
         <Sidebar :activeTabIndex="0" />
         <section class="main">
             <div class="status-bar">
-                <h3>Speed: {{ currentTypingReport.averageSpeed }} ( <span
-                        :class="{ 'success': typingSpeedPerformance[0] == '+' }">{{ typingSpeedPerformance }}</span> )</h3>
-                <h3>Error: {{ currentTypingReport.errorCount }} ( <span
-                        :class="{ 'success': typingAccuracyPerformance[0] == '+' }">{{ typingAccuracyPerformance }}</span> )
+                <h3>Speed: {{ reportStore.currentTypingReport.averageWPM }} ( <span
+                        :class="{ 'success': reportStore.typingSpeedPerformance[0] == '+' }">{{ reportStore.typingSpeedPerformance }}</span> )</h3>
+                <h3>Error: {{ reportStore.currentTypingReport.totalError }} ( <span
+                        :class="{ 'success': reportStore.typingAccuracyPerformance[0] == '+' }">{{ reportStore.typingAccuracyPerformance }}</span> )
                 </h3>
                 <div>
                     <button @click="openSetting()" class="button secondary">
@@ -179,8 +96,8 @@ function onPracticeComplete(reportData: TypingReport) {
             <div class="key-status">
                 <h3>All Keys:</h3>
                 <div class="keys">
-                    <div v-for="item in currentTypingReport.keysReport"
-                        :style="'background-color:' + getKeyColor(keysMinValue, keysMaxValue, item.correctCount - item.errorCount)">
+                    <div v-for="item in reportStore.currentTypingReport.keyReport"
+                        :style="'background-color:' + getKeyColor(reportStore.keysMinValue, reportStore.keysMaxValue, item.correctCount - item.errorCount)">
                         <span>{{ item.key }}</span>
                     </div>
                 </div>
@@ -190,8 +107,8 @@ function onPracticeComplete(reportData: TypingReport) {
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="lesson" :onTypingCompleted="onPracticeComplete"
-                :onSubmitTypingReport="updateTypingReport"
+            <TypingArea :sentence="lessonStore.lesson" :onTypingCompleted="onPracticeComplete"
+                :onSubmitTypingReport="reportStore.updateTypingReport"
                 :onProgressChange="updateProgress" />
             <Keyboard />
 
