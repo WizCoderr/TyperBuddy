@@ -1,8 +1,12 @@
 <script setup lang='ts'>
-import { TypingReport } from '~/lib/DataType';
+import { AxiosResult, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import { generateSentence } from '~/data/wordSample'
+import { useProfileStore } from '~/store/profile';
+import ApiStatistics from '~/lib/api/ApiStatistics';
+import ApiContent from '~/lib/api/ApiContents';
 
+const profileStore = useProfileStore()
 
 const progressElement = ref<HTMLSpanElement>()
 function updateProgress(progress: number) {
@@ -11,26 +15,27 @@ function updateProgress(progress: number) {
 
 }
 
-const data = generateSentence(100, false, true)
+
+const data = ref("")
 
 const previousTypingReport: TypingReport = {
-    dateTime: 0,
+    timeTaken: 0,
     totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 10,
-    keysReport: [],
-    averageSpeed: 10,
-    topSpeed: 0
+    totalCharacter: 0,
+    totalError: 0,
+    keyReport: [],
+    averageWPM: 0,
+    highestWPM: 0
 }
 
 const currentTypingReport = ref<TypingReport>({
-    dateTime: 0,
+    timeTaken: 0,
     totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 0,
-    keysReport: [],
-    averageSpeed: 0,
-    topSpeed: 0
+    totalCharacter: 0,
+    totalError: 0,
+    keyReport: [],
+    averageWPM: 0,
+    highestWPM: 0
 })
 
 const typingSpeedPerformance = ref('+0%')
@@ -38,10 +43,23 @@ const typingAccuracyPerformance = ref('+0%')
 var keysMaxValue = 0
 var keysMinValue = 0
 
+
+onMounted(async function () {
+    const result = (await ApiContent.getTypingContent(
+        40
+    )) as any as AxiosResult<string>;
+
+
+    if (result.isOk) {
+        data.value = result.data!!
+        console.log(result.data)
+    }
+})
+
 function updateTypingReport(reportData: TypingReport) {
 
     // calculating maxValue and minValue
-    reportData.keysReport.forEach(data => {
+    reportData.keyReport.forEach(data => {
         const change = data.correctCount - data.errorCount
         if (change > keysMaxValue) {
             keysMaxValue = change
@@ -51,12 +69,12 @@ function updateTypingReport(reportData: TypingReport) {
     });
 
     // update key report
-    currentTypingReport.value.keysReport = reportData.keysReport
+    currentTypingReport.value.keyReport = reportData.keyReport
 
     // calculating speed change percentage
-    currentTypingReport.value.averageSpeed = reportData.averageSpeed
+    currentTypingReport.value.averageWPM = reportData.averageWPM
 
-    const speedChange = Math.round((previousTypingReport.averageSpeed - currentTypingReport.value.averageSpeed) / previousTypingReport.averageSpeed * 100)
+    const speedChange = Math.round((previousTypingReport.averageWPM - currentTypingReport.value.averageWPM) / previousTypingReport.averageWPM * 100)
     if (speedChange <= 0) {
         typingSpeedPerformance.value = `+${Math.abs(speedChange)}%`
     } else {
@@ -65,9 +83,9 @@ function updateTypingReport(reportData: TypingReport) {
 
 
     // calculating typing accuracy percentage
-    currentTypingReport.value.errorCount = reportData.errorCount
+    currentTypingReport.value.totalError = reportData.totalError
 
-    const accuracyChange = Math.round((previousTypingReport.errorCount - currentTypingReport.value.errorCount) / previousTypingReport.errorCount * 100)
+    const accuracyChange = Math.round((previousTypingReport.totalError - currentTypingReport.value.totalError) / previousTypingReport.totalError * 100)
     if (accuracyChange >= 0) {
         typingAccuracyPerformance.value = `+${accuracyChange}%`
     } else {
@@ -78,17 +96,22 @@ function updateTypingReport(reportData: TypingReport) {
 }
 
 
-function onPracticeComplete(reportData: TypingReport) {
-    console.log(reportData)
-    dialogTypingReport.value.dateTime = reportData.dateTime
+async function onPracticeComplete(reportData: TypingReport) {
+
+    dialogTypingReport.value.timeTaken = reportData.timeTaken
     dialogTypingReport.value.totalWords = reportData.totalWords
-    dialogTypingReport.value.totalCharCount = reportData.totalCharCount
-    dialogTypingReport.value.errorCount = reportData.errorCount
-    dialogTypingReport.value.averageSpeed = reportData.averageSpeed
-    dialogTypingReport.value.topSpeed = reportData.topSpeed
-    dialogTypingReport.value.keysReport = reportData.keysReport
+    dialogTypingReport.value.totalCharacter = reportData.totalCharacter
+    dialogTypingReport.value.totalError = reportData.totalError
+    dialogTypingReport.value.averageWPM = reportData.averageWPM
+    dialogTypingReport.value.highestWPM = reportData.highestWPM
+    dialogTypingReport.value.keyReport = reportData.keyReport
 
     isCompleteDialogVisible.value = true
+
+    // sending report to server if user is signed in
+    if (profileStore.profile != null) {
+        console.log(await ApiStatistics.addStatistics(reportData))
+    }
 }
 
 
@@ -100,13 +123,13 @@ function onPracticeComplete(reportData: TypingReport) {
 
 const isCompleteDialogVisible = ref(false)
 const dialogTypingReport = ref<TypingReport>({
-    dateTime: 0,
+    timeTaken: 0,
     totalWords: 0,
-    totalCharCount: 0,
-    errorCount: 0,
-    keysReport: [],
-    averageSpeed: 0,
-    topSpeed: 0
+    totalCharacter: 0,
+    totalError: 0,
+    keyReport: [],
+    averageWPM: 0,
+    highestWPM: 0
 })
 
 </script>
@@ -115,9 +138,9 @@ const dialogTypingReport = ref<TypingReport>({
         <Sidebar :activeTabIndex="2" />
         <section class="main">
             <div class="status-bar">
-                <h3>Speed: {{ currentTypingReport.averageSpeed }} ( <span
+                <h3>Speed: {{ currentTypingReport.averageWPM }} ( <span
                         :class="{ 'success': typingSpeedPerformance[0] == '+' }">{{ typingSpeedPerformance }}</span> )</h3>
-                <h3>Error: {{ currentTypingReport.errorCount }} ( <span
+                <h3>Error: {{ currentTypingReport.totalError }} ( <span
                         :class="{ 'success': typingAccuracyPerformance[0] == '+' }">{{ typingAccuracyPerformance }}</span> )
                 </h3>
                 <div>
@@ -133,7 +156,7 @@ const dialogTypingReport = ref<TypingReport>({
             <div class="key-status">
                 <h3>All Keys:</h3>
                 <div class="keys">
-                    <div v-for="item in currentTypingReport.keysReport"
+                    <div v-for="item in currentTypingReport.keyReport"
                         :style="'background-color:' + getKeyColor(keysMinValue, keysMaxValue, item.correctCount - item.errorCount)">
                         <span>{{ item.key }}</span>
                     </div>
@@ -147,6 +170,7 @@ const dialogTypingReport = ref<TypingReport>({
             <TypingArea :sentence="data" :onTypingCompleted="(data) => onPracticeComplete(data)"
                 :onSubmitTypingReport="(data) => updateTypingReport(data)"
                 :onProgressChange="(progress) => updateProgress(progress)" />
+                <Keyboard />
 
         </section>
     </main>
@@ -155,5 +179,4 @@ const dialogTypingReport = ref<TypingReport>({
 </template>
 <style scoped>
 @import '../assets/css/common.css';
-
 </style>

@@ -45,7 +45,7 @@ AxiosInstance.interceptors.response.use(
 
     let res: AxiosResult<any> = {
       isOk: false,
-      data: error.data,
+      data: null,
       error: null,
     };
 
