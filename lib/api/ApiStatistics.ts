@@ -1,5 +1,5 @@
 
-import { AxiosResult, ResponseTypingReport, TypingReport } from "../DataType";
+import { AxiosResult, TypingReport } from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiStatistics {
@@ -10,17 +10,8 @@ namespace ApiStatistics {
   };
 
   export async function addStatistics(report: TypingReport) {
-    const data: ResponseTypingReport = {
-      timeTaken: report.timeTaken,
-      totalWords: report.totalWords,
-      totalCharacter: report.totalCharacter,
-      totalError: report.totalError,
-      keyReport: JSON.stringify(report.keyReport),
-      averageWPM: report.averageWPM,
-      highestWPM: report.highestWPM,
-    };
-
-    return await AxiosInstance.post("/statistics", data, header) as AxiosResult<any>;
+    
+    return await AxiosInstance.post("/statistics", report, header) as AxiosResult<any>;
   }
 }
 

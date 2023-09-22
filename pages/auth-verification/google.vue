@@ -10,6 +10,7 @@ onMounted(async function(){
         const result = await Api.signup(code.toString(), 'google')as any as AxiosResult<{access_token: string}>
         if(result.isOk){
             saveToken(result.data!!.access_token)
+            console.log(result.data!!.access_token)
         }else{
             alert(result.error)
         }

@@ -26,15 +26,6 @@ export interface TypingReport {
     highestWPM: number
 }
 
-export interface ResponseTypingReport {
-    timeTaken: number,
-    totalWords: number,
-    totalCharacter: number,
-    totalError: number,
-    keyReport: string,
-    averageWPM: number,
-    highestWPM: number
-}
 
 export interface MyChartData{
     chartLabel: String,
