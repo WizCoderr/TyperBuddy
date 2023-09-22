@@ -7,7 +7,7 @@ const router = useRouter();
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-        const result = await Api.signup(code.toString(), 'google')as any as AxiosResult<{access_token: string}>
+        const result = await Api.signup<{access_token: string}>(code.toString(), 'google')
         if(result.isOk){
             saveToken(result.data!!.access_token)
             console.log(result.data!!.access_token)

@@ -1,3 +1,4 @@
+import { AxiosResult } from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiContent {
@@ -7,8 +8,8 @@ namespace ApiContent {
     },
   };
 
-  export async function getTypingContent(wordCount: number) {
-    return await AxiosInstance.get("/contents/get-content/" + wordCount, header);
+  export async function getTypingContent<T>(wordCount: number) {
+    return await AxiosInstance.get("/contents/get-content/" + wordCount, header) as any as AxiosResult<T>;
   }
 }
 

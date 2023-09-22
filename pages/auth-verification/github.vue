@@ -8,7 +8,7 @@ const router = useRouter();
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
     if(code){
-        const result = await ApiAuth.signup(code.toString(), 'github') as any as AxiosResult<{access_token: string}>
+        const result = await ApiAuth.signup<{access_token: string}>(code.toString(), 'github')
         if(result.isOk){
             saveToken(result.data!!.access_token)
         }else{

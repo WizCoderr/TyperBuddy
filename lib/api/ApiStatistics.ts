@@ -9,9 +9,13 @@ namespace ApiStatistics {
     },
   };
 
-  export async function addStatistics(report: TypingReport) {
+  export async function getStatistics<T>(userId: string){
+    return await AxiosInstance.get("/statistics/report/" + userId, header) as AxiosResult<T>;
+  }
+
+  export async function addStatistics<T>(report: TypingReport) {
     
-    return await AxiosInstance.post("/statistics", report, header) as AxiosResult<any>;
+    return await AxiosInstance.post("/statistics", report, header) as AxiosResult<T>;
   }
 }
 

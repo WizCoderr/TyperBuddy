@@ -20,19 +20,15 @@ export const useProfileStore = defineStore("profile", {
   // setters
   actions: {
     async fetchProfile() {
-      
-      const result =
-        (await ApiUser.getProfile()) as any as AxiosResult<ProfileData>;
+      const result = await ApiUser.getProfile<ProfileData>();
 
-      if (result.isOk){
-        this.profile = result.data
-      }else{
-        console.log(result.error)
+      if (result.isOk) {
+        this.profile = result.data;
+      } else {
+        console.log(result.error);
       }
 
-      this.isLoaded = true
+      this.isLoaded = true;
     },
   },
 });
-
-

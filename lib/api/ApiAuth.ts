@@ -1,3 +1,4 @@
+import { AxiosResult } from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiAuth {
@@ -7,12 +8,12 @@ namespace ApiAuth {
     },
   };
 
-  export async function signup(token: string, mode: string) {
+  export async function signup<T>(token: string, mode: string) {
     let data = {
       token,
       mode,
     };
-    return await AxiosInstance.post("/auth/signup", data, header);
+    return await AxiosInstance.post("/auth/signup", data, header) as any as AxiosResult<T>;
   }
 }
 

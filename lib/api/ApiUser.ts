@@ -1,3 +1,4 @@
+import { AxiosResult } from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiUser {
@@ -7,8 +8,8 @@ namespace ApiUser {
     },
   };
 
-  export async function getProfile() {
-    return await AxiosInstance.get("/user/me", header);
+  export async function getProfile<T>() {
+    return await AxiosInstance.get("/user/me", header) as any as AxiosResult<T>;
   }
 }
 

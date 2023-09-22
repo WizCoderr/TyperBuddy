@@ -45,10 +45,7 @@ var keysMinValue = 0
 
 
 onMounted(async function () {
-    const result = (await ApiContent.getTypingContent(
-        40
-    )) as any as AxiosResult<string>;
-
+    const result = await ApiContent.getTypingContent<string>(40);
 
     if (result.isOk) {
         data.value = result.data!!
