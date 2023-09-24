@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { AxiosResult, TypingReport } from '~/lib/DataType';
+import PracticeCompleteDialog from '~/components/dialog/PracticeCompleteDialog.vue';
 import { getKeyColor } from '~/lib/utils';
-import { generateSentence } from '~/data/wordSample'
 import { useProfileStore } from '~/store/profile';
 import ApiStatistics from '~/lib/api/ApiStatistics';
 import ApiContent from '~/lib/api/ApiContents';
@@ -52,6 +52,9 @@ onMounted(async function () {
         console.log(result.data)
     }
 })
+
+
+
 
 function updateTypingReport(reportData: TypingReport) {
 
@@ -164,7 +167,7 @@ const dialogTypingReport = ref<TypingReport>({
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="data" :onTypingCompleted="(data) => onPracticeComplete(data)"
+            <TypingArea :sentence="data" :onTypingCompleted="onPracticeComplete"
                 :onSubmitTypingReport="(data) => updateTypingReport(data)"
                 :onProgressChange="(progress) => updateProgress(progress)" />
                 <Keyboard />
