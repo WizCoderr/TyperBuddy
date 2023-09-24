@@ -18,7 +18,7 @@ onMounted(async function(){
         alert('Something went wrong!')
     }
 
-    router.back();
+    router.push({ path: '/', replace: true })
 })
 
 
