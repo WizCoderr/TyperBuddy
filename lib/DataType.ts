@@ -78,6 +78,13 @@ export interface AxiosResult<T>{
 }
 
 
+
+export interface StatisticPageData{
+    todayStat: Array<TypingReport>,
+    allTimeStat: Array<TypingReport>
+}
+
+
 // {
 //     "id": "64f0a9d718e7876de4f252f0",
 //     "email": "niteshdev547@gmail.com",

@@ -1,15 +1,63 @@
 
 <script setup lang='ts'>
-import { MyChartData } from '~/lib/DataType';
+import { MyChartData, StatisticPageData } from '~/lib/DataType';
+import { timeToWord } from '~/lib/utils'
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')
+
+const router = useRouter()
+const { params } = router.currentRoute.value
+
+const serverUrl = import.meta.env.VITE_SERVER_URL
+const dataUrl = serverUrl + '/statistics/report/' + params.user_id
+
+
+let pageData: StatisticPageData = {
+    todayStat: [],
+    allTimeStat: []
+}
+
+// fetch data from server for ssr
+const { data, error } = await useFetch(dataUrl)
+if (data.value != null) {
+    pageData = data.value as StatisticPageData
+
+
+    // fill with empty data if data not exist
+    if (pageData.todayStat.length == 0) {
+        pageData.todayStat.push({
+            timeTaken: 0,
+            totalWords: 0,
+            totalCharacter: 0,
+            totalError: 0,
+            keyReport: [],
+            averageWPM: 0,
+            highestWPM: 0
+        })
+    }
+
+    if(pageData.allTimeStat.length == 0){
+        pageData.allTimeStat.push({
+            timeTaken: 0,
+            totalWords: 0,
+            totalCharacter: 0,
+            totalError: 0,
+            keyReport: [],
+            averageWPM: 0,
+            highestWPM: 0
+        })
+    }
+
+} else {
+    throw { message: 'Requested page could not be found.', statusCode: error.value?.statusCode || 404 }
+}
 
 
 // --------------------- data --------------------------------
 const todayFirstDataset = ref<MyChartData>({
     chartLabel: 'Accuracy Keys',
-    labels:  ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'],
+    labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'],
     labelData: [20, 30, 40, 10, 5, 25, 23],
     borderColor: '',
     backgroundColor: ''
@@ -40,15 +88,16 @@ const allTimeSecondDataset = ref<MyChartData>({
     backgroundColor: ''
 })
 
+
+
 onMounted(function () {
     setupData()
+
 })
 
 
-function setupData() {
+async function setupData() {
     setupChartData()
-
-
     isGraphHidden.value = false
 }
 
@@ -63,6 +112,39 @@ function setupChartData() {
     allTimeFirstDataset.value.backgroundColor = getThemeColor('--graph-success-light')
     allTimeSecondDataset.value.borderColor = getThemeColor('--graph-error')
     allTimeSecondDataset.value.backgroundColor = getThemeColor('--graph-error-light')
+
+
+    // setting data
+    let labels = Array<string>()
+    let correctValues = Array<number>()
+    let errorValues = Array<number>()
+    for (const item of pageData.todayStat[0].keyReport) {
+        labels.push(item.key)
+        correctValues.push(item.correctCount)
+        errorValues.push(item.errorCount)
+    }
+
+    todayFirstDataset.value.labels = labels.slice()
+    todayFirstDataset.value.labelData = correctValues.slice()
+    todaySecondDataset.value.labels = labels.slice()
+    todaySecondDataset.value.labelData = errorValues.slice()
+
+
+    // all time stat
+    labels = []
+    correctValues = []
+    errorValues = []
+    for (const item of pageData.allTimeStat[0].keyReport) {
+        labels.push(item.key)
+        correctValues.push(item.correctCount)
+        errorValues.push(item.errorCount)
+    }
+
+    allTimeFirstDataset.value.labels = labels.slice()
+    allTimeFirstDataset.value.labelData = correctValues.slice()
+    allTimeSecondDataset.value.labels = labels.slice()
+    allTimeSecondDataset.value.labelData = errorValues.slice()
+
 }
 
 
@@ -83,38 +165,34 @@ function getThemeColor(name: string) {
 
             <hr>
             <h3>Statistics for Today:</h3>
-            <div class="status-chips">
+            <div class="status-chips" v-for="stat in pageData.todayStat">
                 <div>
                     <span>Total Time</span>
-                    <span>12 hours 20 min</span>
+                    <span>{{ timeToWord(stat.timeTaken) }}</span>
                 </div>
                 <div>
                     <span>Total Words</span>
-                    <span>12,000</span>
+                    <span>{{ stat.totalWords.toLocaleString() }}</span>
                 </div>
                 <div>
                     <span>Total Chars</span>
-                    <span>24,000</span>
+                    <span>{{ stat.totalCharacter.toLocaleString() }}</span>
                 </div>
                 <div>
                     <span>Accuracy</span>
-                    <span>65%</span>
+                    <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
                 </div>
                 <div>
                     <span>Error</span>
-                    <span>362</span>
+                    <span>{{ stat.totalError.toLocaleString() }}</span>
                 </div>
                 <div>
-                    <span>Highest Speed</span>
-                    <span>32 WPM</span>
+                    <span>Highest Speed (WPM)</span>
+                    <span>{{ stat.highestWPM }} WPM</span>
                 </div>
                 <div>
-                    <span>Lowest Speed</span>
-                    <span>8 WPM</span>
-                </div>
-                <div>
-                    <span>Average Speed</span>
-                    <span>28 WPM</span>
+                    <span>Average Speed (WPM)</span>
+                    <span>{{ stat.averageWPM }} WPM</span>
                 </div>
             </div>
 
@@ -125,45 +203,40 @@ function getThemeColor(name: string) {
                 </select>
 
                 <div class="chart-holder">
-                    <GraphChart :mode="graphType" :firstDataset="todayFirstDataset"
-                        :secondDataset="todaySecondDataset" />
+                    <GraphChart :mode="graphType" :firstDataset="todaySecondDataset" :secondDataset="todayFirstDataset" />
                 </div>
             </div>
 
             <hr>
             <h3>All Time Statistics:</h3>
-            <div class="status-chips">
+            <div class="status-chips" v-for="stat in pageData.allTimeStat">
                 <div>
                     <span>Total Time</span>
-                    <span>12 hours 20 min</span>
+                    <span>{{ timeToWord(stat.timeTaken) }}</span>
                 </div>
                 <div>
                     <span>Total Words</span>
-                    <span>12,000</span>
+                    <span>{{ stat.totalWords.toLocaleString() }}</span>
                 </div>
                 <div>
                     <span>Total Chars</span>
-                    <span>24,000</span>
+                    <span>{{ stat.totalCharacter.toLocaleString() }}</span>
                 </div>
                 <div>
                     <span>Accuracy</span>
-                    <span>65%</span>
+                    <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
                 </div>
                 <div>
                     <span>Error</span>
-                    <span>362</span>
+                    <span>{{ stat.totalError.toLocaleString() }}</span>
                 </div>
                 <div>
-                    <span>Highest Speed</span>
-                    <span>32 WPM</span>
+                    <span>Highest Speed (WPM)</span>
+                    <span>{{ stat.highestWPM }} WPM</span>
                 </div>
                 <div>
-                    <span>Lowest Speed</span>
-                    <span>8 WPM</span>
-                </div>
-                <div>
-                    <span>Average Speed</span>
-                    <span>28 WPM</span>
+                    <span>Average Speed (WPM)</span>
+                    <span>{{ stat.averageWPM }} WPM</span>
                 </div>
             </div>
 
@@ -174,8 +247,8 @@ function getThemeColor(name: string) {
                 </select>
 
                 <div class="chart-holder">
-                    <GraphChart :mode="graphType" :firstDataset="allTimeFirstDataset"
-                        :secondDataset="allTimeSecondDataset" />
+                    <GraphChart :mode="graphType" :firstDataset="allTimeSecondDataset"
+                        :secondDataset="allTimeFirstDataset" />
                 </div>
             </div>
         </section>

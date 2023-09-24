@@ -78,7 +78,8 @@ function closeSignInDialog() {
                 </li>
 
                 <li :class="{ 'active': activeTabIndex == 1 }">
-                    <NuxtLink to="/statistics">
+                    <NuxtLink :to="profileStore.profile?'/statistics/report/' + profileStore.profile.id:'/statistics'">
+
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
