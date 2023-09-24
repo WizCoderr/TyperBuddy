@@ -49,18 +49,6 @@ export const usePracticeReportStore = defineStore("practiceReport", {
 
   // setters
   actions: {
-    // async fetchProfile() {
-    //   const result =
-    //     (await ApiUser.getProfile()) as any as AxiosResult<ProfileData>;
-
-    //   if (result.isOk) {
-    //     this.profile = result.data;
-    //   } else {
-    //     console.log(result.error);
-    //   }
-
-    //   this.isLoaded = true;
-    // },
     updateTypingReport(reportData: TypingReport) {
       // calculating maxValue and minValue for key highlight (green and red the color on the most typed keys)
       reportData.keyReport.forEach((data) => {

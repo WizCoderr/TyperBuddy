@@ -31,7 +31,7 @@ onMounted(function(){
 
 function startLesson(){
     isCompleteDialogVisible.value = false
-    lessonStore.updateLesson(40)
+    lessonStore.updateLesson(40, true)
 }
 
 function restartLesson(){
@@ -68,7 +68,7 @@ function openSetting(){
 function onSettingClose(isSaved: boolean){
     isSettingDialogVisible.value = false
     
-    if(isSaved) lessonStore.updateLesson(10)
+    if(isSaved) lessonStore.updateLesson(40, true)
 }
 
 

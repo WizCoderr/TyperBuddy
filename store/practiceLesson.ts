@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { generateSentence } from "~/data/wordSample";
 import { AxiosResult, ProfileData, SettingData } from "~/lib/DataType";
 import { getLocalData } from "~/lib/LocalStorageManager";
+import ApiContent from "~/lib/api/ApiContents";
 
 import ApiUser from "~/lib/api/ApiUser";
 
@@ -10,7 +11,7 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
   state: () => {
     return {
       isLoaded: false,
-      lesson: ""
+      lesson: "",
     };
   },
 
@@ -21,27 +22,43 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
 
   // setters
   actions: {
-    updateLesson(lessonLength: number) {
-      const settings = getLocalData<SettingData>("setting-data");
-      if (settings == null) {
-        this.lesson = generateSentence(lessonLength, false, false, false, false);
+    async updateLesson(lessonLength: number, isDummy: boolean) {
+
+
+      // for practice it will generate dummy content
+      if (isDummy) {
+        const settings = getLocalData<SettingData>("setting-data");
+        if (settings == null) {
+          this.lesson = generateSentence(
+            lessonLength,
+            false,
+            false,
+            false,
+            false
+          );
+        } else {
+          this.lesson = generateSentence(
+            lessonLength,
+            settings.isPunctuationEnabled,
+            settings.isCapitalEnabled,
+            settings.isBracketEnabled,
+            settings.isNumberEnabled
+          );
+        }
       } else {
-        this.lesson = generateSentence(
-          lessonLength,
-          settings.isPunctuationEnabled,
-          settings.isCapitalEnabled,
-          settings.isBracketEnabled,
-          settings.isNumberEnabled
-        );
+        // generate fetch content from server
+        const result = await ApiContent.getTypingContent<string>(40);
+        if (result.isOk) {
+          this.lesson = result.data!!
+        }
       }
     },
 
-    async restartLesson(){
-      const temp = this.lesson
-      this.lesson = ""
-      await nextTick()
-      this.lesson = temp
-
-    }
+    async restartLesson() {
+      const temp = this.lesson;
+      this.lesson = "";
+      await nextTick();
+      this.lesson = temp;
+    },
   },
 });
