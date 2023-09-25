@@ -8,26 +8,26 @@ const serverUrl = import.meta.env.VITE_SERVER_URL
 // temp
 const data = "Lorem Ipsum is simply dummy text of the printing and type setting industry."
 const names = [
-  "Alice Johnson",
-  "Bob Smith",
-  "Charlie Brown",
-  "David Davis",
-  "Emma Wilson",
-  "Frank White",
-  "Grace Lee",
-  "Hannah Miller",
-  "Isaac Harris",
-  "Jack Turner",
-  "Katherine Martin",
-  "Liam Anderson",
-  "Mia Garcia",
-  "Noah Walker",
-  "Olivia Perez",
-  "Peter Clark",
-  "Quinn King",
-  "Rachel Scott",
-  "Sophia Hill",
-  "Thomas Baker"
+    "Alice Johnson",
+    "Bob Smith",
+    "Charlie Brown",
+    "David Davis",
+    "Emma Wilson",
+    "Frank White",
+    "Grace Lee",
+    "Hannah Miller",
+    "Isaac Harris",
+    "Jack Turner",
+    "Katherine Martin",
+    "Liam Anderson",
+    "Mia Garcia",
+    "Noah Walker",
+    "Olivia Perez",
+    "Peter Clark",
+    "Quinn King",
+    "Rachel Scott",
+    "Sophia Hill",
+    "Thomas Baker"
 ];
 
 
@@ -64,16 +64,34 @@ function onConnect() {
         }
     })
 
-    socket!!.emit('joinRoom', { name: playerName, accountId: "", profileImage: "" });
+    socket!!.on("existingData", onExistingData)
     socket!!.on("onPlayerJoin", onPlayerJoin)
     socket!!.on("onPlayerLeft", onPlayerLeft)
+    socket!!.emit('joinRoom', { name: playerName, accountId: "", profileImage: "" });
+
 
 }
 
 
 
+function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string }>) {
+    previousData.forEach(element => {
+        allPlayers.value.push({
+            playerId: element.playerId,
+            name: element.name,
+            profileImage: element.profileImage,
+            score: {
+                cursorPos: 0,
+                speed: 0,
+                errors: 0,
+                rank: 0
+            }
+        })
+    });
+}
 
-function onPlayerJoin(playerData: {name: string, playerId: string, profileImage: string}) {
+
+function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string }) {
 
     // adding the current player
     allPlayers.value.push({
@@ -90,10 +108,10 @@ function onPlayerJoin(playerData: {name: string, playerId: string, profileImage:
 }
 
 
-function onPlayerLeft(playerData: {playerId: string}) {
+function onPlayerLeft(playerData: { playerId: string }) {
     console.log(playerData)
     allPlayers.value = allPlayers.value.filter((value) => {
-        if(playerData.playerId != value.playerId){
+        if (playerData.playerId != value.playerId) {
             return value
         }
     })
@@ -110,7 +128,7 @@ function onPlayerLeft(playerData: {playerId: string}) {
             <h2>Multiplayer</h2>
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
-            <MatchTrack :players="allPlayers" :totalChars="data.length"/>
+            <MatchTrack :players="allPlayers" :totalChars="data.length" />
             <TypingArea :sentence="data" />
         </section>
     </main>
