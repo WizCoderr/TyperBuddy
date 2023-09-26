@@ -11,7 +11,7 @@ const prop = defineProps<{
 watch(() => prop.sentence, (newValue, oldValue) => {
     if (newValue != oldValue) {
 
-        if(typingTextarea.value != undefined ) typingTextarea.value!!.value = ''   // clear textarea value
+        if (typingTextarea.value != undefined) typingTextarea.value!!.value = ''   // clear textarea value
         setupData(prop.sentence)
     }
 });
@@ -28,7 +28,17 @@ const emit = defineEmits({
 
     TypingCompleted: (data: TypingReport) => {
         return data
+    },
+
+    typing: (data: {
+        cursorPos: number;
+        speed: number;
+        highestSpeed: number;
+        errors: number;
+    }) => {
+        return data
     }
+
 })
 
 
@@ -257,6 +267,13 @@ function manipulateText(text: string) {
     // calculating progress
     const progress = text.length / dataContent.length * 100
     emit('ProgressChange', progress)
+
+    emit('typing', {
+        cursorPos: text.length,
+        speed: typingReport.averageWPM,
+        highestSpeed: typingReport.highestWPM,
+        errors: typingReport.totalError
+    })
 
 
     nextTick(() => checkForTypingEnd())

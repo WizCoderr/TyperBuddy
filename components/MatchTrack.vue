@@ -3,7 +3,8 @@ import { PlayerData } from '~/lib/DataType';
 
 const prop = defineProps<{
     players: Array<PlayerData>,
-    totalChars: number
+    totalChars: number,
+    message: string
 }>()
 
 
@@ -23,14 +24,14 @@ function getProgress(pos: number){
 </script>
 <template>
     <section>
-        <h2>Ready</h2>
+        <h2>{{ message }}</h2>
         <table>
             <colgroup>
                 <col style="width: 12rem;">
                 <col style="width: auto;">
             </colgroup>
             <tbody>
-                <tr v-for="player in players">
+                <tr v-for="player, index in players" :key="index">
                     <td>
                         <div class="profile">
                             <img src="../public/extra/no_image.png" alt="no_image">
