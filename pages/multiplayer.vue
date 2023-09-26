@@ -35,6 +35,8 @@ const names = [
 
 let socket: Socket | null = null
 const messageText = ref("")
+const isInCurrentMatch = ref(false)
+const isWriteAllowed = ref(false)
 
 const allPlayers = ref(Array<PlayerData>())
 
@@ -66,6 +68,8 @@ function onConnect() {
         }
     })
 
+    socket!!.on("isInMatch", onIsInMatch)
+    socket!!.on("roomState", onRoomStateChange)
     socket!!.on("existingData", onExistingData)
     socket!!.on("scoreChange", onScoreChange)
     socket!!.on("onPlayerJoin", onPlayerJoin)
@@ -218,6 +222,24 @@ function onTypingContentChange(content: string) {
 }
 
 
+function onIsInMatch(isInMatch: boolean){
+    isInCurrentMatch.value = isInMatch
+}
+
+function onRoomStateChange(state: string){
+    if(state == "running" && isInCurrentMatch.value == true){
+        isWriteAllowed.value = true
+    }else{
+        isWriteAllowed.value = false
+    }
+}
+
+
+function onTypingCompleted(){
+    isWriteAllowed.value = false
+}
+
+
 
 
 </script>
@@ -229,7 +251,8 @@ function onTypingContentChange(content: string) {
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
             <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
-            <TypingArea :sentence="typingContent" :onTyping="onScoreUpdate" />
+            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate" :is-edit-allowed="isWriteAllowed" />
+            {{ isInCurrentMatch }}
         </section>
     </main>
 </template>

@@ -3,7 +3,8 @@ import { TyperData, TypingReport } from '~/lib/DataType';
 import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
 
 const prop = defineProps<{
-    sentence: string
+    sentence: string,
+    isEditAllowed: boolean
 }>()
 
 
@@ -56,14 +57,16 @@ const typingReport: TypingReport = {
 
 const typingTextarea = ref<HTMLTextAreaElement>()
 const content = ref<HTMLDivElement>()
-var isTypingFocus = false
+const isTypingFocus = ref(false)
 
 onMounted(function () {
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
 
-        this.focus()
+        if(prop.isEditAllowed){
+            this.focus()
+        }
         event.preventDefault();
     });
 
@@ -77,12 +80,16 @@ onMounted(function () {
 
 
     typingTextarea.value!!.addEventListener('focusin', function () {
-        isTypingFocus = true
+        if(prop.isEditAllowed){
+            isTypingFocus.value = true
+        }
         setTimeout(updateReport, 1000)
     })
 
     typingTextarea.value!!.addEventListener('focusout', function () {
-        isTypingFocus = false
+        if(prop.isEditAllowed){
+            isTypingFocus.value = false
+        }
     })
 
 })
@@ -179,7 +186,7 @@ function manipulateText(text: string) {
         previousTextLength = text.length
 
         if (dataContent.length != 0 && text.length == dataContent.length) {
-            isTypingFocus = false
+            isTypingFocus.value = false
             emit('TypingCompleted', typingReport)
         }
     }
@@ -312,6 +319,10 @@ function checkForTypingEnd() {
             </div>
 
         </div>
+
+
+        <p v-if="!isEditAllowed" class="message">Waiting for next round</p>
+        <p v-if="isEditAllowed && !isTypingFocus" class="message">Click to play</p>
     </div>
 </template>
 <style scoped>
@@ -326,6 +337,19 @@ function checkForTypingEnd() {
     line-height: 1.8;
     padding: 1rem 1.6rem;
     font-size: var(--big-2-font);
+    position: relative;
+}
+
+.typing-content .message{
+    position: absolute;
+    padding: 0;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: center;
+    font-size: var(--big-2-font);
+    
 }
 
 .typing-content .success {
@@ -365,7 +389,7 @@ function checkForTypingEnd() {
 .typing-content .content {
     height: 300px;
     overflow: hidden;
-    filter: blur(2px);
+    filter: blur(4px);
     scroll-behavior: smooth;
 }
 
