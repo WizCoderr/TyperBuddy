@@ -130,7 +130,7 @@ async function onPracticeComplete(reportData: TypingReport) {
 
             <TypingArea :sentence="lessonStore.lesson" :onTypingCompleted="onPracticeComplete"
                 :onSubmitTypingReport="reportStore.updateTypingReport"
-                :onProgressChange="updateProgress" />
+                :onProgressChange="updateProgress" :is-edit-allowed="true"/>
             <Keyboard />
 
         </section>
