@@ -34,7 +34,8 @@ function getProgress(pos: number){
                 <tr v-for="player, index in players" :key="index">
                     <td>
                         <div class="profile">
-                            <img src="../public/extra/no_image.png" alt="no_image">
+                            <img v-if="player.profileImage == ''" src="../public/extra/no_image.png" :alt="player.name">
+                            <img v-else :src="player.profileImage " :alt="player.name">
                             <span>{{ player.name }}</span>
                         </div>
                     </td>

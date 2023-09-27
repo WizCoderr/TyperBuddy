@@ -3,10 +3,11 @@ import { all } from "axios";
 import { readlinkSync } from "fs";
 import { Socket, io } from "socket.io-client";
 import { PlayerData } from '~/lib/DataType'
+import { useProfileStore } from "~/store/profile";
 
+const profileStore = useProfileStore()
 const serverUrl = import.meta.env.VITE_SERVER_URL
 
-// temp
 const typingContent = ref("loading...")
 const names = [
     "Alice Johnson",
@@ -32,6 +33,16 @@ const names = [
 ];
 
 
+const profileData = {
+    name: "Unknown",
+    profileImage: "",
+    accountId: ""
+}
+
+
+
+
+
 
 let socket: Socket | null = null
 const messageText = ref("")
@@ -41,32 +52,33 @@ const isWriteAllowed = ref(false)
 const allPlayers = ref(Array<PlayerData>())
 
 
-const playerName = names[Math.round(Math.random() * (names.length - 1))]
+// const playerName = names[Math.round(Math.random() * (names.length - 1))]
 
-onMounted(function () {
+onMounted(setup)
+
+function setup() {
+
+    // call until profile loaded
+    if(!profileStore.isLoaded){
+        setTimeout(setup, 500)
+        return
+    }
+
+    if(profileStore.profile != null){
+        profileData.accountId = profileStore.profile.id
+        profileData.profileImage = profileStore.profile.profileImage
+        profileData.name = profileStore.profile.name
+    }
+
     socket = io(serverUrl)
     socket.on('connect', onConnect)
 
-
-})
+}
 
 
 function onConnect() {
     allPlayers.value = []
     console.log("Connection established")
-
-    // adding the current player
-    allPlayers.value.push({
-        playerId: socket!!.id,
-        name: playerName,
-        profileImage: "",
-        score: {
-            cursorPos: 0,
-            speed: 0,
-            errors: 0,
-            rank: 0
-        }
-    })
 
     socket!!.on("isInMatch", onIsInMatch)
     socket!!.on("roomState", onRoomStateChange)
@@ -76,10 +88,17 @@ function onConnect() {
     socket!!.on("onPlayerLeft", onPlayerLeft)
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
-    socket!!.emit('joinRoom', { name: playerName, accountId: "", profileImage: "" });
+    socket!!.on("heartbeat", onHeartbeat)
+
+
+    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage });
 
 }
 
+
+function onHeartbeat(){
+    socket!!.emit("heartbeatResponse")
+}
 
 function onScoreUpdate(data: {
     cursorPos: number;
@@ -100,7 +119,7 @@ function onScoreUpdate(data: {
 
 }
 
-function calculateRank(){
+function calculateRank() {
 
     let ranks = allPlayers.value.map((value) => {
         return {
@@ -110,27 +129,27 @@ function calculateRank(){
     })
 
     // sort the dict in descending order
-    ranks.sort((a,b) => {
+    ranks.sort((a, b) => {
         return b.cursorPos - a.cursorPos
-    }) 
+    })
 
     // assign rank
     for (let index = 0; index < ranks.length; index++) {
-  
+
         // find the ranked player index
         const playerIndex = allPlayers.value.findIndex((value) => {
-            if(value.playerId == ranks[index].playerId) return true
+            if (value.playerId == ranks[index].playerId) return true
         })
 
-        if(playerIndex != -1){
+        if (playerIndex != -1) {
 
             // show _ for not started players
-            if(ranks[index].cursorPos == 0){
+            if (ranks[index].cursorPos == 0) {
                 allPlayers.value[playerIndex].score.rank = 0
-            }else{
+            } else {
                 allPlayers.value[playerIndex].score.rank = index + 1
             }
-            
+
         }
 
     }
@@ -162,7 +181,7 @@ function onScoreChange(data: {
             allPlayers.value[index].score = score
             break
         }
-        
+
     }
 
     calculateRank()
@@ -170,11 +189,12 @@ function onScoreChange(data: {
 }
 
 function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string }>) {
-    previousData.forEach(element => {
+
+    for (const player of previousData) {
         allPlayers.value.push({
-            playerId: element.playerId,
-            name: element.name,
-            profileImage: element.profileImage,
+            playerId: player.playerId,
+            name: player.name,
+            profileImage: player.profileImage,
             score: {
                 cursorPos: 0,
                 speed: 0,
@@ -182,7 +202,8 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
                 rank: 0
             }
         })
-    });
+    }
+
 }
 
 function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string }) {
@@ -222,20 +243,20 @@ function onTypingContentChange(content: string) {
 }
 
 
-function onIsInMatch(isInMatch: boolean){
+function onIsInMatch(isInMatch: boolean) {
     isInCurrentMatch.value = isInMatch
 }
 
-function onRoomStateChange(state: string){
-    if(state == "running" && isInCurrentMatch.value == true){
+function onRoomStateChange(state: string) {
+    if (state == "running" && isInCurrentMatch.value == true) {
         isWriteAllowed.value = true
-    }else{
+    } else {
         isWriteAllowed.value = false
     }
 }
 
 
-function onTypingCompleted(){
+function onTypingCompleted() {
     isWriteAllowed.value = false
 }
 
@@ -251,7 +272,8 @@ function onTypingCompleted(){
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
             <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
-            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate" :is-edit-allowed="isWriteAllowed" />
+            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
+                :is-edit-allowed="isWriteAllowed" />
             {{ isInCurrentMatch }}
         </section>
     </main>
