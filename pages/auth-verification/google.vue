@@ -6,6 +6,7 @@ import Api from '~/lib/api/ApiAuth';
 const router = useRouter();
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
+    console.log({code})
     if(code){
         const result = await Api.signup<{access_token: string}>(code.toString(), 'google')
         if(result.isOk){
@@ -13,6 +14,7 @@ onMounted(async function(){
             console.log(result.data!!.access_token)
         }else{
             alert(result.error)
+            console.log(result)
         }
     }else{
         alert('Something went wrong!')
