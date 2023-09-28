@@ -84,6 +84,7 @@ function onConnect() {
     socket!!.on("roomState", onRoomStateChange)
     socket!!.on("existingData", onExistingData)
     socket!!.on("scoreChange", onScoreChange)
+    socket!!.on("rankChange", onRankChange)
     socket!!.on("onPlayerJoin", onPlayerJoin)
     socket!!.on("onPlayerLeft", onPlayerLeft)
     socket!!.on("onTypingContentChange", onTypingContentChange)
@@ -119,46 +120,23 @@ function onScoreUpdate(data: {
 
 }
 
-function calculateRank() {
 
-    let ranks = allPlayers.value.map((value) => {
-        return {
-            playerId: value.playerId,
-            cursorPos: value.score.cursorPos
-        }
-    })
+function onRankChange(ranks: Array<{playerId: string, rank: number}>){
 
-    // sort the dict in descending order
-    ranks.sort((a, b) => {
-        return b.cursorPos - a.cursorPos
-    })
-
-    // assign rank
-    for (let index = 0; index < ranks.length; index++) {
-
-        // find the ranked player index
-        const playerIndex = allPlayers.value.findIndex((value) => {
-            if (value.playerId == ranks[index].playerId) return true
+    console.log(ranks)
+    ranks.forEach(element => {
+        const index = allPlayers.value.findIndex((value) => {
+            if(value.playerId == element.playerId){
+                return true
+            }
         })
 
-        if (playerIndex != -1) {
-
-            // show _ for not started players
-            if (ranks[index].cursorPos == 0) {
-                allPlayers.value[playerIndex].score.rank = 0
-            } else {
-                allPlayers.value[playerIndex].score.rank = index + 1
-            }
-
+        if(index != -1){
+            allPlayers.value[index].score.rank = element.rank
         }
-
-    }
-
-
-
-
+        
+    });
 }
-
 
 function onScoreChange(data: {
     playerId: string,
@@ -175,7 +153,7 @@ function onScoreChange(data: {
                 cursorPos: data.cursorPos,
                 speed: data.speed,
                 errors: data.errors,
-                rank: 0
+                rank: allPlayers.value[index].score.rank
             }
 
             allPlayers.value[index].score = score
@@ -183,9 +161,6 @@ function onScoreChange(data: {
         }
 
     }
-
-    calculateRank()
-
 }
 
 function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string }>) {
