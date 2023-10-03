@@ -4,7 +4,8 @@ import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
 
 const prop = defineProps<{
     sentence: string,
-    isEditAllowed: boolean
+    isEditAllowed: boolean,
+    forgiveError: boolean
 }>()
 
 
@@ -64,7 +65,7 @@ onMounted(function () {
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
 
-        if(prop.isEditAllowed){
+        if (prop.isEditAllowed) {
             this.focus()
         }
         event.preventDefault();
@@ -80,14 +81,14 @@ onMounted(function () {
 
 
     typingTextarea.value!!.addEventListener('focusin', function () {
-        if(prop.isEditAllowed){
+        if (prop.isEditAllowed) {
             isTypingFocus.value = true
         }
         setTimeout(updateReport, 1000)
     })
 
     typingTextarea.value!!.addEventListener('focusout', function () {
-        if(prop.isEditAllowed){
+        if (prop.isEditAllowed) {
             isTypingFocus.value = false
         }
     })
@@ -102,6 +103,7 @@ var previousTextLength = 0
 function setupData(paragraph: string) {
     dataContent = paragraph
     previousTextLength = 0
+    correctTypingIndex.value = -1
 
     typingReport.timeTaken = 0
     typingReport.totalWords = dataContent.split(' ').length
@@ -145,6 +147,7 @@ function updateReport() {
 }
 
 
+const correctTypingIndex = ref(-1)
 const allWords = ref(Array<TyperData>())
 
 function manipulateText(text: string) {
@@ -185,12 +188,19 @@ function manipulateText(text: string) {
         }
         previousTextLength = text.length
 
-        if (dataContent.length != 0 && text.length == dataContent.length) {
-            isTypingFocus.value = false
-            emit('TypingCompleted', typingReport)
+
+        if (prop.forgiveError == true) {
+            if (text.length == dataContent.length) {
+                isTypingFocus.value = false
+                emit('TypingCompleted', typingReport)
+            }
+        } else {
+            if ((correctTypingIndex.value + 1) == dataContent.length) {
+                isTypingFocus.value = false
+                emit('TypingCompleted', typingReport)
+            }
         }
     }
-
 
 
     allWords.value = Array<TyperData>()
@@ -199,47 +209,62 @@ function manipulateText(text: string) {
     var errorText = ''
     const totalChar = Math.min(text.length, dataContent.length)
 
-    for (let index = 0; index < totalChar; index++) {
-        let charAt = dataContent[index]
+    if (prop.forgiveError == true) {
+        for (let index = 0; index < totalChar; index++) {
+            let charAt = dataContent[index]
 
-        // handle correct text
-        if (charAt == text[index]) {
+            // handle correct text
+            if (charAt == text[index]) {
 
-            // adding error text if not empty
-            if (errorText != '') {
-                allWords.value.push({
-                    class: 'error',
-                    text: errorText
-                })
+                // adding error text if not empty
+                if (errorText != '') {
+                    allWords.value.push({
+                        class: 'error',
+                        text: errorText
+                    })
 
-                errorText = ''
+                    errorText = ''
+                }
+
+                successText += charAt
+            } else {
+                // adding success text if not empty
+                if (successText != '') {
+                    allWords.value.push({
+                        class: 'success',
+                        text: successText
+                    })
+
+                    successText = ''
+                }
+
+                errorText += charAt
             }
+        }
 
-            successText += charAt
-        } else {
+    } else {
 
-            // adding success text if not empty
-            if (successText != '') {
-                allWords.value.push({
-                    class: 'success',
-                    text: successText
-                })
+        let isErrorFound = false
+        for (let index = 0; index < totalChar; index++) {
+            let charAt = dataContent[index]
 
-                successText = ''
+            // handle correct text
+            if (isErrorFound == false) {
+
+                if (charAt == text[index]) {
+                    successText += charAt
+                    correctTypingIndex.value = index
+                } else {
+                    isErrorFound = true
+                    errorText += charAt
+                }
+            } else {
+                errorText += charAt
             }
-
-            errorText += charAt
         }
     }
 
-
     // adding any left text
-    if (errorText != '') {
-        allWords.value.push({
-            class: 'error',
-            text: errorText
-        })
-    }
 
     if (successText != '') {
         allWords.value.push({
@@ -247,6 +272,15 @@ function manipulateText(text: string) {
             text: successText
         })
     }
+
+    if (errorText != '') {
+        allWords.value.push({
+            class: 'error',
+            text: errorText
+        })
+    }
+
+
 
 
     // extracting the not typed text
@@ -272,11 +306,26 @@ function manipulateText(text: string) {
     }
 
     // calculating progress
-    const progress = text.length / dataContent.length * 100
-    emit('ProgressChange', progress)
+    let cursorPos = 0
+    if (prop.forgiveError == true) {
+        const progress = text.length / dataContent.length * 100
+        emit('ProgressChange', progress)
+        cursorPos = text.length
+    } else {
 
+        let index = correctTypingIndex.value
+        if (index < 0) index = 0
+
+        const progress = index / dataContent.length * 100
+        emit('ProgressChange', progress)
+        cursorPos = index
+    }
+
+
+
+    // used for multiplayer
     emit('typing', {
-        cursorPos: text.length,
+        cursorPos: cursorPos,
         speed: typingReport.averageWPM,
         highestSpeed: typingReport.highestWPM,
         errors: typingReport.totalError
@@ -308,11 +357,24 @@ function checkForTypingEnd() {
 
 
 
+function onBeforeType(event: any) {
+    if (prop.forgiveError == true) return
+
+    if (event.key == 'Backspace') {
+        console.log("back")
+        if (correctTypingIndex.value < event.target.value.length - 1 && correctTypingIndex.value != -1) {
+            // do nothing 
+        } else {
+            event.preventDefault()
+        }
+    }
+}
+
 </script>
 <template>
     <div class="typing-content">
         <div class="content-holder">
-            <textarea ref="typingTextarea" id="typing-textarea" :maxlength="dataContent.length"
+            <textarea ref="typingTextarea" id="typing-textarea" :maxlength="dataContent.length" @keydown="onBeforeType"
                 @input="event => manipulateText((event.target as any).value)"></textarea>
             <div ref="content" class="content">
                 <span v-for="word in allWords" :class="word.class">{{ word.text }}</span>
@@ -340,7 +402,7 @@ function checkForTypingEnd() {
     position: relative;
 }
 
-.typing-content .message{
+.typing-content .message {
     position: absolute;
     padding: 0;
     width: 100%;
@@ -349,7 +411,7 @@ function checkForTypingEnd() {
     transform: translateY(-50%);
     text-align: center;
     font-size: var(--big-2-font);
-    
+
 }
 
 .typing-content .success {
