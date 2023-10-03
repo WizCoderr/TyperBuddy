@@ -7,12 +7,14 @@ const router = useRouter();
 
 onMounted(async function(){
     const code = queryString.parseUrl(location.href).query.code
+    console.log({code})
     if(code){
         const result = await ApiAuth.signup<{access_token: string}>(code.toString(), 'github')
         if(result.isOk){
             saveToken(result.data!!.access_token)
         }else{
             alert(result.error)
+            console.log(result)
         }
     }else{
         alert('Something went wrong!')

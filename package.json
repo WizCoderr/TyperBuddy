@@ -15,12 +15,15 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
+    "@vue/shared": "^3.3.4",
     "axios": "^1.5.0",
     "chart.js": "^4.3.0",
     "pinia": "^2.1.6",
     "query-string": "^8.1.0",
     "socket.io-client": "^4.7.2",
+    "vue": "^3.3.4",
     "vue-chartjs": "^5.2.0",
+    "vue-router": "^4.2.5",
     "vue3-google-login": "^2.0.20"
   }
 }
