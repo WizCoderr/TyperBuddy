@@ -1,11 +1,14 @@
 <script setup>
-import {saveLocal, getLocalData} from "~/lib/LocalStorageManager"
+import {saveLocal, getLocalData, getSimpleData, saveSimpleData} from "~/lib/LocalStorageManager"
 import { useProfileStore } from '~/store/profile';
+import { uid } from "uid";
 
 const profileStore = useProfileStore()
 
 onMounted(function(){
-  console.log("hello")
+  if(getSimpleData("multiplayerId") == null){
+    saveSimpleData("multiplayerId", uid(16))
+  }
 })
 
 </script>

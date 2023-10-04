@@ -4,44 +4,19 @@ import { readlinkSync } from "fs";
 import { Socket, io } from "socket.io-client";
 import { PlayerData } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
+import { getSimpleData } from "~/lib/LocalStorageManager"
+
 
 const profileStore = useProfileStore()
 const serverUrl = import.meta.env.VITE_SERVER_URL
-
 const typingContent = ref("loading...")
-const names = [
-    "Alice Johnson",
-    "Bob Smith",
-    "Charlie Brown",
-    "David Davis",
-    "Emma Wilson",
-    "Frank White",
-    "Grace Lee",
-    "Hannah Miller",
-    "Isaac Harris",
-    "Jack Turner",
-    "Katherine Martin",
-    "Liam Anderson",
-    "Mia Garcia",
-    "Noah Walker",
-    "Olivia Perez",
-    "Peter Clark",
-    "Quinn King",
-    "Rachel Scott",
-    "Sophia Hill",
-    "Thomas Baker"
-];
-
+const isKicked = ref(false)
 
 const profileData = {
     name: "Unknown",
     profileImage: "",
     accountId: ""
 }
-
-
-
-
 
 
 let socket: Socket | null = null
@@ -58,13 +33,15 @@ onMounted(setup)
 
 function setup() {
 
+    isKicked.value = false
+
     // call until profile loaded
-    if(!profileStore.isLoaded){
+    if (!profileStore.isLoaded) {
         setTimeout(setup, 500)
         return
     }
 
-    if(profileStore.profile != null){
+    if (profileStore.profile != null) {
         profileData.accountId = profileStore.profile.id
         profileData.profileImage = profileStore.profile.profileImage
         profileData.name = profileStore.profile.name
@@ -72,9 +49,13 @@ function setup() {
 
     socket = io(serverUrl)
     socket.on('connect', onConnect)
-
 }
 
+
+function onKick() {
+    isKicked.value = true
+
+}
 
 function onConnect() {
     allPlayers.value = []
@@ -90,14 +71,16 @@ function onConnect() {
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
     socket!!.on("heartbeat", onHeartbeat)
+    socket!!.on("kick", onKick)
 
 
-    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage });
+
+    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!! });
 
 }
 
 
-function onHeartbeat(){
+function onHeartbeat() {
     socket!!.emit("heartbeatResponse")
 }
 
@@ -121,20 +104,20 @@ function onScoreUpdate(data: {
 }
 
 
-function onRankChange(ranks: Array<{playerId: string, rank: number}>){
+function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
 
     console.log(ranks)
     ranks.forEach(element => {
         const index = allPlayers.value.findIndex((value) => {
-            if(value.playerId == element.playerId){
+            if (value.playerId == element.playerId) {
                 return true
             }
         })
 
-        if(index != -1){
+        if (index != -1) {
             allPlayers.value[index].score.rank = element.rank
         }
-        
+
     });
 }
 
@@ -246,11 +229,51 @@ function onTypingCompleted() {
             <h2>Multiplayer</h2>
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
-            <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
-            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
-                :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Hello'"/>
-            {{ isInCurrentMatch }}
+            <template v-if="isKicked == false">
+                            <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
+                <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
+                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Hello'" />
+            </template>
+
+            <div v-else class="kick">
+                <div class="content">
+                    <img src="../public/images/kick.png" alt="kick">
+                    <h2>Oops!<br>You were kicked out</h2>
+                    <button @click="setup" class="button primary">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
+                        </svg>
+                        Rejoin</button>
+                </div>
+            </div>
+
         </section>
     </main>
 </template>
-<style scoped></style>
+<style scoped>
+.kick {
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kick .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-direction: column;
+}
+
+
+.kick img {
+    width: 100px;
+}
+
+.kick h2 {
+    text-align: center;
+}
+</style>
