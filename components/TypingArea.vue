@@ -98,12 +98,14 @@ onMounted(function () {
 var dataContent = ''
 var timeElapsed = 0
 var previousTextLength = 0
+let errorsIndex = Array<number>()
 
 
 function setupData(paragraph: string) {
     dataContent = paragraph
     previousTextLength = 0
     correctTypingIndex.value = -1
+    errorsIndex = []
 
     typingReport.timeTaken = 0
     typingReport.totalWords = dataContent.split(' ').length
@@ -158,7 +160,13 @@ function manipulateText(text: string) {
     // checking if last text is error | storing report for error data
     if (text.length > 0) {
         const lastIndex = text.length - 1
+
         if (text[lastIndex] != dataContent[lastIndex]) {
+
+            // store error char index
+            if (errorsIndex.indexOf(lastIndex) == -1) {
+                errorsIndex.push(lastIndex)
+            }
 
             // increase incorrect
             // skip if user is undo
@@ -209,6 +217,8 @@ function manipulateText(text: string) {
     var errorText = ''
     const totalChar = Math.min(text.length, dataContent.length)
 
+    console.log("err:", errorsIndex.length)
+
     if (prop.forgiveError == true) {
         for (let index = 0; index < totalChar; index++) {
             let charAt = dataContent[index]
@@ -226,7 +236,25 @@ function manipulateText(text: string) {
                     errorText = ''
                 }
 
-                successText += charAt
+                if (errorsIndex.indexOf(index) != -1) {
+                    if (successText != '') {
+                        allWords.value.push({
+                            class: 'success',
+                            text: successText
+                        })
+
+                        successText = ''
+                    }
+
+                    allWords.value.push({
+                        class: 'error-outline',
+                        text: charAt
+                    })
+
+                } else {
+                    successText += charAt
+                }
+
             } else {
                 // adding success text if not empty
                 if (successText != '') {
@@ -252,7 +280,26 @@ function manipulateText(text: string) {
             if (isErrorFound == false) {
 
                 if (charAt == text[index]) {
-                    successText += charAt
+
+                    if (errorsIndex.indexOf(index) != -1) {
+                        if (successText != '') {
+                            allWords.value.push({
+                                class: 'success',
+                                text: successText
+                            })
+
+                            successText = ''
+                        }
+
+                        allWords.value.push({
+                            class: 'error-outline',
+                            text: charAt
+                        })
+
+                    } else {
+                        successText += charAt
+                    }
+                    
                     correctTypingIndex.value = index
                 } else {
                     isErrorFound = true
@@ -362,7 +409,8 @@ function onBeforeType(event: any) {
 
     if (event.key == 'Backspace') {
         console.log("back")
-        if (correctTypingIndex.value < event.target.value.length - 1 && correctTypingIndex.value != -1) {
+        console.log(correctTypingIndex.value)
+        if (correctTypingIndex.value < event.target.value.length - 1 || correctTypingIndex.value == -1) {
             // do nothing 
         } else {
             event.preventDefault()
@@ -422,6 +470,10 @@ function onBeforeType(event: any) {
 .typing-content .error {
     color: var(--color-on-error);
     background-color: var(--color-error);
+}
+
+.typing-content .error-outline {
+    color: var(--color-error);
 }
 
 .typing-content .normal {
