@@ -70,7 +70,6 @@ function onConnect() {
     socket!!.on("onPlayerLeft", onPlayerLeft)
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
-    socket!!.on("heartbeat", onHeartbeat)
     socket!!.on("kick", onKick)
 
 
@@ -80,9 +79,6 @@ function onConnect() {
 }
 
 
-function onHeartbeat() {
-    socket!!.emit("heartbeatResponse")
-}
 
 function onScoreUpdate(data: {
     cursorPos: number;
