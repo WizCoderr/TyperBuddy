@@ -128,9 +128,9 @@ async function onPracticeComplete(reportData: TypingReport) {
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="lessonStore.lesson" :onTypingCompleted="onPracticeComplete"
+            <TypingArea :sentence="lessonStore.lesson" :message="'Hellow'" :onTypingCompleted="onPracticeComplete"
                 :onSubmitTypingReport="reportStore.updateTypingReport"
-                :onProgressChange="updateProgress" :is-edit-allowed="true" :forgive-error="true"/>
+                :onProgressChange="updateProgress" :is-edit-allowed="true" :forgive-error="true" :multiplayer="false"/>
             <Keyboard />
 
         </section>

@@ -5,7 +5,9 @@ import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
 const prop = defineProps<{
     sentence: string,
     isEditAllowed: boolean,
-    forgiveError: boolean
+    message: string
+    forgiveError: boolean,
+    multiplayer: boolean
 }>()
 
 
@@ -18,17 +20,27 @@ watch(() => prop.sentence, (newValue, oldValue) => {
     }
 });
 
+watch(() => prop.isEditAllowed, (newValue, oldValue) => {
+    if (newValue != oldValue) {
+        if (newValue) {
+            typingTextarea.value!!.focus()
+        }else{
+            typingTextarea.value!!.blur()
+        }
+    }
+})
+
 
 const emit = defineEmits({
-    ProgressChange: (progress: number) => {
+    progressChange: (progress: number) => {
         return progress
     },
 
-    SubmitTypingReport: (data: TypingReport) => {
+    submitTypingReport: (data: TypingReport) => {
         return data
     },
 
-    TypingCompleted: (data: TypingReport) => {
+    typingCompleted: (data: TypingReport) => {
         return data
     },
 
@@ -81,17 +93,31 @@ onMounted(function () {
 
 
     typingTextarea.value!!.addEventListener('focusin', function () {
-        if (prop.isEditAllowed) {
-            isTypingFocus.value = true
+
+        if (prop.multiplayer == false) {
+            if (prop.isEditAllowed) {
+                isTypingFocus.value = true
+            }
+            setTimeout(updateReport, 1000)
         }
-        setTimeout(updateReport, 1000)
+
     })
 
     typingTextarea.value!!.addEventListener('focusout', function () {
-        if (prop.isEditAllowed) {
-            isTypingFocus.value = false
+
+        if (prop.multiplayer == false) {
+            if (prop.isEditAllowed) {
+                isTypingFocus.value = false
+            }
         }
+
     })
+
+
+    // for multiplayer
+    if (prop.multiplayer) {
+        setTimeout(updateReport, 1000)
+    }
 
 })
 
@@ -106,6 +132,7 @@ function setupData(paragraph: string) {
     previousTextLength = 0
     correctTypingIndex.value = -1
     errorsIndex = []
+    typingTextarea.value!!.value = ""
 
     typingReport.timeTaken = 0
     typingReport.totalWords = dataContent.split(' ').length
@@ -130,9 +157,14 @@ function setupData(paragraph: string) {
 
 
 function updateReport() {
-    if (isTypingFocus) {
+    if (prop.multiplayer == false) {
+        if (isTypingFocus) {
+            setTimeout(updateReport, 1000)
+        }
+    }else{
         setTimeout(updateReport, 1000)
     }
+
     timeElapsed += 1
 
     // calculating word per minutes
@@ -145,7 +177,7 @@ function updateReport() {
         typingReport.highestWPM = typingReport.averageWPM
     }
 
-    emit('SubmitTypingReport', typingReport)
+    emit('submitTypingReport', typingReport)
 }
 
 
@@ -200,12 +232,12 @@ function manipulateText(text: string) {
         if (prop.forgiveError == true) {
             if (text.length == dataContent.length) {
                 isTypingFocus.value = false
-                emit('TypingCompleted', typingReport)
+                emit('typingCompleted', typingReport)
             }
         } else {
             if ((correctTypingIndex.value + 1) == dataContent.length) {
                 isTypingFocus.value = false
-                emit('TypingCompleted', typingReport)
+                emit('typingCompleted', typingReport)
             }
         }
     }
@@ -216,8 +248,6 @@ function manipulateText(text: string) {
     var successText = ''
     var errorText = ''
     const totalChar = Math.min(text.length, dataContent.length)
-
-    console.log("err:", errorsIndex.length)
 
     if (prop.forgiveError == true) {
         for (let index = 0; index < totalChar; index++) {
@@ -299,7 +329,7 @@ function manipulateText(text: string) {
                     } else {
                         successText += charAt
                     }
-                    
+
                     correctTypingIndex.value = index
                 } else {
                     isErrorFound = true
@@ -356,7 +386,7 @@ function manipulateText(text: string) {
     let cursorPos = 0
     if (prop.forgiveError == true) {
         const progress = text.length / dataContent.length * 100
-        emit('ProgressChange', progress)
+        emit('progressChange', progress)
         cursorPos = text.length
     } else {
 
@@ -364,7 +394,7 @@ function manipulateText(text: string) {
         if (index < 0) index = 0
 
         const progress = index / dataContent.length * 100
-        emit('ProgressChange', progress)
+        emit('progressChange', progress)
         cursorPos = index
     }
 
