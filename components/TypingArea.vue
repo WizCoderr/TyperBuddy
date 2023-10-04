@@ -461,8 +461,11 @@ function onBeforeType(event: any) {
         </div>
 
 
-        <p v-if="!isEditAllowed" class="message">Waiting for next round</p>
-        <p v-if="isEditAllowed && !isTypingFocus" class="message">Click to play</p>
+        <p v-if="!isEditAllowed" class="message">{{ message }}</p>
+        <template v-if="multiplayer == false">
+            <p v-if="isEditAllowed && !isTypingFocus" class="message">Click to play</p>
+        </template>
+       
     </div>
 </template>
 <style scoped>

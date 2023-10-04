@@ -248,7 +248,7 @@ function onTypingCompleted() {
                 Type as fast as you can to win the race!</p>
             <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
             <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
-                :is-edit-allowed="isWriteAllowed" :forgive-error="false"/>
+                :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Hello'"/>
             {{ isInCurrentMatch }}
         </section>
     </main>
