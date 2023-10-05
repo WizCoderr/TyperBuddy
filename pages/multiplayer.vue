@@ -1,8 +1,9 @@
 <script setup lang='ts'>
 import { Socket, io } from "socket.io-client";
-import { PlayerData } from '~/lib/DataType'
+import { PlayerData, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
+import { cursorTo } from "readline";
 
 
 const profileStore = useProfileStore()
@@ -65,6 +66,7 @@ function onConnect() {
     socket!!.on("roomState", onRoomStateChange)
     socket!!.on("existingData", onExistingData)
     socket!!.on("scoreChange", onScoreChange)
+    socket!!.on("cursorChange", onCursorChange)
     socket!!.on("rankChange", onRankChange)
     socket!!.on("onPlayerJoin", onPlayerJoin)
     socket!!.on("onPlayerLeft", onPlayerLeft)
@@ -80,29 +82,9 @@ function onConnect() {
 
 
 
-function onScoreUpdate(data: {
-    cursorPos: number;
-    speed: number;
-    highestSpeed: number;
-    errors: number;
-}) {
-
-    if (socket != null) {
-        socket.emit("updateScore", {
-            playerId: socket.id,
-            cursorPos: data.cursorPos,
-            speed: data.speed,
-            highestSpeed: data.highestSpeed,
-            errors: data.errors
-        })
-    }
-
-}
-
 
 function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
 
-    console.log(ranks.length)
     ranks.forEach(element => {
         const index = allPlayers.value.findIndex((value) => {
             if (value.playerId == element.playerId) {
@@ -119,7 +101,6 @@ function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
 
 function onScoreChange(data: {
     playerId: string,
-    cursorPos: number,
     speed: number,
     highestSpeed: number,
     errors: number
@@ -129,13 +110,29 @@ function onScoreChange(data: {
         const player = allPlayers.value[index];
         if (player.playerId == data.playerId) {
             const score = {
-                cursorPos: data.cursorPos,
+                cursorPos: allPlayers.value[index].score.cursorPos,
                 speed: data.speed,
                 errors: data.errors,
                 rank: allPlayers.value[index].score.rank
             }
 
             allPlayers.value[index].score = score
+            break
+        }
+
+    }
+}
+
+function onCursorChange(data: {
+    playerId: string,
+    cursorPos: number
+}) {
+
+    for (let index = 0; index < allPlayers.value.length; index++) {
+        const player = allPlayers.value[index];
+        if (player.playerId == data.playerId) {
+
+            allPlayers.value[index].score.cursorPos = data.cursorPos
             break
         }
 
@@ -161,7 +158,7 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
 
 }
 
-function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean  }) {
+function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean }) {
 
     // adding the current player
     allPlayers.value.push({
@@ -211,11 +208,11 @@ function onRoomStateChange(state: string) {
             allPlayers.value[index].score.cursorPos = 0
         }
 
-    }else if(state == "finished"){
+    } else if (state == "finished") {
         for (let index = 0; index < allPlayers.value.length; index++) {
             allPlayers.value[index].isInMatch = true
         }
-    } 
+    }
     else if (state == "running" && isInCurrentMatch.value == true) {
         isWriteAllowed.value = true
     } else {
@@ -232,6 +229,31 @@ function onTypingCompleted() {
 
 
 
+function onTyping(pos: number) {
+    if (socket != null) {
+        socket.emit("updateCursor", {
+            playerId: socket.id,
+            cursorPos: pos
+        })
+    }
+}
+
+function onScoreUpdate(report: TypingReport) {
+
+    if (socket != null) {
+        socket.emit("updateScore", {
+            playerId: socket.id,
+            speed: report.averageWPM,
+            highestSpeed: report.highestWPM,
+            errors: report.totalError
+        })
+    }
+
+}
+
+
+
+
 </script>
 <template>
     <main>
@@ -243,8 +265,9 @@ function onTypingCompleted() {
 
             <template v-if="isKicked == false">
                 <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
-                <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
-                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'" />
+                <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
+                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
+                    :onSubmitTypingReport="onScoreUpdate" />
             </template>
 
             <div v-else class="kick">

@@ -18,6 +18,7 @@ function getRank(rank: number) {
 }
 
 function getProgress(pos: number) {
+    console.log(pos + " -------- " + prop.totalChars)
     let progress = Math.round(pos / prop.totalChars * 100)
     if (progress > 100) progress = 100
     return progress + "%"
