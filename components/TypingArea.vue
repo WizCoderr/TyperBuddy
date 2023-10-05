@@ -73,6 +73,7 @@ const content = ref<HTMLDivElement>()
 const isTypingFocus = ref(false)
 
 onMounted(function () {
+    console.log('mounted dasdfasdf')
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
@@ -121,6 +122,7 @@ onMounted(function () {
 
 })
 
+
 var dataContent = ''
 var timeElapsed = 0
 var previousTextLength = 0
@@ -155,12 +157,12 @@ function setupData(paragraph: string) {
 }
 
 
-let timerId: any
 function updateReport() {
-    clearTimeout(timerId)
+    if(typingTextarea.value == null) return
+
     if (prop.multiplayer == false) {
         if (isTypingFocus) {
-            timerId = setTimeout(updateReport, 1000)
+            setTimeout(updateReport, 1000)
         }
     }else{
         setTimeout(updateReport, 1000)
