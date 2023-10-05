@@ -216,6 +216,7 @@ function onRoomStateChange(state: string) {
 
 
 function onTypingCompleted() {
+
     isWriteAllowed.value = false
 }
 
@@ -233,7 +234,7 @@ function onTypingCompleted() {
             <template v-if="isKicked == false">
                             <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
-                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Hello'" />
+                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'" />
             </template>
 
             <div v-else class="kick">
