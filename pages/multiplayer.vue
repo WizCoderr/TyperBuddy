@@ -1,6 +1,4 @@
 <script setup lang='ts'>
-import { all } from "axios";
-import { readlinkSync } from "fs";
 import { Socket, io } from "socket.io-client";
 import { PlayerData } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
@@ -202,7 +200,14 @@ function onIsInMatch(isInMatch: boolean) {
 }
 
 function onRoomStateChange(state: string) {
-    if (state == "running" && isInCurrentMatch.value == true) {
+
+    // reset players score to zero
+    if(state == "start"){
+        for (let index = 0; index < allPlayers.value.length; index++) {
+            allPlayers.value[index].score.cursorPos = 0
+        }
+
+    }else if (state == "running" && isInCurrentMatch.value == true) {
         isWriteAllowed.value = true
     } else {
         isWriteAllowed.value = false
