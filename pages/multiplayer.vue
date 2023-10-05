@@ -140,13 +140,14 @@ function onScoreChange(data: {
     }
 }
 
-function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string }>) {
+function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean }>) {
 
     for (const player of previousData) {
         allPlayers.value.push({
             playerId: player.playerId,
             name: player.name,
             profileImage: player.profileImage,
+            isInMatch: player.isInMatch,
             score: {
                 cursorPos: 0,
                 speed: 0,
@@ -158,13 +159,14 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
 
 }
 
-function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string }) {
+function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean  }) {
 
     // adding the current player
     allPlayers.value.push({
         playerId: playerData.playerId,
         name: playerData.name,
         profileImage: playerData.profileImage,
+        isInMatch: playerData.isInMatch,
         score: {
             cursorPos: 0,
             speed: 0,
@@ -202,12 +204,17 @@ function onIsInMatch(isInMatch: boolean) {
 function onRoomStateChange(state: string) {
 
     // reset players score to zero
-    if(state == "start"){
+    if (state == "start") {
         for (let index = 0; index < allPlayers.value.length; index++) {
             allPlayers.value[index].score.cursorPos = 0
         }
 
-    }else if (state == "running" && isInCurrentMatch.value == true) {
+    }else if(state == "finished"){
+        for (let index = 0; index < allPlayers.value.length; index++) {
+            allPlayers.value[index].isInMatch = true
+        }
+    } 
+    else if (state == "running" && isInCurrentMatch.value == true) {
         isWriteAllowed.value = true
     } else {
         isWriteAllowed.value = false
@@ -231,8 +238,9 @@ function onTypingCompleted() {
             <h2>Multiplayer</h2>
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
+
             <template v-if="isKicked == false">
-                            <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
+                <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onScoreUpdate"
                     :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'" />
             </template>
