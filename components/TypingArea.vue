@@ -155,11 +155,12 @@ function setupData(paragraph: string) {
 }
 
 
-
+let timerId: any
 function updateReport() {
+    clearTimeout(timerId)
     if (prop.multiplayer == false) {
         if (isTypingFocus) {
-            setTimeout(updateReport, 1000)
+            timerId = setTimeout(updateReport, 1000)
         }
     }else{
         setTimeout(updateReport, 1000)

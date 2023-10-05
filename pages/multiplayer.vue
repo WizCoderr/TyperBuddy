@@ -45,6 +45,8 @@ function setup() {
         profileData.name = profileStore.profile.name
     }
 
+    allPlayers.value = []
+
     socket = io(serverUrl)
     socket.on('connect', onConnect)
 }
@@ -100,7 +102,7 @@ function onScoreUpdate(data: {
 
 function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
 
-    console.log(ranks)
+    console.log(ranks.length)
     ranks.forEach(element => {
         const index = allPlayers.value.findIndex((value) => {
             if (value.playerId == element.playerId) {
