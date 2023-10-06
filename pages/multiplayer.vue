@@ -48,7 +48,7 @@ function setup() {
 
     allPlayers.value = []
 
-    socket = io(serverUrl, { transports: ['websocket'] })
+    socket = io(serverUrl)
     socket.on('connect', onConnect)
 }
 
