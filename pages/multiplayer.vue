@@ -98,44 +98,49 @@ function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
     });
 }
 
-function onScoreChange(data: {
+function onScoreChange(scores: Array<{
     playerId: string,
     speed: number,
     highestSpeed: number,
     errors: number
-}) {
+}>) {
 
-    for (let index = 0; index < allPlayers.value.length; index++) {
-        const player = allPlayers.value[index];
-        if (player.playerId == data.playerId) {
-            const score = {
-                cursorPos: allPlayers.value[index].score.cursorPos,
-                speed: data.speed,
-                errors: data.errors,
-                rank: allPlayers.value[index].score.rank
+    for (const score of scores) {
+
+        for (let index = 0; index < allPlayers.value.length; index++) {
+            const player = allPlayers.value[index];
+
+            if (player.playerId == score.playerId) {
+                const newScore = {
+                    cursorPos: allPlayers.value[index].score.cursorPos,
+                    speed: score.speed,
+                    errors: score.errors,
+                    rank: allPlayers.value[index].score.rank
+                }
+
+                allPlayers.value[index].score = newScore
+                break
             }
-
-            allPlayers.value[index].score = score
-            break
         }
-
     }
 }
 
-function onCursorChange(data: {
+function onCursorChange(cursors: Array<{
     playerId: string,
     cursorPos: number
-}) {
+}>) {
 
-    for (let index = 0; index < allPlayers.value.length; index++) {
-        const player = allPlayers.value[index];
-        if (player.playerId == data.playerId) {
+    for (const cursor of cursors) {
+        for (let index = 0; index < allPlayers.value.length; index++) {
+            const player = allPlayers.value[index];
+            if (player.playerId == cursor.playerId) {
 
-            allPlayers.value[index].score.cursorPos = data.cursorPos
-            break
+                allPlayers.value[index].score.cursorPos = cursor.cursorPos
+                break
+            }
         }
-
     }
+
 }
 
 function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean }>) {
