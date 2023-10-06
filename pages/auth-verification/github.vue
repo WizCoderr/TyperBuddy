@@ -13,7 +13,6 @@ onMounted(async function(){
         if(result.isOk){
             saveToken(result.data!!.access_token)
         }else{
-            alert(result.error)
             console.log(result)
         }
     }else{
