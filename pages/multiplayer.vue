@@ -262,7 +262,7 @@ function onScoreUpdate(report: TypingReport) {
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="3" />
+        <Sidebar :activeTabIndex="2" />
         <section class="main">
             <h2>Multiplayer</h2>
             <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.

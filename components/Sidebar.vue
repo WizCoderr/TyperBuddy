@@ -77,20 +77,8 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
+
                 <li :class="{ 'active': activeTabIndex == 1 }">
-                    <NuxtLink :to="profileStore.profile?'/statistics/report/' + profileStore.profile.id:'/statistics'">
-
-                        <span class="marker"></span>
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M16.749 2h4.554l.1.014.099.028.06.026c.08.034.153.085.219.15l.04.044.044.057.054.09.039.09.019.064.014.064.009.095v4.532a.75.75 0 0 1-1.493.102l-.007-.102V4.559l-6.44 6.44a.75.75 0 0 1-.976.073L13 11 9.97 8.09l-5.69 5.689a.75.75 0 0 1-1.133-.977l.073-.084 6.22-6.22a.75.75 0 0 1 .976-.072l.084.072 3.03 2.91L19.438 3.5h-2.69a.75.75 0 0 1-.742-.648l-.007-.102a.75.75 0 0 1 .648-.743L16.75 2ZM3.75 17a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm5.75-3.25a.75.75 0 0 0-1.5 0v7.5a.75.75 0 0 0 1.5 0v-7.5ZM13.75 15a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Zm5.75-4.25a.75.75 0 0 0-1.5 0v10.5a.75.75 0 0 0 1.5 0v-10.5Z" />
-                        </svg>
-                        <p>Statistics</p>
-                    </NuxtLink>
-
-                </li>
-
-                <li :class="{ 'active': activeTabIndex == 2 }">
                     <NuxtLink to="/typingTest">
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -101,7 +89,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 3 }">
+                <li :class="{ 'active': activeTabIndex == 2 }">
                     <NuxtLink to="/multiplayer">
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -112,7 +100,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 4 }">
+                <li :class="{ 'active': activeTabIndex == 3 }">
                     <NuxtLink to="/playWithFriends">
                         <span class="marker"></span>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +112,32 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
+                <li :class="{ 'active': activeTabIndex == 4 }">
+                    <NuxtLink :to="profileStore.profile ? '/statistics/report/' + profileStore.profile.id : '/statistics'">
+
+                        <span class="marker"></span>
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M16.749 2h4.554l.1.014.099.028.06.026c.08.034.153.085.219.15l.04.044.044.057.054.09.039.09.019.064.014.064.009.095v4.532a.75.75 0 0 1-1.493.102l-.007-.102V4.559l-6.44 6.44a.75.75 0 0 1-.976.073L13 11 9.97 8.09l-5.69 5.689a.75.75 0 0 1-1.133-.977l.073-.084 6.22-6.22a.75.75 0 0 1 .976-.072l.084.072 3.03 2.91L19.438 3.5h-2.69a.75.75 0 0 1-.742-.648l-.007-.102a.75.75 0 0 1 .648-.743L16.75 2ZM3.75 17a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm5.75-3.25a.75.75 0 0 0-1.5 0v7.5a.75.75 0 0 0 1.5 0v-7.5ZM13.75 15a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0v-5.5a.75.75 0 0 1 .75-.75Zm5.75-4.25a.75.75 0 0 0-1.5 0v10.5a.75.75 0 0 0 1.5 0v-10.5Z" />
+                        </svg>
+                        <p>Statistics</p>
+                    </NuxtLink>
+
+                </li>
+
                 <li :class="{ 'active': activeTabIndex == 5 }">
+                    <NuxtLink to="/leaderboard">
+                        <span class="marker"></span>
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M8.5 5.247A2.249 2.249 0 0 1 10.75 3h2.5a2.249 2.249 0 0 1 2.25 2.247v1.769h3.25A2.249 2.249 0 0 1 21 9.263v10.988a.75.75 0 0 1-.75.749H3.75a.75.75 0 0 1-.75-.75v-7.99a2.249 2.249 0 0 1 2.25-2.248H8.5V5.247ZM10 19.503h4V5.247a.75.75 0 0 0-.75-.749h-2.5a.75.75 0 0 0-.75.75v14.254ZM8.5 11.51H5.25a.75.75 0 0 0-.75.749v7.242h4V11.51Zm7 7.99h4V9.264a.75.75 0 0 0-.75-.75H15.5v10.989Z" />
+                        </svg>
+
+                        <p>Leaderboard</p>
+                    </NuxtLink>
+                </li>
+
+                <li :class="{ 'active': activeTabIndex == 6 }">
                     <NuxtLink to="/help">
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -135,7 +148,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 6 }">
+                <li :class="{ 'active': activeTabIndex == 7 }">
                     <NuxtLink to="/settings">
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -322,5 +335,4 @@ function closeSignInDialog() {
         background-color: var(--color-surface-variant);
     }
 
-}
-</style>~/store/modules/profile
+}</style>~/store/modules/profile

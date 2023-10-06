@@ -3,7 +3,7 @@ const data = "Lorem Ipsum is simply dummy text of the printing and type setting 
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="4" />
+        <Sidebar :activeTabIndex="3" />
         <section class="main">
             <h2>Play with Friends</h2>
             <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.

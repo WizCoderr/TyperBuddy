@@ -97,7 +97,7 @@ async function onPracticeComplete(reportData: TypingReport) {
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="2" />
+        <Sidebar :activeTabIndex="1" />
         <section class="main">
             <div class="status-bar">
                 <h3>Speed: {{ reportStore.currentTypingReport.averageWPM }} ( <span

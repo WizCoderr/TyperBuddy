@@ -6,7 +6,7 @@
 
 <template>
     <main>
-        <Sidebar :activeTabIndex="1" />
+        <Sidebar :activeTabIndex="4" />
         <section class="main">
             <h2>Statistics</h2>
             <p>Signin required to view your statistics</p>

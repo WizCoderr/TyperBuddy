@@ -2,7 +2,7 @@
 </script>
 <template>
         <main>
-        <Sidebar :activeTabIndex="7" />
+        <Sidebar :activeTabIndex="5" />
         <section class="main">
            settings
         </section>
