@@ -3,7 +3,6 @@ import { Socket, io } from "socket.io-client";
 import { PlayerData, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
-import { cursorTo } from "readline";
 
 
 const profileStore = useProfileStore()
@@ -215,9 +214,10 @@ function onRoomStateChange(state: string) {
     }
     else if (state == "running" && isInCurrentMatch.value == true) {
         isWriteAllowed.value = true
-    } else {
-        isWriteAllowed.value = false
+        return
     }
+
+    isWriteAllowed.value = false
 }
 
 
