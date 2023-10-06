@@ -24,7 +24,7 @@ watch(() => prop.isEditAllowed, (newValue, oldValue) => {
     if (newValue != oldValue) {
         if (newValue) {
             typingTextarea.value!!.focus()
-        }else{
+        } else {
             typingTextarea.value!!.blur()
         }
     }
@@ -68,7 +68,7 @@ const content = ref<HTMLDivElement>()
 const isTypingFocus = ref(false)
 
 onMounted(function () {
-    console.log('mounted dasdfasdf')
+    console.log('mounted')
 
     if (typingTextarea == undefined) return
     typingTextarea.value!!.addEventListener('mousedown', function (event) {
@@ -153,13 +153,13 @@ function setupData(paragraph: string) {
 
 
 function updateReport() {
-    if(typingTextarea.value == null) return
+    if (typingTextarea.value == null) return
 
     if (prop.multiplayer == false) {
         if (isTypingFocus) {
             setTimeout(updateReport, 1000)
         }
-    }else{
+    } else {
         setTimeout(updateReport, 1000)
     }
 
@@ -225,19 +225,6 @@ function manipulateText(text: string) {
             }
         }
         previousTextLength = text.length
-
-
-        if (prop.forgiveError == true) {
-            if (text.length == dataContent.length) {
-                isTypingFocus.value = false
-                emit('typingCompleted', typingReport)
-            }
-        } else {
-            if ((correctTypingIndex.value + 1) == dataContent.length) {
-                isTypingFocus.value = false
-                emit('typingCompleted', typingReport)
-            }
-        }
     }
 
 
@@ -396,6 +383,19 @@ function manipulateText(text: string) {
         cursorPos = index
     }
 
+    if (text.length > 0) {
+        if (prop.forgiveError == true) {
+            if (text.length == dataContent.length) {
+                isTypingFocus.value = false
+                emit('typingCompleted', typingReport)
+            }
+        } else {
+            if ((correctTypingIndex.value + 1) == dataContent.length) {
+                isTypingFocus.value = false
+                emit('typingCompleted', typingReport)
+            }
+        }
+    }
 
 
     // used for multiplayer
@@ -458,7 +458,7 @@ function onBeforeType(event: any) {
         <template v-if="multiplayer == false">
             <p v-if="isEditAllowed && !isTypingFocus" class="message">Click to play</p>
         </template>
-       
+
     </div>
 </template>
 <style scoped>
