@@ -53,7 +53,7 @@ export function countCorrectWords(testSentence: string, correctSentence: string)
         const testChar = testSentence[index]
         const correctChar = correctSentence[index]
 
-        // wating for next whitespace if error text found
+        // waiting for next whitespace if error text found
         if(isWaiting){
             if(' ' == testChar){
                 tempWord = ''

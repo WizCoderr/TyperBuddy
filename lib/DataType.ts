@@ -98,5 +98,15 @@ export interface PlayerData {
     speed: number;
     errors: number;
     rank: number;
-  }
+  };
+}
+
+export interface Leaderboard {
+  userId: string;
+  name: string;
+  profileImage: string;
+  highestWPM: number;
+  averageWPM: number;
+  rank: number;
+  updatedAt: Date;
 }
