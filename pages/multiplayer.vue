@@ -3,6 +3,7 @@ import { Socket, io } from "socket.io-client";
 import { PlayerData, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
+import ApiStatistics from "~/lib/api/ApiStatistics";
 
 
 const profileStore = useProfileStore()
@@ -50,6 +51,9 @@ function setup() {
     socket = io(serverUrl)
     socket.on('connect', onConnect)
 }
+
+
+
 
 
 function onKick() {
@@ -226,9 +230,13 @@ function onRoomStateChange(state: string) {
 }
 
 
-function onTypingCompleted() {
+async function onTypingCompleted(reportData: TypingReport) {
 
     isWriteAllowed.value = false
+    // sending report to server if user is signed in
+    if (profileStore.profile != null) {
+        console.log(await ApiStatistics.addStatistics(reportData))
+    }
 }
 
 
@@ -255,6 +263,8 @@ function onScoreUpdate(report: TypingReport) {
     }
 
 }
+
+
 
 
 
