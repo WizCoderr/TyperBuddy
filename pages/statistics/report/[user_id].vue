@@ -1,5 +1,6 @@
 
 <script setup lang='ts'>
+import { CalendarHeatmap } from 'vue3-calendar-heatmap'
 import { MyChartData, StatisticPageData } from '~/lib/DataType';
 import { timeToWord } from '~/lib/utils'
 
@@ -251,6 +252,9 @@ function getThemeColor(name: string) {
                         :secondDataset="allTimeFirstDataset" />
                 </div>
             </div>
+
+            <hr>
+            <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/>
         </section>
     </main>
 </template>

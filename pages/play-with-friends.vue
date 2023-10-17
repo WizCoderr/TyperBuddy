@@ -4,6 +4,7 @@ import { PlayerData, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
+const route = useRoute()
 
 
 const profileStore = useProfileStore()
@@ -17,7 +18,9 @@ const profileData = {
     accountId: ""
 }
 
-let roomCode = ''
+let roomCode = ""
+
+
 let socket: Socket | null = null
 const messageText = ref("")
 const isInCurrentMatch = ref(false)
@@ -31,21 +34,33 @@ const allPlayers = ref(Array<PlayerData>())
 onMounted(setup)
 
 
-onUnmounted(function(){
-    if(socket){
+onUnmounted(function () {
+    if (socket) {
         socket.disconnect()
         socket = null
     }
 })
 
 function setup() {
-
     isKicked.value = false
 
     // call until profile loaded
     if (!profileStore.isLoaded) {
+
         setTimeout(setup, 500)
         return
+    }
+
+    if (profileStore.profile == null) {
+        alert("You need to sign up to play with friends")
+        return
+    }
+
+    // player are not joining to other room, so create a new room for him
+    if (route.query.room == undefined || route.query.room == "") {
+        roomCode = profileStore.profile.roomCode
+    } else {
+        roomCode = route.query.room as string
     }
 
     if (profileStore.profile != null) {
@@ -56,11 +71,18 @@ function setup() {
 
     allPlayers.value = []
 
-    socket = io(serverUrl + '/public')
+    socket = io(serverUrl + '/private')
     socket.on('connect', onConnect)
 }
 
 
+
+
+
+function onKick(message: string) {
+    isKicked.value = true
+
+}
 
 function onConnect() {
     allPlayers.value = []
@@ -70,14 +92,14 @@ function onConnect() {
     socket!!.on("roomState", onRoomStateChange)
     socket!!.on("existingData", onExistingData)
     socket!!.on("scoreChange", onScoreChange)
+    socket!!.on("cursorChange", onCursorChange)
     socket!!.on("rankChange", onRankChange)
     socket!!.on("onPlayerJoin", onPlayerJoin)
     socket!!.on("onPlayerLeft", onPlayerLeft)
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
-    socket!!.on("onGameMessage", onGameMessage)
- 
-    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: "" });
+    socket!!.on("kick", onKick)
+    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: roomCode });
 
 }
 
@@ -104,10 +126,8 @@ function onScoreChange(scores: Array<{
     playerId: string,
     speed: number,
     highestSpeed: number,
-    errors: number,
-    cursorPos: number
+    errors: number
 }>) {
-
 
     for (const score of scores) {
 
@@ -116,7 +136,7 @@ function onScoreChange(scores: Array<{
 
             if (player.playerId == score.playerId) {
                 const newScore = {
-                    cursorPos: score.cursorPos,
+                    cursorPos: allPlayers.value[index].score.cursorPos,
                     speed: score.speed,
                     errors: score.errors,
                     rank: allPlayers.value[index].score.rank
@@ -129,8 +149,25 @@ function onScoreChange(scores: Array<{
     }
 }
 
+function onCursorChange(cursors: Array<{
+    playerId: string,
+    cursorPos: number
+}>) {
 
-function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string }>) {
+    for (const cursor of cursors) {
+        for (let index = 0; index < allPlayers.value.length; index++) {
+            const player = allPlayers.value[index];
+            if (player.playerId == cursor.playerId) {
+
+                allPlayers.value[index].score.cursorPos = cursor.cursorPos
+                break
+            }
+        }
+    }
+
+}
+
+function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean }>) {
 
     for (const player of previousData) {
         allPlayers.value.push({
@@ -145,15 +182,12 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
                 rank: 0
             }
         })
-
-        roomCode = player.roomCode
     }
 
 }
 
-function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string }) {
+function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean }) {
 
-    alert("hello")
     // adding the current player
     allPlayers.value.push({
         playerId: playerData.playerId,
@@ -180,17 +214,8 @@ function onPlayerLeft(playerData: { playerId: string }) {
 }
 
 
-function onGameMessage(message: string) {
+function onMessage(message: string) {
     messageText.value = message
-}
-
-function onMessage(res: {type: 'error' | 'kick'| 'roomFull', message: string}) {
-
-    if(res.type == 'kick'){
-        isKicked.value = true
-    }else{
-        alert(res.message)
-    }
 }
 
 
@@ -238,30 +263,38 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 function onTyping(pos: number) {
-    if (socket != null && roomCode != '') {
-        socket.emit("updateScore", {
+    if (socket != null) {
+        socket.emit("updateCursor", {
             playerId: socket.id,
-            cursorPos: pos,
-            roomCode: roomCode,
-            errors: 10
+            cursorPos: pos
         })
     }
 }
 
 function onScoreUpdate(report: TypingReport) {
 
-    // if (socket != null) {
-    //     socket.emit("updateScore", {
-    //         playerId: socket.id,
-    //         speed: report.averageWPM,
-    //         highestSpeed: report.highestWPM,
-    //         errors: report.totalError
-    //     })
-    // }
+    if (socket != null) {
+        socket.emit("updateScore", {
+            playerId: socket.id,
+            speed: report.averageWPM,
+            highestSpeed: report.highestWPM,
+            errors: report.totalError
+        })
+    }
 
 }
 
 
+
+
+function copyLink() {
+    // Copy the text inside the text field
+    const link = window.location.href + "?room=" + profileStore.profile!!.roomCode
+    navigator.clipboard.writeText(link);
+
+    // Alert the copied text
+    alert("Link copied to clipboard: " + link);
+}
 
 
 
@@ -269,11 +302,12 @@ function onScoreUpdate(report: TypingReport) {
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="2" />
+        <Sidebar :activeTabIndex="3" />
         <section class="main">
-            <h2>Multiplayer</h2>
-            <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
+            <h2>Play with Friends</h2>
+            <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
+
 
             <template v-if="isKicked == false">
                 <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
@@ -294,33 +328,40 @@ function onScoreUpdate(report: TypingReport) {
                         Rejoin</button>
                 </div>
             </div>
-
+            <button @click="copyLink">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
+                </svg>
+                Share Link</button>
         </section>
+
+
     </main>
 </template>
 <style scoped>
-.kick {
-    width: 100%;
-    min-height: 400px;
+section>button {
+    margin: 3rem 0;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background-color: var(--color-primary);
+    border-radius: var(--border-radius);
+    font-size: var(--medium-font);
+    color: var(--color-on-primary);
+    transition: all 200ms;
+    box-shadow: 0 2px 4px #148aff4d;
     display: flex;
-    justify-content: center;
     align-items: center;
+    gap: 1rem;
 }
 
-.kick .content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    flex-direction: column;
+section>button svg {
+    fill: white;
 }
 
-
-.kick img {
-    width: 100px;
-}
-
-.kick h2 {
-    text-align: center;
+section>button:hover {
+    background-color: var(--color-primary-variant);
+    translate: 0 -4px;
+    box-shadow: 0 4px 8px #148aff4d;
 }
 </style>

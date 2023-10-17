@@ -21,11 +21,13 @@
     "pinia": "^2.1.6",
     "query-string": "^8.1.0",
     "socket.io-client": "^4.7.2",
+    "tippy.js": "^6.3.7",
     "ts-ago": "^1.0.1",
     "uid": "^2.0.2",
     "vue": "^3.3.4",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.2.5",
+    "vue3-calendar-heatmap": "^2.0.5",
     "vue3-google-login": "^2.0.20"
   }
 }
