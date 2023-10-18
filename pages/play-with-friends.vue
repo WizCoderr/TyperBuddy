@@ -262,11 +262,11 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 
-function onTyping(pos: number) {
+function onTyping(data: {cursorPos: number, error: number}) {
     if (socket != null) {
         socket.emit("updateCursor", {
             playerId: socket.id,
-            cursorPos: pos
+            cursorPos: data.cursorPos
         })
     }
 }

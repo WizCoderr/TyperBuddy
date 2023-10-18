@@ -100,6 +100,11 @@ function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
     });
 }
 
+
+
+
+let playerAvgWPM = 0
+let playerHighestWPM = 0
 function onScoreChange(scores: Array<{
     playerId: string,
     speed: number,
@@ -124,6 +129,13 @@ function onScoreChange(scores: Array<{
 
                 allPlayers.value[index].score = newScore
                 break
+            }
+
+
+            // find the current player
+            if(player.playerId == socket!!.id){
+                playerAvgWPM = score.speed
+                playerHighestWPM = score.highestSpeed
             }
         }
     }
@@ -230,6 +242,8 @@ async function onTypingCompleted(reportData: TypingReport) {
     isWriteAllowed.value = false
     // sending report to server if user is signed in
     if (profileStore.profile != null) {
+        reportData.averageWPM = playerAvgWPM
+        reportData.highestWPM = playerHighestWPM
         console.log(await ApiStatistics.addStatistics(reportData))
     }
 }
@@ -237,30 +251,16 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 
-function onTyping(pos: number) {
+function onTyping(data: {cursorPos: number, error: number}) {
     if (socket != null && roomCode != '') {
         socket.emit("updateScore", {
             playerId: socket.id,
-            cursorPos: pos,
+            cursorPos: data.cursorPos,
             roomCode: roomCode,
-            errors: 10
+            errors: data.error
         })
     }
 }
-
-function onScoreUpdate(report: TypingReport) {
-
-    // if (socket != null) {
-    //     socket.emit("updateScore", {
-    //         playerId: socket.id,
-    //         speed: report.averageWPM,
-    //         highestSpeed: report.highestWPM,
-    //         errors: report.totalError
-    //     })
-    // }
-
-}
-
 
 
 
@@ -279,7 +279,7 @@ function onScoreUpdate(report: TypingReport) {
                 <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
                     :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
-                    :onSubmitTypingReport="onScoreUpdate" />
+                     />
             </template>
 
             <div v-else class="kick">

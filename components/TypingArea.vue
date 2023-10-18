@@ -44,8 +44,8 @@ const emit = defineEmits({
         return data
     },
 
-    typing: (cursorPos: number) => {
-        return cursorPos
+    typing: (data: {error: number, cursorPos: number}) => {
+        return data
     }
 
 })
@@ -399,7 +399,7 @@ function manipulateText(text: string) {
 
 
     // used for multiplayer
-    emit('typing', cursorPos)
+    emit('typing', {error: typingReport.totalError,  cursorPos: cursorPos})
 
 
     nextTick(() => checkForTypingEnd())
