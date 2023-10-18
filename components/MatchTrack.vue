@@ -42,7 +42,7 @@ function getColor(index: number){
                 <col style="width: 12rem;">
                 <col style="width: auto;">
             </colgroup>
-            <tbody>
+            <tbody style="min-height: 500px;">
                 <tr :class="{'blink': player.isInMatch == false}" v-for="player, index in players" :key="index">
                     <td>
                         <div class="profile">
