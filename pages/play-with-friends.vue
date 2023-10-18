@@ -266,7 +266,7 @@ function onTyping(data: {cursorPos: number, error: number}) {
     if (socket != null) {
         socket.emit("updateCursor", {
             playerId: socket.id,
-            cursorPos: data.cursorPos
+            cursorPos: data
         })
     }
 }

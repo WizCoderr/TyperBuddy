@@ -164,8 +164,7 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
 }
 
 function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string }) {
-
-    alert("hello")
+    
     // adding the current player
     allPlayers.value.push({
         playerId: playerData.playerId,

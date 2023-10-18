@@ -1,7 +1,6 @@
 <script setup lang='ts'>
 import queryString from 'query-string';
 // import { GoogleLogin } from 'vue3-google-login';
-
 const props = defineProps<{
     isVisible: boolean
 }>()
@@ -16,15 +15,12 @@ function close() {
 
 const githubClientID = import.meta.env.VITE_GITHUB_CLIENT_ID
 const googleClientID = import.meta.env.VITE_GOOGLE_CLIENT_ID
-const hostUrl = import.meta.env.VITE_HOST_URL
-console.log({
-    githubClientID,
-    googleClientID,
-    hostUrl,
-     serverUrl : import.meta.env.VITE_SERVER_URL
+let hostUrl = ""
+onMounted(function () {
+    hostUrl = window.location.origin
 })
 
-// https://accounts.google.com/o/oauth2/v2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=${SCOPES.join(' ')}&response_type=code
+
 function signInWithGoogle() {
     const params = queryString.stringify({
         client_id: googleClientID,
@@ -209,6 +205,4 @@ button.facebook:hover {
 button.github:hover {
     background-color: #2c2c2c;
 }
-
-
 </style>
