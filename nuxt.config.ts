@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
   ],
-  css: ["@/assets/css/global.css", "@/assets/css/skeleton.css"],
+  css: ["@/assets/css/global.css", "@/assets/css/skeleton.css", "vue-toast-notification/dist/theme-sugar.css"],
   pinia: {
     autoImports: [
       // automatically imports `defineStore`
