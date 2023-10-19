@@ -21,6 +21,7 @@ function getRank(rank: number) {
         return ranks[0]
     }
 
+    
     return ranks[rank]
 }
 

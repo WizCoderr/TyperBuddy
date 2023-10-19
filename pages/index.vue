@@ -6,9 +6,12 @@ import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue
 import PracticeCompleteDialog from '~/components/dialog/PracticeCompleteDialog.vue';
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
 import ApiStatistics from '~/lib/api/ApiStatistics';
-import {usePracticeReportStore} from '~/store/practiceReport'
-import {usePracticeLessonStore} from '~/store/practiceLesson'
-import {useProfileStore} from '~/store/profile'
+import { usePracticeReportStore } from '~/store/practiceReport'
+import { usePracticeLessonStore } from '~/store/practiceLesson'
+import { useProfileStore } from '~/store/profile'
+
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
@@ -23,18 +26,20 @@ function updateProgress(progress: number) {
 }
 
 
-onMounted(function(){
+onMounted(function () {
     startLesson()
+    const $toast = useToast();
+    let instance = $toast.error('You did it!', {position: "bottom"});
 })
 
 
 
-function startLesson(){
+function startLesson() {
     isCompleteDialogVisible.value = false
     lessonStore.updateLesson(40, true)
 }
 
-function restartLesson(){
+function restartLesson() {
     isCompleteDialogVisible.value = false
     lessonStore.restartLesson()
 }
@@ -61,14 +66,14 @@ const dialogTypingReport = ref<TypingReport>({
 
 
 const isSettingDialogVisible = ref(false)
-function openSetting(){
+function openSetting() {
     isSettingDialogVisible.value = true
 }
 
-function onSettingClose(isSaved: boolean){
+function onSettingClose(isSaved: boolean) {
     isSettingDialogVisible.value = false
-    
-    if(isSaved) lessonStore.updateLesson(40, true)
+
+    if (isSaved) lessonStore.updateLesson(40, true)
 }
 
 
@@ -85,8 +90,8 @@ async function onPracticeComplete(reportData: TypingReport) {
     isCompleteDialogVisible.value = true
 
     // sending report to server if user is signed in
-    if(profileStore.profile != null){
-        console.log( await ApiStatistics.addStatistics(reportData))
+    if (profileStore.profile != null) {
+        console.log(await ApiStatistics.addStatistics(reportData))
     }
 
 }
@@ -100,9 +105,11 @@ async function onPracticeComplete(reportData: TypingReport) {
         <section class="main">
             <div class="status-bar">
                 <h3>Speed: {{ reportStore.currentTypingReport.averageWPM }} ( <span
-                        :class="{ 'success': reportStore.typingSpeedPerformance[0] == '+' }">{{ reportStore.typingSpeedPerformance }}</span> )</h3>
+                        :class="{ 'success': reportStore.typingSpeedPerformance[0] == '+' }">{{
+                            reportStore.typingSpeedPerformance }}</span> )</h3>
                 <h3>Error: {{ reportStore.currentTypingReport.totalError }} ( <span
-                        :class="{ 'success': reportStore.typingAccuracyPerformance[0] == '+' }">{{ reportStore.typingAccuracyPerformance }}</span> )
+                        :class="{ 'success': reportStore.typingAccuracyPerformance[0] == '+' }">{{
+                            reportStore.typingAccuracyPerformance }}</span> )
                 </h3>
                 <div>
                     <button @click="openSetting()" class="button secondary">
@@ -129,17 +136,15 @@ async function onPracticeComplete(reportData: TypingReport) {
             </div>
 
             <TypingArea :sentence="lessonStore.lesson" :message="'Click to play'" :onTypingCompleted="onPracticeComplete"
-                :onSubmitTypingReport="reportStore.updateTypingReport"
-                :onProgressChange="updateProgress" :is-edit-allowed="true" :forgive-error="true" :multiplayer="false"/>
+                :onSubmitTypingReport="reportStore.updateTypingReport" :onProgressChange="updateProgress"
+                :is-edit-allowed="true" :forgive-error="true" :multiplayer="false" />
             <Keyboard />
 
         </section>
     </main>
 
-    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)"/>
-    <PracticeCompleteDialog :onRestart="restartLesson" :onStart="startLesson" :test-data="dialogTypingReport" v-if="isCompleteDialogVisible" />
-
+    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)" />
+    <PracticeCompleteDialog :onRestart="restartLesson" :onStart="startLesson" :test-data="dialogTypingReport"
+        v-if="isCompleteDialogVisible" />
 </template>
-<style scoped>
-@import '../assets/css/common.css';
-</style>
+<style scoped>@import '../assets/css/common.css';</style>
