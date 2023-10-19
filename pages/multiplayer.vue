@@ -4,6 +4,8 @@ import { PlayerData, SocketMessageType, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
+import { useToast } from 'vue-toast-notification';
+const $toast = useToast();
 
 
 const profileStore = useProfileStore()
@@ -204,20 +206,21 @@ function onMessage(res: {type: SocketMessageType, message: string}) {
         case SocketMessageType.kick:
             isKicked.value = true
             kickMsg.value = res.message
+            $toast.info(res.message, { position: "bottom" });
             break;
 
         case SocketMessageType.roomFull:
-            alert(res.message)
+            $toast.default(res.message, { position: "bottom" });
             break
         case SocketMessageType.error:
-            alert(res.message)
+            $toast.error(res.message, { position: "bottom" });
             break
         case SocketMessageType.forbidden:
-            alert(res.message)
+            $toast.error(res.message, { position: "bottom" });
             break
 
         case SocketMessageType.info:
-            alert(res.message)
+            $toast.info(res.message, { position: "bottom" });
             break
 
         default:

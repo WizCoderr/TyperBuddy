@@ -4,6 +4,8 @@ import { PlayerData, SocketMessageType, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
+import { useToast } from 'vue-toast-notification';
+const $toast = useToast();
 
 const route = useRoute()
 
@@ -21,7 +23,6 @@ const profileData = {
 }
 
 let roomCode = ""
-
 
 
 let socket: Socket | null = null
@@ -57,7 +58,7 @@ function setup() {
     }
 
     if (profileStore.profile == null) {
-        alert("You need to sign up to play with friends")
+        $toast.default('You need to sign up to play with friends', { position: "bottom" });
         return
     }
 
@@ -169,7 +170,6 @@ function onScoreChange(scores: Array<{
 
 function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string, isAdmin: boolean }>) {
 
-    console.table(previousData)
     for (const player of previousData) {
         allPlayers.value.push({
             playerId: player.playerId,
@@ -232,20 +232,21 @@ function onMessage(res: { type: SocketMessageType, message: string }) {
         case SocketMessageType.kick:
             isKicked.value = true
             kickMsg.value = res.message
+            $toast.info(res.message, { position: "bottom" });
             break;
 
         case SocketMessageType.roomFull:
-            alert(res.message)
+            $toast.default(res.message, { position: "bottom" });
             break
         case SocketMessageType.error:
-            alert(res.message)
+            $toast.error(res.message, { position: "bottom" });
             break
         case SocketMessageType.forbidden:
-            alert(res.message)
+            $toast.error(res.message, { position: "bottom" });
             break
 
         case SocketMessageType.info:
-            alert(res.message)
+            $toast.info(res.message, { position: "bottom" });
             break
 
         default:
@@ -317,8 +318,7 @@ function copyLink() {
     const link = window.location.href + "?room=" + profileStore.profile!!.roomCode
     navigator.clipboard.writeText(link);
 
-    // Alert the copied text
-    alert("Link copied to clipboard: " + link);
+    $toast.success("Link copied to clipboard", { position: "bottom" });
 }
 
 
@@ -332,13 +332,15 @@ function startMatch() {
 }
 
 
-function onKick(playerId: string){
+function onKick(playerId: string) {
     if (socket != null) {
         socket.emit("kickPlayer", {
             playerId: socket.id,
             roomCode: roomCode,
             playerRemoveId: playerId
         })
+
+        $toast.default('You removed (' + playerId + ')!', { position: "bottom" });
     }
 }
 
@@ -354,49 +356,54 @@ function onKick(playerId: string){
             <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
 
-            <div class="button-tabs">
-                <button @click="copyLink">
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
-                </svg>
-                Share Link</button>
-                <button v-if="isAdmin" @click="startMatch">
-                    Start Match</button>
-            </div>
-
-            <template v-if="isKicked == false">
-                <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
-                <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
-                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
-                    />
-            </template>
-
-            <div v-else class="kick">
-                <div class="content">
-                    <img src="../public/images/kick.png" alt="kick">
-                    <h2>Oops!<br>{{ kickMsg }}</h2>
-                    <button @click="setup" class="button primary">
+            <template v-if="profileStore.profile">
+                <div class="button-tabs">
+                    <button @click="copyLink" v-if="profileStore.profile.roomCode == roomCode">
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
-                                d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
+                                d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
                         </svg>
-                        Rejoin</button>
+                        Share Link</button>
+                    <button v-if="isAdmin" @click="startMatch">
+                        Start Match</button>
                 </div>
-            </div>
-            
+
+                <template v-if="isKicked == false">
+                    <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers"
+                        :totalChars="typingContent.length" :message="messageText" />
+                    <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
+                        :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
+                        :message="'Please wait'" />
+                </template>
+
+                <div v-else class="kick">
+                    <div class="content">
+                        <img src="../public/images/kick.png" alt="kick">
+                        <h2>Oops!<br>{{ kickMsg }}</h2>
+                        <button @click="setup" class="button primary">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
+                            </svg>
+                            Rejoin</button>
+                    </div>
+                </div>
+            </template>
+            <p v-else-if="profileStore.isLoaded"> <br> SignIn required to use this features</p>
+
+
         </section>
 
 
     </main>
 </template>
 <style scoped>
-
-.button-tabs{
+.button-tabs {
     display: flex;
     gap: 12px;
 
 }
+
 .button-tabs button {
     margin: 3rem 0;
     padding: 0.8rem 1.5rem;

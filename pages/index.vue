@@ -10,9 +10,6 @@ import { usePracticeReportStore } from '~/store/practiceReport'
 import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
 
-import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-sugar.css';
-
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
 const profileStore = useProfileStore()
@@ -28,8 +25,6 @@ function updateProgress(progress: number) {
 
 onMounted(function () {
     startLesson()
-    const $toast = useToast();
-    let instance = $toast.error('You did it!', {position: "bottom"});
 })
 
 

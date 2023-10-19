@@ -2,6 +2,8 @@
 import queryString from 'query-string';
 import { AxiosResult } from '~/lib/DataType';
 import ApiAuth from '~/lib/api/ApiAuth';
+import { useToast } from 'vue-toast-notification';
+const $toast = useToast();
 
 const router = useRouter();
 
@@ -12,11 +14,13 @@ onMounted(async function(){
         const result = await ApiAuth.signup<{access_token: string}>(code.toString(), 'github')
         if(result.isOk){
             saveToken(result.data!!.access_token)
+            $toast.success("Successfully signup done", {position: "bottom"})
         }else{
             console.log(result)
+            $toast.error("Failed to signup, please try again later!", {position: "bottom"})
         }
     }else{
-        alert('Something went wrong!')
+        $toast.error("Failed to signup, please try again later!", {position: "bottom"})
     }
 
     router.push({ path: '/', replace: true })

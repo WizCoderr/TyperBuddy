@@ -1,5 +1,11 @@
 
 <script setup lang='ts'>
+import { useToast } from 'vue-toast-notification';
+const $toast = useToast();
+
+onMounted(function(){
+    $toast.default("Please signIn to see your statistics", {position: "bottom"})
+})
 
 </script>
 
