@@ -111,10 +111,10 @@ button.button{
 button.button svg {
     fill: inherit;
 }
-
+/* 
 button.button:hover {
-    translate: 0 -4px;
-}
+    transform: scale(1.1, 1.1);
+} */
 
 button.primary {
     box-shadow: 0 2px 4px #148aff4d;

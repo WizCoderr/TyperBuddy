@@ -1,9 +1,10 @@
 <script setup lang='ts'>
 import { Socket, io } from "socket.io-client";
-import { PlayerData, TypingReport } from '~/lib/DataType'
+import { PlayerData, SocketMessageType, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
+
 const route = useRoute()
 
 
@@ -11,6 +12,7 @@ const profileStore = useProfileStore()
 const serverUrl = import.meta.env.VITE_SERVER_URL
 const typingContent = ref("loading...")
 const isKicked = ref(false)
+const kickMsg = ref("")
 
 const profileData = {
     name: "Unknown",
@@ -21,10 +23,12 @@ const profileData = {
 let roomCode = ""
 
 
+
 let socket: Socket | null = null
 const messageText = ref("")
 const isInCurrentMatch = ref(false)
 const isWriteAllowed = ref(false)
+const isAdmin = ref(false)
 
 const allPlayers = ref(Array<PlayerData>())
 
@@ -43,6 +47,7 @@ onUnmounted(function () {
 
 function setup() {
     isKicked.value = false
+    isAdmin.value = false
 
     // call until profile loaded
     if (!profileStore.isLoaded) {
@@ -79,11 +84,6 @@ function setup() {
 
 
 
-function onKick(message: string) {
-    isKicked.value = true
-
-}
-
 function onConnect() {
     allPlayers.value = []
     console.log("Connection established")
@@ -92,17 +92,22 @@ function onConnect() {
     socket!!.on("roomState", onRoomStateChange)
     socket!!.on("existingData", onExistingData)
     socket!!.on("scoreChange", onScoreChange)
-    socket!!.on("cursorChange", onCursorChange)
     socket!!.on("rankChange", onRankChange)
     socket!!.on("onPlayerJoin", onPlayerJoin)
     socket!!.on("onPlayerLeft", onPlayerLeft)
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
-    socket!!.on("kick", onKick)
+    socket!!.on("onGameMessage", onGameMessage)
+
     socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: roomCode });
 
 }
 
+
+
+function onGameMessage(message: string) {
+    messageText.value = message
+}
 
 
 
@@ -122,12 +127,17 @@ function onRankChange(ranks: Array<{ playerId: string, rank: number }>) {
     });
 }
 
+
+let playerAvgWPM = 0
+let playerHighestWPM = 0
 function onScoreChange(scores: Array<{
     playerId: string,
     speed: number,
     highestSpeed: number,
-    errors: number
+    errors: number,
+    cursorPos: number
 }>) {
+
 
     for (const score of scores) {
 
@@ -136,7 +146,7 @@ function onScoreChange(scores: Array<{
 
             if (player.playerId == score.playerId) {
                 const newScore = {
-                    cursorPos: allPlayers.value[index].score.cursorPos,
+                    cursorPos: score.cursorPos,
                     speed: score.speed,
                     errors: score.errors,
                     rank: allPlayers.value[index].score.rank
@@ -145,55 +155,54 @@ function onScoreChange(scores: Array<{
                 allPlayers.value[index].score = newScore
                 break
             }
-        }
-    }
-}
 
-function onCursorChange(cursors: Array<{
-    playerId: string,
-    cursorPos: number
-}>) {
 
-    for (const cursor of cursors) {
-        for (let index = 0; index < allPlayers.value.length; index++) {
-            const player = allPlayers.value[index];
-            if (player.playerId == cursor.playerId) {
-
-                allPlayers.value[index].score.cursorPos = cursor.cursorPos
-                break
+            // find the current player
+            if (player.playerId == socket!!.id) {
+                playerAvgWPM = score.speed
+                playerHighestWPM = score.highestSpeed
             }
         }
     }
-
 }
 
-function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean }>) {
 
+function onExistingData(previousData: Array<{ name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string, isAdmin: boolean }>) {
+
+    console.table(previousData)
     for (const player of previousData) {
         allPlayers.value.push({
             playerId: player.playerId,
             name: player.name,
             profileImage: player.profileImage,
             isInMatch: player.isInMatch,
+            isAdmin: player.isAdmin,
             score: {
                 cursorPos: 0,
                 speed: 0,
                 errors: 0,
                 rank: 0
             }
+
         })
+
+        roomCode = player.roomCode
+
+        // check for admin existence 
+        if (player.isAdmin && socket!!.id == player.playerId) isAdmin.value = true
     }
 
 }
 
-function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean }) {
+function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean, isAdmin: boolean }) {
 
-    // adding the current player
+    // adding the new player
     allPlayers.value.push({
         playerId: playerData.playerId,
         name: playerData.name,
         profileImage: playerData.profileImage,
         isInMatch: playerData.isInMatch,
+        isAdmin: playerData.isAdmin,
         score: {
             cursorPos: 0,
             speed: 0,
@@ -201,6 +210,9 @@ function onPlayerJoin(playerData: { name: string, playerId: string, profileImage
             rank: 0
         }
     })
+
+    // check for admin existence 
+    if (socket!!.id == playerData.playerId && playerData.isAdmin) isAdmin.value = true
 }
 
 
@@ -214,8 +226,31 @@ function onPlayerLeft(playerData: { playerId: string }) {
 }
 
 
-function onMessage(message: string) {
-    messageText.value = message
+function onMessage(res: { type: SocketMessageType, message: string }) {
+
+    switch (res.type) {
+        case SocketMessageType.kick:
+            isKicked.value = true
+            kickMsg.value = res.message
+            break;
+
+        case SocketMessageType.roomFull:
+            alert(res.message)
+            break
+        case SocketMessageType.error:
+            alert(res.message)
+            break
+        case SocketMessageType.forbidden:
+            alert(res.message)
+            break
+
+        case SocketMessageType.info:
+            alert(res.message)
+            break
+
+        default:
+            break;
+    }
 }
 
 
@@ -255,35 +290,25 @@ async function onTypingCompleted(reportData: TypingReport) {
     isWriteAllowed.value = false
     // sending report to server if user is signed in
     if (profileStore.profile != null) {
-        console.log(await ApiStatistics.addStatistics(reportData))
+        reportData.averageWPM = playerAvgWPM
+        reportData.highestWPM = playerHighestWPM
+        await ApiStatistics.addStatistics(reportData)
     }
 }
 
 
 
 
-function onTyping(data: {cursorPos: number, error: number}) {
-    if (socket != null) {
-        socket.emit("updateCursor", {
-            playerId: socket.id,
-            cursorPos: data
-        })
-    }
-}
-
-function onScoreUpdate(report: TypingReport) {
-
-    if (socket != null) {
+function onTyping(data: { cursorPos: number, error: number }) {
+    if (socket != null && roomCode != '') {
         socket.emit("updateScore", {
             playerId: socket.id,
-            speed: report.averageWPM,
-            highestSpeed: report.highestWPM,
-            errors: report.totalError
+            cursorPos: data.cursorPos,
+            roomCode: roomCode,
+            errors: data.error
         })
     }
-
 }
-
 
 
 
@@ -294,6 +319,27 @@ function copyLink() {
 
     // Alert the copied text
     alert("Link copied to clipboard: " + link);
+}
+
+
+function startMatch() {
+    if (socket != null) {
+        socket.emit("startMatch", {
+            playerId: socket.id,
+            roomCode: roomCode
+        })
+    }
+}
+
+
+function onKick(playerId: string){
+    if (socket != null) {
+        socket.emit("kickPlayer", {
+            playerId: socket.id,
+            roomCode: roomCode,
+            playerRemoveId: playerId
+        })
+    }
 }
 
 
@@ -308,18 +354,28 @@ function copyLink() {
             <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
                 Type as fast as you can to win the race!</p>
 
+            <div class="button-tabs">
+                <button @click="copyLink">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
+                </svg>
+                Share Link</button>
+                <button v-if="isAdmin" @click="startMatch">
+                    Start Match</button>
+            </div>
 
             <template v-if="isKicked == false">
-                <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
+                <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
                     :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
-                    :onSubmitTypingReport="onScoreUpdate" />
+                    />
             </template>
 
             <div v-else class="kick">
                 <div class="content">
                     <img src="../public/images/kick.png" alt="kick">
-                    <h2>Oops!<br>You were kicked out</h2>
+                    <h2>Oops!<br>{{ kickMsg }}</h2>
                     <button @click="setup" class="button primary">
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -328,19 +384,20 @@ function copyLink() {
                         Rejoin</button>
                 </div>
             </div>
-            <button @click="copyLink">
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
-                </svg>
-                Share Link</button>
+            
         </section>
 
 
     </main>
 </template>
 <style scoped>
-section>button {
+
+.button-tabs{
+    display: flex;
+    gap: 12px;
+
+}
+.button-tabs button {
     margin: 3rem 0;
     padding: 0.8rem 1.5rem;
     border: none;
@@ -355,13 +412,39 @@ section>button {
     gap: 1rem;
 }
 
-section>button svg {
+.button-tabs button svg {
     fill: white;
 }
 
-section>button:hover {
+.button-tabs button:hover {
     background-color: var(--color-primary-variant);
-    translate: 0 -4px;
-    box-shadow: 0 4px 8px #148aff4d;
+    box-shadow: 0 8px 12px #1489ff2a;
+}
+
+
+
+.kick {
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.kick .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-direction: column;
+}
+
+
+.kick img {
+    width: 100px;
+}
+
+.kick h2 {
+    text-align: center;
 }
 </style>

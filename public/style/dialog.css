@@ -13,6 +13,18 @@
 }
 
 
+
+.dialog.small>.content {
+    max-width: 500px;
+    margin: 1rem;
+    padding: 1rem;
+    width: 100%;
+    background-color: var(--color-surface-variant);
+    min-height: 250px;
+}
+
+
+
 .dialog>.content {
     max-width: 800px;
     margin: 1rem;

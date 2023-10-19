@@ -3,6 +3,14 @@ export interface TyperData {
   text: string;
 }
 
+export enum SocketMessageType {
+  error = 'error',
+  kick = 'kick',
+  roomFull = 'roomFull',
+  forbidden = 'forbidden',
+  info = 'info'
+}
+
 export interface CursorPos {
   row: number;
   col: number;
@@ -99,6 +107,7 @@ export interface PlayerData {
     errors: number;
     rank: number;
   };
+  isAdmin: boolean
 }
 
 export interface Leaderboard {

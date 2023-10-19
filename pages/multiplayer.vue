@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { Socket, io } from "socket.io-client";
-import { PlayerData, TypingReport } from '~/lib/DataType'
+import { PlayerData, SocketMessageType, TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
@@ -10,6 +10,7 @@ const profileStore = useProfileStore()
 const serverUrl = import.meta.env.VITE_SERVER_URL
 const typingContent = ref("loading...")
 const isKicked = ref(false)
+const kickMsg = ref("")
 
 const profileData = {
     name: "Unknown",
@@ -150,6 +151,7 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
             name: player.name,
             profileImage: player.profileImage,
             isInMatch: player.isInMatch,
+            isAdmin: false,
             score: {
                 cursorPos: 0,
                 speed: 0,
@@ -171,6 +173,7 @@ function onPlayerJoin(playerData: { name: string, playerId: string, profileImage
         name: playerData.name,
         profileImage: playerData.profileImage,
         isInMatch: playerData.isInMatch,
+        isAdmin: false,
         score: {
             cursorPos: 0,
             speed: 0,
@@ -195,12 +198,30 @@ function onGameMessage(message: string) {
     messageText.value = message
 }
 
-function onMessage(res: {type: 'error' | 'kick'| 'roomFull', message: string}) {
+function onMessage(res: {type: SocketMessageType, message: string}) {
 
-    if(res.type == 'kick'){
-        isKicked.value = true
-    }else{
-        alert(res.message)
+    switch (res.type) {
+        case SocketMessageType.kick:
+            isKicked.value = true
+            kickMsg.value = res.message
+            break;
+
+        case SocketMessageType.roomFull:
+            alert(res.message)
+            break
+        case SocketMessageType.error:
+            alert(res.message)
+            break
+        case SocketMessageType.forbidden:
+            alert(res.message)
+            break
+
+        case SocketMessageType.info:
+            alert(res.message)
+            break
+
+        default:
+            break;
     }
 }
 
@@ -243,7 +264,7 @@ async function onTypingCompleted(reportData: TypingReport) {
     if (profileStore.profile != null) {
         reportData.averageWPM = playerAvgWPM
         reportData.highestWPM = playerHighestWPM
-        console.log(await ApiStatistics.addStatistics(reportData))
+        await ApiStatistics.addStatistics(reportData)
     }
 }
 
@@ -275,7 +296,7 @@ function onTyping(data: {cursorPos: number, error: number}) {
                 Type as fast as you can to win the race!</p>
 
             <template v-if="isKicked == false">
-                <MatchTrack :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
+                <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
                     :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
                      />
@@ -284,7 +305,7 @@ function onTyping(data: {cursorPos: number, error: number}) {
             <div v-else class="kick">
                 <div class="content">
                     <img src="../public/images/kick.png" alt="kick">
-                    <h2>Oops!<br>You were kicked out</h2>
+                    <h2>Oops!<br>{{ kickMsg }}</h2>
                     <button @click="setup" class="button primary">
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
