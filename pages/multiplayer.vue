@@ -5,10 +5,12 @@ import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
 import { useToast } from 'vue-toast-notification';
+import { generateAvatar } from "~/lib/utils";
 const $toast = useToast();
 
 
 const profileStore = useProfileStore()
+//@ts-ignore
 const serverUrl = import.meta.env.VITE_SERVER_URL
 const typingContent = ref("loading...")
 const isKicked = ref(false)
@@ -34,8 +36,8 @@ const allPlayers = ref(Array<PlayerData>())
 onMounted(setup)
 
 
-onUnmounted(function(){
-    if(socket){
+onUnmounted(function () {
+    if (socket) {
         socket.disconnect()
         socket = null
     }
@@ -79,7 +81,7 @@ function onConnect() {
     socket!!.on("onTypingContentChange", onTypingContentChange)
     socket!!.on("onMessage", onMessage)
     socket!!.on("onGameMessage", onGameMessage)
- 
+
     socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: "" });
 
 }
@@ -136,7 +138,7 @@ function onScoreChange(scores: Array<{
 
 
             // find the current player
-            if(player.playerId == socket!!.id){
+            if (player.playerId == socket!!.id) {
                 playerAvgWPM = score.speed
                 playerHighestWPM = score.highestSpeed
             }
@@ -151,7 +153,7 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
         allPlayers.value.push({
             playerId: player.playerId,
             name: player.name,
-            profileImage: player.profileImage,
+            profileImage: player.profileImage ? player.profileImage : generateAvatar(player.name),
             isInMatch: player.isInMatch,
             isAdmin: false,
             score: {
@@ -168,12 +170,12 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
 }
 
 function onPlayerJoin(playerData: { name: string, playerId: string, profileImage: string, isInMatch: boolean, roomCode: string }) {
-    
+
     // adding the current player
     allPlayers.value.push({
         playerId: playerData.playerId,
         name: playerData.name,
-        profileImage: playerData.profileImage,
+        profileImage: playerData.profileImage ? playerData.profileImage : generateAvatar(playerData.name),
         isInMatch: playerData.isInMatch,
         isAdmin: false,
         score: {
@@ -200,7 +202,7 @@ function onGameMessage(message: string) {
     messageText.value = message
 }
 
-function onMessage(res: {type: SocketMessageType, message: string}) {
+function onMessage(res: { type: SocketMessageType, message: string }) {
 
     switch (res.type) {
         case SocketMessageType.kick:
@@ -274,7 +276,7 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 
-function onTyping(data: {cursorPos: number, error: number}) {
+function onTyping(data: { cursorPos: number, error: number }) {
     if (socket != null && roomCode != '') {
         socket.emit("updateScore", {
             playerId: socket.id,
@@ -299,10 +301,10 @@ function onTyping(data: {cursorPos: number, error: number}) {
                 Type as fast as you can to win the race!</p>
 
             <template v-if="isKicked == false">
-                <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length" :message="messageText" />
+                <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length"
+                    :message="messageText" />
                 <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
-                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'"
-                     />
+                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'" />
             </template>
 
             <div v-else class="kick">

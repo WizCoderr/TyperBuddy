@@ -1,8 +1,9 @@
 
 <script setup lang='ts'>
-import { CalendarHeatmap } from 'vue3-calendar-heatmap'
+// import { CalendarHeatmap } from 'vue3-calendar-heatmap'
 import { MyChartData, StatisticPageData } from '~/lib/DataType';
 import { timeToWord } from '~/lib/utils'
+import Heatmap from '~/components/Heatmap.vue';
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')
@@ -10,6 +11,7 @@ const graphType = ref('bar')
 const router = useRouter()
 const { params } = router.currentRoute.value
 
+// @ts-ignore:
 const serverUrl = import.meta.env.VITE_SERVER_URL
 const dataUrl = serverUrl + '/statistics/report/' + params.user_id
 
@@ -254,7 +256,10 @@ function getThemeColor(name: string) {
             </div>
 
             <hr>
-            <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/>
+
+            <!-- <Heatmap/> -->
+
+            <!-- <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/> -->
         </section>
     </main>
 </template>
