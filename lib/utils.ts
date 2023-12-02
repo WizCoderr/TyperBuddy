@@ -136,10 +136,22 @@ export function generateAvatar(name: string) {
   return "";
 }
 
-/**
- --bright-pink-crayola: #ef476fff;
---sunglow: ;
---emerald: ;
---blue-ncs: ;
---midnight-green: ;
- */
+
+export type RGBColor = [number, number, number];
+
+export function getColor(index: number, totalSteps: number, color1: RGBColor, color2: RGBColor) {
+  // Ensure index is within the valid range
+  index = Math.max(0, Math.min(index, totalSteps - 1));
+
+  // Calculate the interpolation factor
+  const factor: number = index / (totalSteps - 1);
+
+  // Interpolate between the two colors
+  const interpolatedColor: RGBColor = [
+    Math.round(color1[0] + factor * (color2[0] - color1[0])),
+    Math.round(color1[1] + factor * (color2[1] - color1[1])),
+    Math.round(color1[2] + factor * (color2[2] - color1[2])),
+  ];
+
+  return `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]},${interpolatedColor[2]})`;
+}

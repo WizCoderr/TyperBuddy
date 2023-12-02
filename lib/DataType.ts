@@ -116,6 +116,7 @@ export interface Leaderboard {
   profileImage: string;
   highestWPM: number;
   averageWPM: number;
+  oldWPM: number;
   rank: number;
   updatedAt: Date;
 }

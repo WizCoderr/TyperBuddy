@@ -138,7 +138,7 @@ async function onPracticeComplete(reportData: TypingReport) {
         </section>
     </main>
 
-    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)" />
+    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="(event: boolean) => onSettingClose(event)" />
     <PracticeCompleteDialog :onRestart="restartLesson" :onStart="startLesson" :test-data="dialogTypingReport"
         v-if="isCompleteDialogVisible" />
 </template>

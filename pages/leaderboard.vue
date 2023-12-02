@@ -3,13 +3,19 @@
 import ago from 'ts-ago'
 import { AxiosResult, Leaderboard } from '~/lib/DataType';
 import ApiLeaderboard from '~/lib/api/ApiLeaderboard';
+import { RGBColor, getColor } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';
 
 const isLoaded = ref(false)
 const leaderboard = ref<Array<Leaderboard>>()
+const colorsMap = new Map<string, string>()
 
 const profileStore = useProfileStore()
 onMounted(setup)
+
+
+const redColor: RGBColor = [174, 32, 18]
+const greenColor: RGBColor = [45, 198, 83]
 
 
 async function setup() {
@@ -29,6 +35,26 @@ async function setup() {
 
     if (result.isOk) {
         leaderboard.value = result.data!!
+
+        // sort table in decreasing decreasing time
+        const sortedArr = result.data!!.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+        // setting color
+        colorsMap.clear()
+
+        sortedArr.forEach(element => {
+            const time = ago(element.updatedAt)
+            if (time) colorsMap.set(time, "")
+        });
+
+        const steps = colorsMap.size
+        let index = 0
+        for (const [key, item] of colorsMap) {
+            const col = getColor(index, steps, greenColor, redColor)
+            colorsMap.set(key, col)
+            index++
+        }
+
     } else {
         console.log(result.error)
     }
@@ -63,11 +89,20 @@ async function setup() {
                         <td class="profile">
                             <div><img :src="item.profileImage"></div>
                         </td>
-                        <td>{{ item.name }}</td>
+                        <td>
+                            {{ item.name }}
+                        </td>
                         <td>{{ item.rank }}</td>
-                        <td>{{ item.averageWPM }}</td>
+                        <td>
+                            <div class="text-arrow">{{ item.averageWPM }} <svg
+                                    :class="{ down: item.averageWPM < item.oldWPM }" fill="none" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="m7.293 8.293 3.995-4a1 1 0 0 1 1.32-.084l.094.083 4.006 4a1 1 0 0 1-1.32 1.499l-.094-.083-2.293-2.291v11.584a1 1 0 0 1-.883.993L12 20a1 1 0 0 1-.993-.884L11 19.001V7.41L8.707 9.707a1 1 0 0 1-1.32.084l-.094-.084a1 1 0 0 1-.084-1.32l.084-.094 3.995-4-3.995 4Z" />
+                                </svg></div>
+                        </td>
                         <td>{{ item.highestWPM }}</td>
-                        <td>{{ ago(item.updatedAt) }}</td>
+                        <td :style="{ color: colorsMap.get(ago(item.updatedAt) as string) }">{{ ago(item.updatedAt) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -117,5 +152,22 @@ table img {
     height: 40px;
     width: 40px;
     border-radius: 50%;
+}
+
+.text-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: #25a18e;
+}
+
+.text-arrow svg.down {
+    transform: rotateZ(180deg);
+    fill: #ef2d56;
 }
 </style>
