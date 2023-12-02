@@ -143,7 +143,7 @@ const emit = defineEmits<{
 
 .dialog .buttons {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     gap: 0.6rem;
 }
 

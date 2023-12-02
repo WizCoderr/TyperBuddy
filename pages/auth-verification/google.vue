@@ -3,6 +3,8 @@ import queryString from 'query-string';
 import { AxiosResult } from '~/lib/DataType';
 import Api from '~/lib/api/ApiAuth';
 import { useToast } from 'vue-toast-notification';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 const $toast = useToast();
 
 const router = useRouter();

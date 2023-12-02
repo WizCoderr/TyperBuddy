@@ -2,7 +2,8 @@
 import {saveLocal, getLocalData, getSimpleData, saveSimpleData} from "~/lib/LocalStorageManager"
 import { useProfileStore } from '~/store/profile';
 import { uid } from "uid";
-import { NuxtPage } from "#build/components";
+import { onMounted } from 'vue';
+import { NuxtPage } from "#components";
 
 const profileStore = useProfileStore()
 

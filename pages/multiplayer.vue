@@ -6,6 +6,7 @@ import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
 import { useToast } from 'vue-toast-notification';
 import { generateAvatar } from "~/lib/utils";
+import { ref, onMounted, onUnmounted } from "vue";
 const $toast = useToast();
 
 

@@ -4,6 +4,7 @@ import CheckBox from '../widgets/CheckBox.vue';
 import RadioGroup from '../widgets/RadioGroup.vue';
 import { SettingData } from '~/lib/DataType'
 import { saveLocal, getLocalData } from '~/lib/LocalStorageManager'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
     isVisible: boolean

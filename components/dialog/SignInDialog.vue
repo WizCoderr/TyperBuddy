@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { onMounted } from '#imports';
 import queryString from 'query-string';
 // import { GoogleLogin } from 'vue3-google-login';
 const props = defineProps<{
@@ -13,8 +14,11 @@ function close() {
     emit('close')
 }
 
+//@ts-ignore
 const githubClientID = import.meta.env.VITE_GITHUB_CLIENT_ID
+//@ts-ignore
 const googleClientID = import.meta.env.VITE_GOOGLE_CLIENT_ID
+
 let hostUrl = ""
 onMounted(function () {
     hostUrl = window.location.origin

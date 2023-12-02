@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { onMounted, ref } from 'vue';
 import SignInDialog from './dialog/SignInDialog.vue';
 import { useProfileStore } from '~/store/profile'
 

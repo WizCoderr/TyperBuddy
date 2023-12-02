@@ -1,4 +1,6 @@
 <script setup lang='ts'>
+import { ref } from 'vue';
+
 const props = defineProps<{
     radioFor: string,
     checked: string,

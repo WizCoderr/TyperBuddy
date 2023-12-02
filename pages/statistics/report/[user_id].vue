@@ -4,6 +4,9 @@
 import { MyChartData, StatisticPageData } from '~/lib/DataType';
 import { timeToWord } from '~/lib/utils'
 import Heatmap from '~/components/Heatmap.vue';
+import { useFetch } from 'nuxt/app';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')

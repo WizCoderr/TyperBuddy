@@ -16,6 +16,7 @@ import {
 
 import { Bar, Line } from 'vue-chartjs'
 import {MyChartData} from '../lib/DataType'
+import { onMounted, ref } from 'vue';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineController, LineElement, PointElement, Filler, Title, Tooltip, Legend)
 

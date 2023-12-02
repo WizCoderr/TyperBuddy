@@ -1,6 +1,7 @@
 <script setup lang='ts'>
-
+import { NuxtLink } from '#components'
 import ago from 'ts-ago'
+import { ref, onMounted } from 'vue';
 import { AxiosResult, Leaderboard } from '~/lib/DataType';
 import ApiLeaderboard from '~/lib/api/ApiLeaderboard';
 import { RGBColor, getColor } from '~/lib/utils';
@@ -90,7 +91,7 @@ async function setup() {
                             <div><img :src="item.profileImage"></div>
                         </td>
                         <td>
-                            {{ item.name }}
+                            <NuxtLink :to="'/'">{{ item.name }}</NuxtLink>
                         </td>
                         <td>{{ item.rank }}</td>
                         <td>

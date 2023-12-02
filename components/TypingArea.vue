@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { watch, ref, onMounted, nextTick } from 'vue';
 import { TyperData, TypingReport } from '~/lib/DataType';
 import { countCorrectWords, getUniqueCharacters } from '~/lib/utils';
 

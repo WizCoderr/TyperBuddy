@@ -10,6 +10,7 @@ import { usePracticeReportStore } from '~/store/practiceReport'
 import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
 import ApiContent from '~/lib/api/ApiContents';
+import { ref, onMounted } from 'vue';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()

@@ -9,6 +9,7 @@ import ApiStatistics from '~/lib/api/ApiStatistics';
 import { usePracticeReportStore } from '~/store/practiceReport'
 import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
+import { ref, onMounted } from 'vue';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
