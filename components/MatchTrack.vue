@@ -201,6 +201,7 @@ table .track svg {
     z-index: 1;
     translate: -50% -50%;
     left: 0%;
+    transition: all 100ms;
 }
 
 table .status {
