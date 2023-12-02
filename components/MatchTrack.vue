@@ -22,7 +22,7 @@ function getRank(rank: number) {
         return ranks[0]
     }
 
-    
+
     return ranks[rank]
 }
 
@@ -64,7 +64,7 @@ function closeKickDialog() {
 
 
 function onKick() {
-    if(kickPlayerId == "") return
+    if (kickPlayerId == "") return
     emit('kick', kickPlayerId)
     isKickDialogOpen.value = false
 }
@@ -169,7 +169,7 @@ table tr {
 table .profile {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.6em;
     font-size: var(--medium-font);
     font-weight: 600;
 }
@@ -214,7 +214,7 @@ table .status {
     right: -2rem;
     z-index: 2;
     background-color: rgba(6, 0, 95, 0.1);
-    padding: 0.4rem 1rem;
+    padding: 0.4em 1em;
     font-size: var(--very-small-font);
 }
 
@@ -255,6 +255,24 @@ table .status {
 
     100% {
         opacity: 1;
+    }
+}
+
+
+
+@media only screen and (max-width: 1300px) {
+    table .track {
+        height: 40px;
+    }
+
+    table .track svg {
+        fill: var(--color-primary);
+        width: 40px;
+        position: absolute;
+        top: 50%;
+        z-index: 1;
+        translate: -50% -50%;
+        left: 0%;
     }
 }
 </style>

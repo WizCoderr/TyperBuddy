@@ -45,7 +45,7 @@ const emit = defineEmits({
         return data
     },
 
-    typing: (data: {error: number, cursorPos: number}) => {
+    typing: (data: { error: number, cursorPos: number }) => {
         return data
     }
 
@@ -400,7 +400,7 @@ function manipulateText(text: string) {
 
 
     // used for multiplayer
-    emit('typing', {error: typingReport.totalError,  cursorPos: cursorPos})
+    emit('typing', { error: typingReport.totalError, cursorPos: cursorPos })
 
 
     nextTick(() => checkForTypingEnd())
@@ -471,7 +471,7 @@ function onBeforeType(event: any) {
     background-color: white;
     border-radius: 0.6rem;
     color: var(--color-on-surface);
-    line-height: 1.8;
+    line-height: 2em;
     padding: 1rem 1.6rem;
     font-size: var(--big-2-font);
     position: relative;
@@ -546,7 +546,7 @@ function onBeforeType(event: any) {
     opacity: 0;
     font-family: monospace !important;
     letter-spacing: 3px;
-    line-height: 1.8;
+    line-height: 2em;
     font-size: var(--big-2-font);
 }
 
@@ -559,5 +559,18 @@ function onBeforeType(event: any) {
     position: absolute;
     user-select: none;
     top: 0;
+}
+
+
+
+@media only screen and (max-width: 1300px) {
+    .typing-content .content {
+        height: 240px;
+    }
+
+    .typing-content {
+        padding: 0.8rem 1.2rem;
+    }
+
 }
 </style>

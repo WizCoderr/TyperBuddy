@@ -54,7 +54,7 @@
 
     --keyboard-color: #e9e9e9;
     --keyboard-key-radius: 4px;
-    
+
     --big-2-font: 28px;
     --big-font: 24px;
     --average-font: 20px;
@@ -64,7 +64,7 @@
     --very-small-font: 12px;
 }
 
-body{
+body {
     background-color: var(--color-surface);
 }
 
@@ -73,30 +73,34 @@ p {
     line-height: 1.5;
 }
 
-h1, h2, h3, h3, h4{
+h1,
+h2,
+h3,
+h3,
+h4 {
     margin: 1em 0;
     font-weight: 600;
     color: var(--color-on-surface);
 }
 
-h1{
+h1 {
     font-size: var(--big-2-font);
 }
 
-h2{
+h2 {
     font-size: var(--big-font);
 }
 
-h3{
+h3 {
     font-size: var(--average-font);
 }
 
-h4{
+h4 {
     font-size: var(--medium-font);
 }
 
 
-button.button{
+button.button {
     padding: 0.6rem 1.2rem;
     border: none;
     border-radius: var(--border-radius);
@@ -111,6 +115,7 @@ button.button{
 button.button svg {
     fill: inherit;
 }
+
 /* 
 button.button:hover {
     transform: scale(1.1, 1.1);
@@ -140,7 +145,7 @@ button.secondary:hover {
     box-shadow: 0 4px 8px #ff17a638;
 }
 
-button.button a{
+button.button a {
     text-decoration: none;
     color: inherit;
 }
@@ -161,12 +166,12 @@ button.primary.outline {
     fill: var(--color-primary);
 }
 
-button.outline:hover{
+button.outline:hover {
     background-color: transparent;
 }
 
 
-a{
+a {
     text-decoration: none;
 
 }
@@ -197,7 +202,7 @@ main {
     color: var(--color-on-surface);
 }
 
-main hr{
+main hr {
     border: none;
     border-top: 1px solid var(--color-surface-dark-2);
     margin: 2rem 0;
@@ -208,6 +213,27 @@ main hr{
     margin: var(--page-margin);
 }
 
+@media only screen and (max-width: 1500px) {
+    :root {
+        --big-2-font: 26px;
+        --big-font: 22px;
+        --average-font: 18px;
+        --medium-font: 14px;
+        --medium-2-font: 16px;
+        --small-font: 13px;
+        --very-small-font: 12px;
+    }
+}
+
+@media only screen and (max-width: 1300px) {
+    :root {
+        --big-2-font: 24px;
+        --big-font: 20px;
+        --average-font: 16px;
+        --medium-font: 14px;
+        --medium-2-font: 14px;
+    }
+}
 
 @media only screen and (max-width: 700px) {
     :root {
