@@ -3,6 +3,7 @@ import { AxiosResult } from "../DataType";
 import { delay } from "../utils";
 
 const AxiosInstance = axios.create({
+  //@ts-ignore
   baseURL: import.meta.env.VITE_SERVER_URL,
 });
 

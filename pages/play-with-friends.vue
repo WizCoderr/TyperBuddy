@@ -5,12 +5,15 @@ import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";
 import { useToast } from 'vue-toast-notification';
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
 const $toast = useToast();
 
 const route = useRoute()
 
 
 const profileStore = useProfileStore()
+//@ts-ignore
 const serverUrl = import.meta.env.VITE_SERVER_URL
 const typingContent = ref("loading...")
 const isKicked = ref(false)
