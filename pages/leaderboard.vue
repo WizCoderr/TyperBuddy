@@ -109,6 +109,7 @@ async function setup() {
             </table>
 
         </section>
+       <RightPanel/>
     </main>
 </template>
 <style scoped>

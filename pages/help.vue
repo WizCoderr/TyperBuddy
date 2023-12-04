@@ -2,7 +2,7 @@
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="6" />
+        <Sidebar :activeTabIndex="7" />
         <section class="main">
             <h2>Helps</h2>
 
@@ -51,6 +51,7 @@
             <h3>Typing test</h3>
             <p>Test yourself by typing books and novels</p>
         </section>
+        <RightPanel/>
     </main>
 </template>
 <style scoped>

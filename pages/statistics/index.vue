@@ -19,6 +19,7 @@ onMounted(function(){
             <p>Signin required to view your statistics</p>
             
         </section>
+        <RightPanel/>
     </main>
 </template>
 <style scoped>

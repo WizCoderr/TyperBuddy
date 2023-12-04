@@ -322,6 +322,7 @@ function onTyping(data: { cursorPos: number, error: number }) {
             </div>
 
         </section>
+        <RightPanel/>
     </main>
 </template>
 <style scoped>

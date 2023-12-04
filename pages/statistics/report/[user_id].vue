@@ -43,7 +43,7 @@ if (data.value != null) {
         })
     }
 
-    if(pageData.allTimeStat.length == 0){
+    if (pageData.allTimeStat.length == 0) {
         pageData.allTimeStat.push({
             timeTaken: 0,
             totalWords: 0,
@@ -264,6 +264,7 @@ function getThemeColor(name: string) {
 
             <!-- <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/> -->
         </section>
+       <RightPanel/>
     </main>
 </template>
 <style scoped>

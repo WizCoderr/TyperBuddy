@@ -137,6 +137,7 @@ async function onPracticeComplete(reportData: TypingReport) {
             <Keyboard />
 
         </section>
+       <RightPanel/>
     </main>
 
     <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="(event: boolean) => onSettingClose(event)" />

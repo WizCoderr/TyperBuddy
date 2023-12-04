@@ -7,6 +7,7 @@ import ApiStatistics from "~/lib/api/ApiStatistics";
 import { useToast } from 'vue-toast-notification';
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
+import RightPanel from "~/components/RightPanel.vue";
 const $toast = useToast();
 
 const route = useRoute()
@@ -396,7 +397,7 @@ function onKick(playerId: string) {
 
 
         </section>
-
+        <RightPanel/>
 
     </main>
 </template>
