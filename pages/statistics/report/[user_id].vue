@@ -7,6 +7,7 @@ import Heatmap from '~/components/Heatmap.vue';
 import { useFetch } from 'nuxt/app';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useSeoMeta } from '#imports';
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')
@@ -23,6 +24,11 @@ let pageData: StatisticPageData = {
     todayStat: [],
     allTimeStat: []
 }
+
+useSeoMeta({
+    title: 'Statistics',
+})
+
 
 // fetch data from server for ssr
 const { data, error } = await useFetch(dataUrl)

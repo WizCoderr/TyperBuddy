@@ -1,6 +1,18 @@
 <script setup lang='ts'>
+import { useSeoMeta } from '#imports';
+import { navigateTo } from 'nuxt/app';
+import { useRoute } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
 import TournamentCard from '~/components/tournament/TournamentCard.vue';
+
+useSeoMeta({
+    title: 'Tournaments',
+})
+
+function hostTournament() {
+    navigateTo('/tournaments/host')
+
+}
 
 </script>
 <template>
@@ -14,8 +26,8 @@ import TournamentCard from '~/components/tournament/TournamentCard.vue';
 
             <hr />
 
-            <Button class="button primary"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
+            <Button :onclick="hostTournament" class="button primary"><svg width="24" height="24" fill="none"
+                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M11.75 3a.75.75 0 0 1 .743.648l.007.102.001 7.25h7.253a.75.75 0 0 1 .102 1.493l-.102.007h-7.253l.002 7.25a.75.75 0 0 1-1.493.101l-.007-.102-.002-7.249H3.752a.75.75 0 0 1-.102-1.493L3.752 11h7.25L11 3.75a.75.75 0 0 1 .75-.75Z" />
                 </svg> Host Tournament</Button>
@@ -50,4 +62,12 @@ import TournamentCard from '~/components/tournament/TournamentCard.vue';
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-bottom: 100px;
-}</style>
+}
+
+
+@media only screen and (max-width: 1600px) {
+    .card-holder {
+        grid-template-columns: 100%;
+    }
+}
+</style>

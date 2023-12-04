@@ -188,7 +188,7 @@ function closeSignInDialog() {
 /*  ------------------- side bar----------------- */
 
 .sidebar-container {
-    width: 300px;
+    width: 250px;
 }
 
 .sidebar {

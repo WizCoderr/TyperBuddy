@@ -1,4 +1,10 @@
 <script setup lang='ts'>
+import { useSeoMeta } from '#imports';
+
+useSeoMeta({
+    title: 'Help',
+})
+
 </script>
 <template>
     <main>

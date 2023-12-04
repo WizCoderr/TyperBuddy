@@ -27,11 +27,12 @@ const props = defineProps({
     display: block;
     color: var(--color-primary);
     font-size: 100px;
+    margin-bottom: 0.2em;
 }
 
 .not-found p {
     margin: 24px 0;
-    color: var(--color-on-secondary);
+    color: var(--color-on-surface);
     font-weight: 600;
 }
 

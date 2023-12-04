@@ -1,12 +1,17 @@
 
 <script setup lang='ts'>
-import { onMounted } from '#imports';
+import { onMounted, useSeoMeta } from '#imports';
 import { useToast } from 'vue-toast-notification';
 const $toast = useToast();
 
 onMounted(function(){
     $toast.default("Please signIn to see your statistics", {position: "bottom"})
 })
+
+useSeoMeta({
+    title: 'Statistics',
+})
+
 
 </script>
 

@@ -8,6 +8,7 @@ import { useToast } from 'vue-toast-notification';
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import RightPanel from "~/components/RightPanel.vue";
+import { useSeoMeta } from "#imports";
 const $toast = useToast();
 
 const route = useRoute()
@@ -27,6 +28,11 @@ const profileData = {
 }
 
 let roomCode = ""
+
+useSeoMeta({
+    title: 'Play with Friends',
+})
+
 
 
 let socket: Socket | null = null

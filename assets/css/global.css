@@ -151,7 +151,7 @@ button.button a {
 }
 
 button.secondary.outline {
-    box-shadow: 0 2px 4px #ff19a72d;
+    box-shadow: none;
     background-color: transparent;
     border: 1px solid var(--color-secondary);
     color: var(--color-secondary);
@@ -159,7 +159,7 @@ button.secondary.outline {
 }
 
 button.primary.outline {
-    box-shadow: 0 2px 4px #148aff4d;
+    box-shadow: none;
     background-color: transparent;
     border: 1px solid var(--color-primary);
     color: var(--color-primary);

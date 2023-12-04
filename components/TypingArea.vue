@@ -471,7 +471,7 @@ function onBeforeType(event: any) {
     background-color: white;
     border-radius: 0.6rem;
     color: var(--color-on-surface);
-    line-height: 2em;
+    line-height: 1.8em;
     padding: 1rem 1.6rem;
     font-size: var(--big-2-font);
     position: relative;
@@ -546,7 +546,7 @@ function onBeforeType(event: any) {
     opacity: 0;
     font-family: monospace !important;
     letter-spacing: 3px;
-    line-height: 2em;
+    line-height: 1.8em;
     font-size: var(--big-2-font);
 }
 

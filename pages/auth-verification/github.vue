@@ -5,6 +5,7 @@ import ApiAuth from '~/lib/api/ApiAuth';
 import { useToast } from 'vue-toast-notification';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useSeoMeta } from '#imports';
 const $toast = useToast();
 
 const router = useRouter();
@@ -27,6 +28,11 @@ onMounted(async function(){
 
     router.push({ path: '/', replace: true })
 })
+
+useSeoMeta({
+    title: 'Github varification',
+})
+
 
 
 

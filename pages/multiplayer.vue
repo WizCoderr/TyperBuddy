@@ -7,6 +7,7 @@ import ApiStatistics from "~/lib/api/ApiStatistics";
 import { useToast } from 'vue-toast-notification';
 import { generateAvatar } from "~/lib/utils";
 import { ref, onMounted, onUnmounted } from "vue";
+import { useSeoMeta } from "#imports";
 const $toast = useToast();
 
 
@@ -22,6 +23,11 @@ const profileData = {
     profileImage: "",
     accountId: ""
 }
+
+useSeoMeta({
+    title: 'Multiplayer',
+})
+
 
 let roomCode = ''
 let socket: Socket | null = null

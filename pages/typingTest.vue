@@ -11,6 +11,7 @@ import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
 import ApiContent from '~/lib/api/ApiContents';
 import { ref, onMounted } from 'vue';
+import { useSeoMeta } from '#imports';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
@@ -23,6 +24,11 @@ function updateProgress(progress: number) {
     progressElement.value!!.style.width = `${progress}%`
 
 }
+
+
+useSeoMeta({
+    title: 'Typing Test',
+})
 
 
 onMounted(function () {

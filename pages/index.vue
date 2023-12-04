@@ -10,6 +10,7 @@ import { usePracticeReportStore } from '~/store/practiceReport'
 import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
 import { ref, onMounted } from 'vue';
+import { useSeoMeta } from '#imports';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()
@@ -27,6 +28,11 @@ function updateProgress(progress: number) {
 onMounted(function () {
     startLesson()
 })
+
+useSeoMeta({
+    title: 'Practice',
+})
+
 
 
 

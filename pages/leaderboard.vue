@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { NuxtLink } from '#components'
+import { useSeoMeta } from '#imports';
 import ago from 'ts-ago'
 import { ref, onMounted } from 'vue';
 import { AxiosResult, Leaderboard } from '~/lib/DataType';
@@ -13,6 +14,11 @@ const colorsMap = new Map<string, string>()
 
 const profileStore = useProfileStore()
 onMounted(setup)
+
+useSeoMeta({
+    title: 'Leaderboard',
+})
+
 
 
 const redColor: RGBColor = [174, 32, 18]
