@@ -149,7 +149,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 7 }">
+                <!-- <li :class="{ 'active': activeTabIndex == 7 }">
                     <NuxtLink to="/settings">
                         <span class="marker"></span>
                         <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -158,7 +158,7 @@ function closeSignInDialog() {
                         </svg>
                         <p>Settings</p>
                     </NuxtLink>
-                </li>
+                </li> -->
 
             </ul>
         </nav>
@@ -336,4 +336,5 @@ function closeSignInDialog() {
         background-color: var(--color-surface-variant);
     }
 
-}</style>~/store/modules/profile
+}
+</style>~/store/modules/profile
