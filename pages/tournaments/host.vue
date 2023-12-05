@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
@@ -8,6 +9,12 @@ const router = useRouter()
 function back() {
     router.back()
 }
+
+
+useSeoMeta({
+    title: 'Host Tournament',
+})
+
 
 
 </script>
