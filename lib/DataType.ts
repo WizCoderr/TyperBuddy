@@ -120,3 +120,10 @@ export interface Leaderboard {
   rank: number;
   updatedAt: Date;
 }
+
+
+
+
+export interface TournamentMatchHistory{
+  round: number,
+}

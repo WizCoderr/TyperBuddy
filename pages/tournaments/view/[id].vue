@@ -50,20 +50,37 @@ const namesArray = [
 
             <div class="content-area">
                 <div class="left">
-                    <div class="joined-players card">
-                        <h3>Joined Players · 10/100</h3>
-                        <div class="chips">
-                            <div class="item" v-for="item, index in namesArray" :key="index">
-                                <img :src='generateAvatar(item)' />
-                                {{item}}
+                    <div class="reward card">
+                        <h4>Game Reward</h4>
+                        <div class="content">
+
+                            <div class="rewards-container">
+                                <div class="item">
+                                    <span class="icon">1st</span>
+                                    <span class="amount">$100</span>
+                                </div>
+
                             </div>
+
                         </div>
 
                     </div>
 
+                    <div class="joined-players card">
+                        <h4>Registered Players · 10/100</h4>
+                        <div class="content">
+                            <div class="chips">
+                                <div class="item" v-for="item, index in namesArray" :key="index">
+                                    <img :src='generateAvatar(item)' />
+                                    {{ item }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="right">
-                    <h3>About this tournament</h3>
+                    <h4>About this tournament</h4>
                     <div class="markdown">
                         <h4>Tournament rules</h4>
                         <ol>
@@ -77,32 +94,194 @@ const namesArray = [
                 </div>
             </div>
 
+            <div class="card match-history">
+                <h4>Match History</h4>
+                <div class="content">
+                    <table>
+                        <colgroup>
+                            <col style="width: 40px;">
+                            <col style="width: auto;">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Rank</th>
+                                <th>R1</th>
+                                <th>R2</th>
+                                <th>R3</th>
+                                <th>R4</th>
+                                <th>R5</th>
+                                <th>R6</th>
+                                <th>R7</th>
+                                <th>R8</th>
+                                <th>R9</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item, index in 5">
+                                <td class="profile">
+                                    <div><img :src='generateAvatar("Nitesh Kumar")'></div>
+                                </td>
+                                <td>
+                                    <NuxtLink :to="'/'">{{ "Nitesh Kumar" }}</NuxtLink>
+                                </td>
+                                <td>{{ index + 1 }}</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+                                <td>10</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
         </section>
         <RightPanel />
     </main>
 </template>
 <style scoped>
+
+/* reward */
+
+.rewards-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.rewards-container .item{
+    width: 150px;
+    height: 180px;
+    border: 1px solid var(--color-surface-dark);
+    border-radius: var(--border-radius-2);
+
+}
+
+
+
+
+/* match history */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th {
+    text-align: left;
+    padding: 6px 1em;
+}
+
+table td {
+    /* background-color: red; */
+    padding: 6px 1em;
+}
+
+
+table .profile {
+    padding: 6px 0;
+}
+
+table .profile div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 50%;
+}
+
+
+table tbody tr:nth-child(odd) {
+    background-color: var(--color-surface);
+}
+
+/* table tbody tr:hover {
+    background-color: var(--color-primary);
+    color: white !important;
+    font-weight: bold;
+}
+
+table tbody tr:hover a {
+    color: white !important;
+} */
+
+table img {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+}
+
+.text-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-arrow svg {
+    width: 20px;
+    height: 20px;
+    fill: #25a18e;
+}
+
+.text-arrow svg.down {
+    transform: rotateZ(180deg);
+    fill: #ef2d56;
+}
+
+
+
+
+
+
+
+/* card */
 .card {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     background-color: white;
     border-radius: var(--border-radius-2);
     min-height: 200px;
-    padding: 1em;
+    margin-bottom: 24px;
 }
 
-.card h3 {
-    margin-top: 0;
+.card .content{
+    padding: 1em;
+    padding-top: 2em;
+}
+
+.card h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    padding: 0.7em 0;
+    background-color: var(--color-primary);
+    text-align: center;
+    color: white;
+    justify-content: center;
+    border-radius: var(--border-radius-2) var(--border-radius-2) 0 0;
 }
 
 /* joined players */
 
-.joined-players .chips{
+.joined-players .chips {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5em;
 }
 
-.joined-players .chips .item{
+.joined-players .chips .item {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -112,9 +291,10 @@ const namesArray = [
     border-radius: 50px;
     font-weight: bold;
 }
-.joined-players .chips .item img{
-    width: 40px;
-    height: 40px;
+
+.joined-players .chips .item img {
+    width: 36px;
+    height: 36px;
     border-radius: 50px;
 }
 
@@ -138,20 +318,22 @@ const namesArray = [
     display: grid;
     grid-template-columns: 2fr 0.8fr;
     gap: 24px;
+    margin-bottom: 24px;
 }
 
 .content-area .right {
     /* border-left: 1px solid var(--color-surface-dark-2); */
     min-height: 400px;
+    height: max-content;
     background-color: white;
 
 }
 
-.content-area .right>h3 {
+.content-area .right>h4 {
     margin: 0;
     display: flex;
     align-items: center;
-    height: 50px;
+    padding: 0.7em 0;
     background-color: var(--color-primary);
     text-align: center;
     color: white;
