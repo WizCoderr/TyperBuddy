@@ -55,9 +55,10 @@ const namesArray = [
                         <div class="content">
 
                             <div class="rewards-container">
-                                <div class="item">
-                                    <span class="icon">1st</span>
-                                    <span class="amount">$100</span>
+                                <div class="item" :key="index" v-for="item, index in 10">
+                                    <span class="layer">Rank</span>
+                                    <p class="icon">{{ item }}</p>
+                                    <span class="amount">₹100</span>
                                 </div>
 
                             </div>
@@ -157,14 +158,48 @@ const namesArray = [
 .rewards-container{
     display: flex;
     flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
 }
 
 .rewards-container .item{
+    position: relative;
     width: 150px;
     height: 180px;
     border: 1px solid var(--color-surface-dark);
-    border-radius: var(--border-radius-2);
+    border-radius: var(--border-radius-3);
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 
+}
+
+.rewards-container .layer{
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-secondary);
+    padding: 3px 16px;
+    font-size: var(--small-font);
+    color: white;
+    border-radius: 0 0  10px 10px;
+    font-weight: bold;
+}
+
+.rewards-container .icon{
+    font-size: 50px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 24px;
+}
+
+.rewards-container .amount{
+    font-size: 24px;
+    background-color: var(--color-surface);
+    padding: 0.2em 0.8em;
+    border-radius: 50px;
 }
 
 
