@@ -3,6 +3,8 @@ import { useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
+import MatchHistoryTable from '~/components/tournament/MatchHistoryTable.vue';
+import RegisteredPlayers from '~/components/tournament/RegisteredPlayers.vue';
 import { generateAvatar } from '~/lib/utils';
 
 const router = useRouter()
@@ -15,19 +17,6 @@ function back() {
     router.back()
 }
 
-
-const namesArray = [
-    'Emma Johnson',
-    'Alexander Martinez',
-    'Olivia Wang',
-    'Ethan Reynolds',
-    'Sophia Mitchell',
-    'Liam Patel',
-    'Ava Rodriguez',
-    'Noah Taylor',
-    'Isabella Nguyen',
-    'Lucas Thompson'
-];
 
 
 </script>
@@ -70,26 +59,35 @@ const namesArray = [
                     <div class="joined-players card">
                         <h4>Registered Players · 10/100</h4>
                         <div class="content">
-                            <div class="chips">
-                                <div class="item" v-for="item, index in namesArray" :key="index">
-                                    <img :src='generateAvatar(item)' />
-                                    {{ item }}
-                                </div>
-                            </div>
+                           <RegisteredPlayers :is-editable="true"/>
                         </div>
                     </div>
 
                 </div>
                 <div class="right">
-                    <h4>About this tournament</h4>
-                    <div class="markdown">
-                        <h4>Tournament rules</h4>
-                        <ol>
-                            <li>Ensure participants meet any age or location requirements</li>
-                            <li>Specify whether the tournament is open to individuals or teams</li>
-                            <li>Set a clear registration deadline</li>
-                            <li>Outline the registration process, including any fees if applicable.</li>
-                        </ol>
+                    <div>
+                        <h4>About Tournament</h4>
+                        <div class="markdown">
+                            <h4>Tournament rules</h4>
+                            <ol>
+                                <li>Ensure participants meet any age or location requirements</li>
+                                <li>Specify whether the tournament is open to individuals or teams</li>
+                                <li>Set a clear registration deadline</li>
+                                <li>Outline the registration process, including any fees if applicable.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div>
+                        <h4>Tournament Rules</h4>
+                        <div class="markdown">
+                            <h4>Tournament rules</h4>
+                            <ol>
+                                <li>Ensure participants meet any age or location requirements</li>
+                                <li>Specify whether the tournament is open to individuals or teams</li>
+                                <li>Set a clear registration deadline</li>
+                                <li>Outline the registration process, including any fees if applicable.</li>
+                            </ol>
+                        </div>
                     </div>
 
                 </div>
@@ -98,51 +96,7 @@ const namesArray = [
             <div class="card match-history">
                 <h4>Match History</h4>
                 <div class="content">
-                    <table>
-                        <colgroup>
-                            <col style="width: 40px;">
-                            <col style="width: auto;">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Rank</th>
-                                <th>R1</th>
-                                <th>R2</th>
-                                <th>R3</th>
-                                <th>R4</th>
-                                <th>R5</th>
-                                <th>R6</th>
-                                <th>R7</th>
-                                <th>R8</th>
-                                <th>R9</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item, index in 5">
-                                <td class="profile">
-                                    <div><img :src='generateAvatar("Nitesh Kumar")'></div>
-                                </td>
-                                <td>
-                                    <NuxtLink :to="'/'">{{ "Nitesh Kumar" }}</NuxtLink>
-                                </td>
-                                <td>{{ index + 1 }}</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-                                <td>10</td>
-
-                            </tr>
-                        </tbody>
-                    </table>
+                    <MatchHistoryTable />
                 </div>
 
             </div>
@@ -152,17 +106,16 @@ const namesArray = [
     </main>
 </template>
 <style scoped>
-
 /* reward */
 
-.rewards-container{
+.rewards-container {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: center;
 }
 
-.rewards-container .item{
+.rewards-container .item {
     position: relative;
     width: 150px;
     height: 180px;
@@ -175,7 +128,7 @@ const namesArray = [
 
 }
 
-.rewards-container .layer{
+.rewards-container .layer {
     position: absolute;
     top: 0;
     left: 50%;
@@ -184,100 +137,23 @@ const namesArray = [
     padding: 3px 16px;
     font-size: var(--small-font);
     color: white;
-    border-radius: 0 0  10px 10px;
+    border-radius: 0 0 10px 10px;
     font-weight: bold;
 }
 
-.rewards-container .icon{
+.rewards-container .icon {
     font-size: 50px;
     font-weight: bold;
     text-align: center;
     margin-top: 24px;
 }
 
-.rewards-container .amount{
+.rewards-container .amount {
     font-size: 24px;
     background-color: var(--color-surface);
     padding: 0.2em 0.8em;
     border-radius: 50px;
 }
-
-
-
-
-/* match history */
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-table th {
-    text-align: left;
-    padding: 6px 1em;
-}
-
-table td {
-    /* background-color: red; */
-    padding: 6px 1em;
-}
-
-
-table .profile {
-    padding: 6px 0;
-}
-
-table .profile div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    padding-left: 6px;
-    padding-right: 6px;
-    border-radius: 50%;
-}
-
-
-table tbody tr:nth-child(odd) {
-    background-color: var(--color-surface);
-}
-
-/* table tbody tr:hover {
-    background-color: var(--color-primary);
-    color: white !important;
-    font-weight: bold;
-}
-
-table tbody tr:hover a {
-    color: white !important;
-} */
-
-table img {
-    height: 36px;
-    width: 36px;
-    border-radius: 50%;
-}
-
-.text-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.text-arrow svg {
-    width: 20px;
-    height: 20px;
-    fill: #25a18e;
-}
-
-.text-arrow svg.down {
-    transform: rotateZ(180deg);
-    fill: #ef2d56;
-}
-
-
-
-
 
 
 
@@ -290,7 +166,7 @@ table img {
     margin-bottom: 24px;
 }
 
-.card .content{
+.card .content {
     padding: 1em;
     padding-top: 2em;
 }
@@ -306,35 +182,6 @@ table img {
     justify-content: center;
     border-radius: var(--border-radius-2) var(--border-radius-2) 0 0;
 }
-
-/* joined players */
-
-.joined-players .chips {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5em;
-}
-
-.joined-players .chips .item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background-color: var(--color-surface);
-    padding: 4px;
-    padding-right: 1em;
-    border-radius: 50px;
-    font-weight: bold;
-}
-
-.joined-players .chips .item img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50px;
-}
-
-
-
 
 
 
@@ -356,15 +203,18 @@ table img {
     margin-bottom: 24px;
 }
 
-.content-area .right {
+.content-area .right>div {
     /* border-left: 1px solid var(--color-surface-dark-2); */
-    min-height: 400px;
+    min-height: 200px;
     height: max-content;
     background-color: white;
+    margin-bottom: 24px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: var(--border-radius-2);
 
 }
 
-.content-area .right>h4 {
+.content-area .right>div>h4 {
     margin: 0;
     display: flex;
     align-items: center;
