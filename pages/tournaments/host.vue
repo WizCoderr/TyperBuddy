@@ -29,25 +29,111 @@ useSeoMeta({
 
             <hr />
 
-            <Button :onclick="back" class="button primary outline"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M10.733 19.79a.75.75 0 0 0 1.034-1.086L5.516 12.75H20.25a.75.75 0 0 0 0-1.5H5.516l6.251-5.955a.75.75 0 0 0-1.034-1.086l-7.42 7.067a.995.995 0 0 0-.3.58.754.754 0 0 0 .001.289.995.995 0 0 0 .3.579l7.419 7.067Z" />
-                </svg> Back</Button>
+            <div class="button-holder">
+                <Button :onclick="back" class="button primary outline"><svg width="24" height="24" fill="none"
+                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10.733 19.79a.75.75 0 0 0 1.034-1.086L5.516 12.75H20.25a.75.75 0 0 0 0-1.5H5.516l6.251-5.955a.75.75 0 0 0-1.034-1.086l-7.42 7.067a.995.995 0 0 0-.3.58.754.754 0 0 0 .001.289.995.995 0 0 0 .3.579l7.419 7.067Z" />
+                    </svg> Back
+                </Button>
+                <Button class="button primary"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M11.883 3.007 12 3a1 1 0 0 1 .993.883L13 4v7h7a1 1 0 0 1 .993.883L21 12a1 1 0 0 1-.883.993L20 13h-7v7a1 1 0 0 1-.883.993L12 21a1 1 0 0 1-.993-.883L11 20v-7H4a1 1 0 0 1-.993-.883L3 12a1 1 0 0 1 .883-.993L4 11h7V4a1 1 0 0 1 .883-.993L12 3l-.117.007Z" />
+                    </svg> Host Tournament
+                </Button>
+            </div>
+
+
+
+            <div class="tabs-holder">
+                <div class="item active">
+                    Upcoming (4)
+                </div>
+                <div class="item">
+                    Running (3)
+                </div>
+                <div class="item">
+                    Finished (0)
+                </div>
+                <div class="item">
+                    Canceled (1)
+                </div>
+            </div>
+
+            <div class="tournament-holder">
+                <TournamentCreateCard v-for="item, index in 5" :key="index" />
+            </div>
 
         </section>
         <RightPanel />
     </main>
 </template>
 <style scoped>
+.button-holder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 100px;
+}
+
+.tabs-holder {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.tabs-holder .item {
+    width: max-content;
+    padding: 0 1em;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius);
+    border: 1px solid #21005327;
+    background-color: white;
+    transition: all 200ms;
+    cursor: pointer;
+}
+
+.tabs-holder .item.active,
+.tabs-holder .item:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+
 .main>button {
     margin-bottom: 40px;
 }
 
-.card-holder {
+.tournament-holder {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 16px;
-    margin-bottom: 100px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
-</style>
+
+
+
+
+
+@media only screen and (max-width: 1800px) {
+    .tournament-holder {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+
+@media only screen and (max-width: 1400px) {
+    .tournament-holder {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .tournament-holder {
+        grid-template-columns: 100%;
+    }
+}</style>
