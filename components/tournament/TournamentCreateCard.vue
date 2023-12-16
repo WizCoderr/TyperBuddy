@@ -23,12 +23,12 @@ function onJoin() {
             <button class="full">View</button>
         </div>
 
-        <div class="countdown">2:30:40:30</div>
+        <!-- <div class="countdown">2:30:40:30</div> -->
     </div>
 </template>
 <style scoped>
 h4 {
-    margin-top: 50px;
+    font-size: var(--average-font);
 }
 
 .card {

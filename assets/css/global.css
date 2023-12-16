@@ -214,6 +214,45 @@ main hr {
 }
 
 
+
+
+
+
+
+/* input field */
+
+
+.input-holder {
+    margin-bottom: 1.5em;
+}
+
+.input-holder .title {
+    display: block;
+    margin-bottom: 0.4em;
+}
+
+.input-holder input {
+
+    border: none;
+    outline: none;
+    padding: 0.7em 1em;
+    font-size: var(--medium-font);
+    border-radius: var(--border-radius);
+    outline: 1px solid rgb(224, 224, 224);
+}
+
+.input-holder input.block {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
 @media only screen and (max-width: 1500px) {
     :root {
         --big-2-font: 26px;

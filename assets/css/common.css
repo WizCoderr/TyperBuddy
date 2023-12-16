@@ -130,6 +130,14 @@
 }
 
 
+
+
+
+
+
+
+
+
 @media only screen and (max-width: 1300px) {
     .typing-progress .progress::after {
         width: 1.1rem;

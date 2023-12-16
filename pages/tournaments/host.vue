@@ -3,6 +3,7 @@ import { useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
+import HostTournamentDialog from '~/components/dialog/HostTournamentDialog.vue';
 
 const router = useRouter()
 
@@ -68,6 +69,8 @@ useSeoMeta({
         </section>
         <RightPanel />
     </main>
+
+    <HostTournamentDialog :is-visible="true"/>
 </template>
 <style scoped>
 .button-holder {
