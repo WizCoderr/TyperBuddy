@@ -7,8 +7,6 @@ const props = defineProps<{
     items: Array<string>
 }>()
 
-const isOpen = ref(false)
-
 const emit = defineEmits<{
     (event: 'change', value: string): void
 }>()
@@ -16,12 +14,9 @@ const emit = defineEmits<{
 const dropdownValue = ref(props.defaultValue)
 
 
-watch(dropdownValue, function (newValue, oldValue) {
-    emitData()
-})
-
-function emitData() {
-    emit('change', dropdownValue.value)
+function changeValue(value: string) {
+    dropdownValue.value = value
+    emit('change', value)
 }
 
 
@@ -31,7 +26,7 @@ function emitData() {
     <div class="dropdown">
         <p>{{ dropdownValue }}</p>
         <div class="content">
-            <span :onclick="() => dropdownValue = item" v-for="item, index in items" :key="index">{{ item }}</span>
+            <span :onclick="() => changeValue(item)" v-for="item, index in items" :key="index">{{ item }}</span>
         </div>
 
     </div>
@@ -58,7 +53,7 @@ function emitData() {
 .dropdown .content {
     cursor: context-menu;
     display: none;
-    margin-top: 2px;
+    margin-top: 1px;
     position: absolute;
     width: 100%;
     min-height: 100px;

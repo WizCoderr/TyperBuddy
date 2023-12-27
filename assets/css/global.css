@@ -226,12 +226,21 @@ main hr {
     margin-bottom: 1.5em;
 }
 
+.input-holder .info{
+    margin-top: 4px;
+    font-size: var(--small-font);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
+
 .input-holder .title {
     display: block;
     margin-bottom: 0.4em;
 }
 
-.input-holder input {
+.input-holder input, .input-holder textarea {
 
     border: none;
     outline: none;
@@ -239,6 +248,12 @@ main hr {
     font-size: var(--medium-font);
     border-radius: var(--border-radius);
     outline: 1px solid rgb(224, 224, 224);
+}
+
+.input-holder textarea {
+    resize: none;
+    display: block;
+    width: 100%;
 }
 
 .input-holder input.block {
