@@ -235,6 +235,10 @@ main hr {
     gap: 0.5em;
 }
 
+.input-holder .info svg{
+    fill: var(--color-on-surface);
+}
+
 .input-holder .title {
     display: block;
     margin-bottom: 0.4em;

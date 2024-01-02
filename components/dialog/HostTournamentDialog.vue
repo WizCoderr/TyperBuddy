@@ -1,21 +1,136 @@
 <script setup lang='ts'>
+import { } from '~/lib/DataType';
 import CheckBox from '../widgets/CheckBox.vue';
 import Dropdown from '../widgets/Dropdown.vue';
+import GameContent from '../widgets/GameContent.vue';
 import RadioGroup from '../widgets/RadioGroup.vue';
 
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+import { countWords } from '~/lib/utils';
+import { useTextareaAutosize } from '@vueuse/core'
+import HelpIcon from '../icons/HelpIcon.vue';
+import InfoIcon from '../icons/InfoIcon.vue';
+const { textarea } = useTextareaAutosize()
 
 const props = defineProps<{
     isVisible: boolean
 }>()
 
 
+interface TournamentBasicData {
+    name: string,
+    seats: number,
+    visibility: "public" | "private",
+    headline: string,
+    about: string,
+    startDate: string,
+    startTime: string,
+    roundBreak: string,
+    rules: string,
+    maxMatchWordCount: number,
+    matchRoundCount: number,
+    matchRoundSentence: Array<string>
+}
 
+
+
+
+const basicData = ref<TournamentBasicData>({
+    name: '',
+    seats: 100,
+    visibility: 'public',
+    headline: '',
+    about: '',
+    startDate: '',
+    startTime: '',
+    roundBreak: '',
+    rules: "",
+    maxMatchWordCount: 30,
+    matchRoundCount: 5,
+    matchRoundSentence: ['', '', '', '', '']
+})
+
+
+
+const activeContentTab = ref(0)
 const tabActiveIndex = ref(0)
+
 
 function changeTab(index: number) {
     tabActiveIndex.value = index
 }
+
+
+watch(() => basicData.value.maxMatchWordCount, (newData, oldData) => {
+    console.log("content changed")
+    // todo clip extra chars from all content
+    const oldArr = basicData.value.matchRoundSentence.slice()
+    let index = 0
+    for (const iterator of oldArr) {
+
+        let words = textToArray(iterator)
+        if (words.length > basicData.value.maxMatchWordCount) words = words.slice(0, basicData.value.maxMatchWordCount)
+        oldArr[index] = words.join(" ")
+        index++
+    }
+
+
+    console.log(oldArr)
+    basicData.value.matchRoundSentence = oldArr
+})
+
+
+function textToArray(text: string) {
+    const words = text.split(" ");
+    return words.filter((word) => word);
+}
+
+watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
+    const oldArr = basicData.value.matchRoundSentence.slice()
+    const diff = newData - oldData
+    if (diff > 0) {       // add items
+        for (const iterator of Array(diff)) {
+            oldArr.push('')
+        }
+
+    } else if (diff < 0) { // remove items
+        for (const iterator of Array(Math.abs(diff))) {
+            oldArr.pop()
+        }
+    }
+
+    if (activeContentTab.value > oldArr.length - 1) {
+        activeContentTab.value = oldArr.length - 1
+    }
+
+    basicData.value.matchRoundSentence = oldArr
+})
+
+
+
+// onMounted(() => {
+    
+//     let totalValue = 10000
+//     let reward = Array<{rank: number, prize: number}>()
+//     let totalPlayer = 10
+//     for (let index = 1; index <= totalPlayer; index++) {
+
+//         let prize = Math.round(totalValue * 40 / 100)
+//         totalValue -= prize
+//         reward.push({rank: index, prize: prize})
+//     }
+
+//     console.table(reward)
+
+//     let sum = 0
+//     reward.forEach(element => {
+//         sum += element.prize
+//     });
+
+//     console.log("sum", sum)
+// })
+
+
 
 </script>
 <template>
@@ -38,48 +153,35 @@ function changeTab(index: number) {
                         <div class="content card-holder">
                             <div class="input-holder">
                                 <span class="title">Tournament Name</span>
-                                <input type="text" style="width: 50%;" />
+                                <input v-model="basicData.name" type="text" style="width: 50%;" />
                             </div>
 
                             <div class="col-3">
                                 <div class="input-holder">
                                     <span class="title">Seats</span>
-                                    <Dropdown default-value="100" :items="['100', '200', '500']" />
+                                    <Dropdown :default-value="basicData.seats.toString()" :items="['100', '200', '500']" />
                                 </div>
 
                                 <div class="input-holder">
-                                    <span class="title">Match Rounds</span>
-                                    <Dropdown default-value="5" :items="['5', '7', '9']" />
-                                </div>
-                                <div class="input-holder">
                                     <span class="title">Visibility</span>
-                                    <Dropdown default-value="public" :items="['public', 'private']" />
+                                    <Dropdown :default-value="basicData.visibility" :onChange="(e: any) => {
+                                        basicData.visibility = e
+
+                                    }" :items="['public', 'private']" />
                                 </div>
                             </div>
 
                             <div class="input-holder">
                                 <span class="title">Small Info</span>
                                 <textarea rows="3"></textarea>
-                                <span class="info"> <svg width="20" height="20" fill="none" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 1.999c5.524 0 10.002 4.478 10.002 10.002 0 5.523-4.478 10.001-10.002 10.001-5.524 0-10.002-4.478-10.002-10.001C1.998 6.477 6.476 1.999 12 1.999Zm0 1.5a8.502 8.502 0 1 0 0 17.003A8.502 8.502 0 0 0 12 3.5Zm-.004 7a.75.75 0 0 1 .744.648l.007.102.003 5.502a.75.75 0 0 1-1.493.102l-.007-.101-.003-5.502a.75.75 0 0 1 .75-.75ZM12 7.003a.999.999 0 1 1 0 1.997.999.999 0 0 1 0-1.997Z"
-                                            fill="#212121" />
-                                    </svg> Small description which is visible on tournament card.</span>
+                                <span class="info"> <InfoIcon style="width: 18px; height: 18px;"/> Small description which is visible on tournament card.</span>
                             </div>
 
                             <div class="input-holder">
                                 <span class="title">About Tournament</span>
                                 <textarea rows="5"></textarea>
-                                <span class="info"> <svg width="20" height="20" fill="none" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path
-                                            d="M12 1.999c5.524 0 10.002 4.478 10.002 10.002 0 5.523-4.478 10.001-10.002 10.001-5.524 0-10.002-4.478-10.002-10.001C1.998 6.477 6.476 1.999 12 1.999Zm0 1.5a8.502 8.502 0 1 0 0 17.003A8.502 8.502 0 0 0 12 3.5Zm-.004 7a.75.75 0 0 1 .744.648l.007.102.003 5.502a.75.75 0 0 1-1.493.102l-.007-.101-.003-5.502a.75.75 0 0 1 .75-.75ZM12 7.003a.999.999 0 1 1 0 1.997.999.999 0 0 1 0-1.997Z"
-                                            fill="#212121" />
-                                    </svg> Write your tournament description</span>
+                                <span class="info"><InfoIcon style="width: 18px; height: 18px;"/> Write your tournament description</span>
                             </div>
-
-
 
                         </div>
                     </template>
@@ -109,25 +211,10 @@ function changeTab(index: number) {
                     <!-- tab content 3 -->
                     <template v-if="tabActiveIndex == 2">
                         <div class="content card-holder">
-                            <div class="rules-holder">
-                                <div v-for="item, index in 5" :key="index">
-                                    <p>
-                                        Lorem ipsum dolor sit amet consectetur
-                                        adipisicing elit. Eveniet iusto assumenda sapiente obcaecati, quaerat accusamus
-                                        adipisci
-                                        perspiciatis laudantium autem voluptatibus dicta recusandae voluptates libero
-                                        excepturi,
-                                        pariatur ut quasi minus quia.
-                                    </p>
-                                    <button><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M12 1.75a3.25 3.25 0 0 1 3.245 3.066L15.25 5h5.25a.75.75 0 0 1 .102 1.493L20.5 6.5h-.796l-1.28 13.02a2.75 2.75 0 0 1-2.561 2.474l-.176.006H8.313a2.75 2.75 0 0 1-2.714-2.307l-.023-.174L4.295 6.5H3.5a.75.75 0 0 1-.743-.648L2.75 5.75a.75.75 0 0 1 .648-.743L3.5 5h5.25A3.25 3.25 0 0 1 12 1.75Zm6.197 4.75H5.802l1.267 12.872a1.25 1.25 0 0 0 1.117 1.122l.127.006h7.374c.6 0 1.109-.425 1.225-1.002l.02-.126L18.196 6.5ZM13.75 9.25a.75.75 0 0 1 .743.648L14.5 10v7a.75.75 0 0 1-1.493.102L13 17v-7a.75.75 0 0 1 .75-.75Zm-3.5 0a.75.75 0 0 1 .743.648L11 10v7a.75.75 0 0 1-1.493.102L9.5 17v-7a.75.75 0 0 1 .75-.75Zm1.75-6a1.75 1.75 0 0 0-1.744 1.606L10.25 5h3.5A1.75 1.75 0 0 0 12 3.25Z" />
-                                        </svg></button>
-                                </div>
-
+                            <div class="input-holder">
+                                <span class="title">Write tournament rules, this will be visible on the page.</span>
+                                <textarea rows="10" v-model="basicData.rules"></textarea>
                             </div>
-                            <button class="button secondary rule-button">Add Rule</button>
 
                         </div>
                     </template>
@@ -135,12 +222,39 @@ function changeTab(index: number) {
                     <!-- tab content 4 -->
                     <template v-if="tabActiveIndex == 3">
                         <div class="content card-holder">
-                           <div class="game-content">
-                            <div v-for="item, index in 5" :key="index" class="input-holder">
-                                <span class="title">Round {{ index + 1 }}</span>
-                                <textarea rows="4"></textarea>
+                            <div class="col-3">
+                                <div class="input-holder">
+                                    <span class="title">Max Word Count</span>
+                                    <Dropdown :default-value="basicData.maxMatchWordCount.toString()"
+                                        :onChange="e => basicData.maxMatchWordCount = parseInt(e)"
+                                        :items="['30', '50', '70', '100', '120']" />
+                                </div>
+
+                                <div class="input-holder">
+                                    <span class="title">Match Rounds</span>
+                                    <Dropdown :default-value="basicData.matchRoundCount.toString()"
+                                        :onChange="e => basicData.matchRoundCount = parseInt(e)" :items="['3', '5', '7']" />
+                                </div>
+
                             </div>
-                           </div>
+                            <div class="game-content">
+                                <div class="vertical-tab">
+                                    <template v-for="item, index in basicData.matchRoundCount" :key="index">
+                                        <span :onClick="() => activeContentTab = index"
+                                            :class="{ 'active': index == activeContentTab }">Round {{ item }}
+                                            <b>{{ countWords(basicData.matchRoundSentence[index]) }}/{{
+                                                basicData.maxMatchWordCount }}</b></span>
+                                    </template>
+                                </div>
+                                <template v-for="item, index in basicData.matchRoundSentence">
+                                    <div v-if="activeContentTab == index" :key="index" class="input-holder">
+                                        <GameContent :default-value="basicData.matchRoundSentence[index]"
+                                            :onChange="e => basicData.matchRoundSentence[index] = e"
+                                            :max-length="basicData.maxMatchWordCount" />
+                                    </div>
+                                </template>
+
+                            </div>
 
                         </div>
                     </template>
@@ -171,35 +285,37 @@ function changeTab(index: number) {
 }
 
 .rules-holder div {
-    position: relative;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    display: grid;
+    grid-template-columns: auto max-content;
+    gap: 8px;
+
 }
 
-.rules-holder div:hover button {
+/* .rules-holder div:hover button {
     display: block;
-}
+} */
 
 .rules-holder button {
-    display: none;
-    position: absolute;
-    bottom: 0;
-    right: 50%;
-    background-color: transparent;
-    transform: translate(50%, 50%);
     border: none;
     border: 1px solid rgba(0, 0, 0, 0.096);
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    backdrop-filter: blur(10px);
+    background-color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
 }
 
 .rules-holder button svg {
     fill: var(--color-error);
-    transform: translateY(-70%);
+
 }
 
-.rules-holder p {
+.rules-holder textarea {
+    display: block;
+    width: 100%;
+    resize: none;
+    outline: none;
+    font-size: var(--medium-font);
+    border: none;
     background-color: white;
     text-align: left;
     padding: 0.5em 1em;
@@ -217,8 +333,44 @@ button.rule-button {
 
 
 
-.game-content{
+.game-content {
+    display: grid;
+    grid-template-columns: 180px auto;
+    gap: 1em;
     max-height: 400px;
     overflow-y: auto;
 }
-</style>
+
+.game-content>.vertical-tab {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.game-content>.vertical-tab span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6em 1em;
+    background-color: white;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.game-content>.vertical-tab span b {
+    font-size: var(--very-small-font);
+    padding: 0.4em 0.6em;
+    background-color: var(--color-surface);
+    border-radius: 12px;
+}
+
+.game-content>.vertical-tab span.active b,
+.game-content>.vertical-tab span:hover b {
+    background-color: rgba(255, 255, 255, 0.219);
+}
+
+.game-content>.vertical-tab span.active,
+.game-content>.vertical-tab span:hover {
+    background-color: var(--color-secondary);
+    color: white;
+}</style>

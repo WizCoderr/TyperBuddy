@@ -93,12 +93,7 @@ export function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-const colors = [
-  "#ef476fff",
-  "#06d6a0ff",
-  "#118ab2ff",
-  "#073b4cff",
-];
+const colors = ["#ef476fff", "#06d6a0ff", "#118ab2ff", "#073b4cff"];
 
 export function generateAvatar(name: string) {
   var initials = name
@@ -135,10 +130,14 @@ export function generateAvatar(name: string) {
   return "";
 }
 
-
 export type RGBColor = [number, number, number];
 
-export function getColor(index: number, totalSteps: number, color1: RGBColor, color2: RGBColor) {
+export function getColor(
+  index: number,
+  totalSteps: number,
+  color1: RGBColor,
+  color2: RGBColor
+) {
   // Ensure index is within the valid range
   index = Math.max(0, Math.min(index, totalSteps - 1));
 
@@ -153,4 +152,31 @@ export function getColor(index: number, totalSteps: number, color1: RGBColor, co
   ];
 
   return `rgb(${interpolatedColor[0]}, ${interpolatedColor[1]},${interpolatedColor[2]})`;
+}
+
+export function countWords(text: string) {
+  const words = text.split(" ");
+  return words.filter((word) => word).length;
+}
+
+const allowedChars =
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ,.?;:'\"[]{}";
+export function filterAllowedChars(text: string) {
+  const result = text
+    .split("")
+    .filter((item) => allowedChars.includes(item))
+    .join("");
+  return result;
+}
+
+export function calculatePrize(totalReward: number, totalPlayer: number) {
+  let totalValue = totalReward;
+  let reward = Array<{ rank: number; prize: number }>();
+  for (let index = 1; index <= totalPlayer; index++) {
+    let prize = Math.round((totalValue * 40) / 100);
+    totalValue -= prize;
+    reward.push({ rank: index, prize: prize });
+  }
+
+  return reward;
 }

@@ -127,3 +127,5 @@ export interface Leaderboard {
 export interface TournamentMatchHistory{
   round: number,
 }
+
+

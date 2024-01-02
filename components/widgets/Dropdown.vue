@@ -55,6 +55,7 @@ function changeValue(value: string) {
     display: none;
     margin-top: 1px;
     position: absolute;
+    z-index: 100;
     width: 100%;
     min-height: 100px;
     background-color: white;
