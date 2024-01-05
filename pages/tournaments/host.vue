@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { useSeoMeta } from '#imports';
+import { ref, useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
@@ -10,6 +10,8 @@ const router = useRouter()
 function back() {
     router.back()
 }
+
+const hostDialogVisible = ref(false)
 
 
 useSeoMeta({
@@ -37,7 +39,7 @@ useSeoMeta({
                             d="M10.733 19.79a.75.75 0 0 0 1.034-1.086L5.516 12.75H20.25a.75.75 0 0 0 0-1.5H5.516l6.251-5.955a.75.75 0 0 0-1.034-1.086l-7.42 7.067a.995.995 0 0 0-.3.58.754.754 0 0 0 .001.289.995.995 0 0 0 .3.579l7.419 7.067Z" />
                     </svg> Back
                 </Button>
-                <Button class="button primary"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
+                <Button @click="() => hostDialogVisible = true" class="button primary"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M11.883 3.007 12 3a1 1 0 0 1 .993.883L13 4v7h7a1 1 0 0 1 .993.883L21 12a1 1 0 0 1-.883.993L20 13h-7v7a1 1 0 0 1-.883.993L12 21a1 1 0 0 1-.993-.883L11 20v-7H4a1 1 0 0 1-.993-.883L3 12a1 1 0 0 1 .883-.993L4 11h7V4a1 1 0 0 1 .883-.993L12 3l-.117.007Z" />
@@ -70,7 +72,7 @@ useSeoMeta({
         <RightPanel />
     </main>
 
-    <HostTournamentDialog :is-visible="true"/>
+    <HostTournamentDialog v-if="hostDialogVisible" :onClose="() => hostDialogVisible = false"/>
 </template>
 <style scoped>
 .button-holder {

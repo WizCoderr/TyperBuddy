@@ -12,8 +12,10 @@ import HelpIcon from '../icons/HelpIcon.vue';
 import InfoIcon from '../icons/InfoIcon.vue';
 const { textarea } = useTextareaAutosize()
 
-const props = defineProps<{
-    isVisible: boolean
+import { calculatePrize } from "@/lib/utils"
+
+const emit = defineEmits<{
+    (event: 'close'): void
 }>()
 
 
@@ -29,7 +31,10 @@ interface TournamentBasicData {
     rules: string,
     maxMatchWordCount: number,
     matchRoundCount: number,
-    matchRoundSentence: Array<string>
+    matchRoundSentence: Array<string>,
+    entryFee: number,
+    totalReward: number,
+    totalWinners: number
 }
 
 
@@ -47,7 +52,10 @@ const basicData = ref<TournamentBasicData>({
     rules: "",
     maxMatchWordCount: 30,
     matchRoundCount: 5,
-    matchRoundSentence: ['', '', '', '', '']
+    matchRoundSentence: ['', '', '', '', ''],
+    entryFee: 0,
+    totalReward: 0,
+    totalWinners: 5
 })
 
 
@@ -62,8 +70,7 @@ function changeTab(index: number) {
 
 
 watch(() => basicData.value.maxMatchWordCount, (newData, oldData) => {
-    console.log("content changed")
-    // todo clip extra chars from all content
+
     const oldArr = basicData.value.matchRoundSentence.slice()
     let index = 0
     for (const iterator of oldArr) {
@@ -74,8 +81,6 @@ watch(() => basicData.value.maxMatchWordCount, (newData, oldData) => {
         index++
     }
 
-
-    console.log(oldArr)
     basicData.value.matchRoundSentence = oldArr
 })
 
@@ -108,33 +113,35 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
 
 
 
-// onMounted(() => {
-    
-//     let totalValue = 10000
-//     let reward = Array<{rank: number, prize: number}>()
-//     let totalPlayer = 10
-//     for (let index = 1; index <= totalPlayer; index++) {
+watch(() => basicData.value.entryFee, (newData, oldData) => {
+    if (newData < 0) basicData.value.entryFee = 0
+    if (isFloat(newData)) basicData.value.entryFee = Math.round(newData)
+})
 
-//         let prize = Math.round(totalValue * 40 / 100)
-//         totalValue -= prize
-//         reward.push({rank: index, prize: prize})
-//     }
 
-//     console.table(reward)
+watch(() => basicData.value.totalReward, (newData, oldData) => {
+    if (newData < 0) basicData.value.totalReward = 0
+    if (isFloat(newData)) basicData.value.totalReward = Math.round(newData)
+})
 
-//     let sum = 0
-//     reward.forEach(element => {
-//         sum += element.prize
-//     });
+function isFloat(n: number) {
+    return Number(n) === n && n % 1 !== 0;
+}
 
-//     console.log("sum", sum)
-// })
+
+
+
+function validateDecimalNumber(event: any) {
+    if (event.key == '.') {
+        event.preventDefault()
+    }
+}
 
 
 
 </script>
 <template>
-    <div v-if="isVisible" class="dialog">
+    <div class="dialog">
         <div class="content">
             <h2>Host Tournament</h2>
 
@@ -144,13 +151,16 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                     <span @click="changeTab(1)" :class="{ 'active': tabActiveIndex == 1 }">Timing</span>
                     <span @click="changeTab(2)" :class="{ 'active': tabActiveIndex == 2 }">Rules</span>
                     <span @click="changeTab(3)" :class="{ 'active': tabActiveIndex == 3 }">Content</span>
-                    <span @click="changeTab(4)" :class="{ 'active': tabActiveIndex == 4 }">Prizes & Sponsorship</span>
+                    <span @click="changeTab(4)" :class="{ 'active': tabActiveIndex == 4 }">Prizes</span>
+                    <span @click="changeTab(5)" :class="{ 'active': tabActiveIndex == 5 }">Sponsorship</span>
+                    
                 </div>
                 <div class="tab-contents">
 
                     <!-- tab content 1 -->
                     <template v-if="tabActiveIndex == 0">
                         <div class="content card-holder">
+                            <h4>General</h4>
                             <div class="input-holder">
                                 <span class="title">Tournament Name</span>
                                 <input v-model="basicData.name" type="text" style="width: 50%;" />
@@ -159,28 +169,30 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                             <div class="col-3">
                                 <div class="input-holder">
                                     <span class="title">Seats</span>
-                                    <Dropdown :default-value="basicData.seats.toString()" :items="['100', '200', '500']" />
+                                    <Dropdown :default-value="basicData.seats.toString()" :onChange="e => basicData.seats = parseInt(e)" :items="['100', '200', '500']" />
                                 </div>
 
                                 <div class="input-holder">
                                     <span class="title">Visibility</span>
-                                    <Dropdown :default-value="basicData.visibility" :onChange="(e: any) => {
-                                        basicData.visibility = e
-
-                                    }" :items="['public', 'private']" />
+                                    <Dropdown :default-value="basicData.visibility" :onChange="(e: any) => basicData.visibility = e" :items="['public', 'private']" />
                                 </div>
                             </div>
 
                             <div class="input-holder">
                                 <span class="title">Small Info</span>
-                                <textarea rows="3"></textarea>
-                                <span class="info"> <InfoIcon style="width: 18px; height: 18px;"/> Small description which is visible on tournament card.</span>
+                                <textarea v-model="basicData.headline" maxlength="30" rows="3"></textarea>
+                                <span class="info">
+                                    <InfoIcon style="width: 18px; height: 18px;" /> Small description which is visible on
+                                    tournament card.
+                                </span>
                             </div>
 
                             <div class="input-holder">
                                 <span class="title">About Tournament</span>
-                                <textarea rows="5"></textarea>
-                                <span class="info"><InfoIcon style="width: 18px; height: 18px;"/> Write your tournament description</span>
+                                <textarea v-model="basicData.about" maxlength="10000" rows="5"></textarea>
+                                <span class="info">
+                                    <InfoIcon style="width: 18px; height: 18px;" /> Write your tournament description
+                                </span>
                             </div>
 
                         </div>
@@ -189,6 +201,7 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                     <!-- tab content 2 -->
                     <template v-if="tabActiveIndex == 1">
                         <div class="content card-holder">
+                            <h4>Tournament timing</h4>
                             <div class="col-3">
                                 <div class="input-holder">
                                     <span class="title">Start Date</span>
@@ -211,6 +224,7 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                     <!-- tab content 3 -->
                     <template v-if="tabActiveIndex == 2">
                         <div class="content card-holder">
+                            <h4>Tournament rules</h4>
                             <div class="input-holder">
                                 <span class="title">Write tournament rules, this will be visible on the page.</span>
                                 <textarea rows="10" v-model="basicData.rules"></textarea>
@@ -222,6 +236,7 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                     <!-- tab content 4 -->
                     <template v-if="tabActiveIndex == 3">
                         <div class="content card-holder">
+                            <h4>Contents</h4>
                             <div class="col-3">
                                 <div class="input-holder">
                                     <span class="title">Max Word Count</span>
@@ -259,14 +274,54 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
                         </div>
                     </template>
 
+
+                    <!-- tab content 5 -->
+                    <template v-if="tabActiveIndex == 4">
+                        <div class="content card-holder">
+                            <h4>Prizes</h4>
+                            <div class="col-3">
+                                <div class="input-holder">
+                                    <span class="title">Entry fee(₹)</span>
+                                    <input @keydown="validateDecimalNumber" v-model="basicData.entryFee" class="block"
+                                        type="number" />
+                                </div>
+
+                                <div class="input-holder">
+                                    <span class="title">Total reward(₹)</span>
+                                    <input @keydown="validateDecimalNumber" v-model="basicData.totalReward" class="block"
+                                        type="number" />
+                                </div>
+
+                                <div v-if="basicData.totalReward > 0" class="input-holder">
+                                    <span class="title">Total winners</span>
+                                    <Dropdown :default-value="basicData.totalWinners.toString()"
+                                        :onChange="e => basicData.totalWinners = parseInt(e)"
+                                        :items="['3', '5', '10', '20']" />
+                                </div>
+                            </div>
+
+                            <div v-if="basicData.totalReward > 0" class="input-holder">
+                                <span class="title">Winner rewards(₹)</span>
+                                <div class="winner-rewards">
+                                    <div v-for="item, index in calculatePrize(basicData.totalReward, basicData.totalWinners)"
+                                        :key="index">
+                                        <span class="value">₹{{ item.prize }}</span>
+                                        <span class="bottom">Rank {{ item.rank }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </template>
+
                 </div>
             </div>
 
 
             <hr>
             <div class="buttons">
-                <button class="button primary outline">close</button>
-                <button class="button primary">Host</button>
+                <button class="button primary outline" @click="emit('close')">close</button>
+                <button class="button primary" @click="emit('close')">Host</button>
 
             </div>
 
@@ -275,6 +330,32 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
 </template>
 <style scoped>
 @import '~/public/style/dialog.css';
+
+
+.winner-rewards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.winner-rewards div {
+    width: 100px;
+    height: 80px;
+    border: 1px solid rgb(238, 238, 238);
+    background-color: white;
+    border-radius: var(--border-radius-2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.winner-rewards .bottom {
+    font-size: var(--very-small-font);
+    background-color: var(--color-surface);
+    padding: 0.2em 0.6em;
+    border-radius: 8px;
+}
 
 .rules-holder {
     max-height: 400px;
@@ -373,4 +454,5 @@ button.rule-button {
 .game-content>.vertical-tab span:hover {
     background-color: var(--color-secondary);
     color: white;
-}</style>
+}
+</style>
