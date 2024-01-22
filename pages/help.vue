@@ -1,9 +1,13 @@
 <script setup lang='ts'>
-import { useSeoMeta } from '#imports';
+import { onMounted, useSeoMeta } from '#imports';
 
 useSeoMeta({
     title: 'Help',
 })
+
+onMounted(() => {
+    console.log(localStorage.getItem('access_token'));
+});
 
 </script>
 <template>

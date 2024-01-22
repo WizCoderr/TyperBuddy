@@ -1,21 +1,85 @@
 <script setup lang='ts'>
-import { useSeoMeta } from '#imports';
+import { onMounted, onUnmounted, ref, useSeoMeta, watch } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
 import MatchHistoryTable from '~/components/tournament/MatchHistoryTable.vue';
 import RegisteredPlayers from '~/components/tournament/RegisteredPlayers.vue';
-import { generateAvatar } from '~/lib/utils';
-import  {ArrowLeftIcon} from "../../../components/icons"
+import { formatDateTime, generateAvatar, getTimeLeft } from '~/lib/utils';
+import { ArrowLeftIcon } from "../../../components/icons"
+import { ParticipantData, TournamentFullData } from '~/lib/DataType';
+import { useToast } from 'vue-toast-notification';
+import { useProfileStore } from '~/store/profile';
+import { useRoute } from '#vue-router';
+import ApiTournament from '~/lib/api/ApiTournament';
+import ApiParticipant from '~/lib/api/ApiParticipant';
+
 
 const router = useRouter()
+const route = useRoute()
+const $toast = useToast();
+
+const profileStore = useProfileStore()
+const pageData = ref<TournamentFullData>()
+const registeredPlayers = ref<ParticipantData[]>([])
 
 useSeoMeta({
     title: 'View Tournament',
 })
 
-function back() {
-    router.back()
+profileStore.$subscribe((mutation, state) => {
+    if (state.profile) loadPageData(route.params.id as string, state.profile.id)
+    else loadPageData(route.params.id as string)
+})
+
+let timer: any = null
+const timeLeft = ref("00:00:00:00")
+const isTournamentStarted = ref(false)
+
+
+
+onUnmounted(() => {
+    clearInterval(timer)
+})
+
+onMounted(() => {
+    if (profileStore.isLoaded) {
+        if (profileStore.profile) loadPageData(route.params.id as string, profileStore.profile.id)
+        else loadPageData(route.params.id as string)
+    }
+})
+
+watch(pageData, () => {
+    clearInterval(timer)
+    timer = setInterval(() => {
+        if (!pageData.value) return
+        const time = getTimeLeft(pageData.value.startDateTime)
+        const str = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
+        timeLeft.value = str
+        if (str == '00:00:00:00') {
+            clearInterval(timer)
+            isTournamentStarted.value = true
+        }
+    }, 1000)
+})
+
+function loadPageData(tournamentId: string, playerId: string = "") {
+
+    ApiTournament.getTournamentPageData(tournamentId, playerId).then(res => {
+        if (res.data) {
+            pageData.value = res.data
+        } else {
+            $toast.error(res.error!!.message)
+        }
+    });
+
+    ApiParticipant.getRegisteredPlayers(tournamentId).then(res => {
+        if (res.data) {
+            registeredPlayers.value = res.data
+        } else {
+            $toast.error(res.error!!.message)
+        }
+    });
 }
 
 
@@ -29,14 +93,36 @@ function back() {
             <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
                 dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
                 Join page is your gateway to thrilling battles, epic showdowns, and incredible prizes!</p>
-
             <hr />
 
-            <Button :onclick="back" class="button primary outline"> <ArrowLeftIcon style="width: 24px; height: 24px;" /> Back</Button>
+            <div v-if="pageData" class="top-bar">
+                <div></div>
+                <span class="timer">{{ timeLeft }}</span>
+                <Button class="button primary">{{ pageData.isJoined ? "Joined" : "Join tournament" }}</Button>
+            </div>
 
-            <div class="content-area">
+            <div v-if="pageData" class="content-area">
                 <div class="left">
-                    <div class="reward card">
+
+                    <div class="joined-players card">
+                        <h4>Tournament</h4>
+                        <div class="content">
+                            <p>Tournament name: {{ pageData.name }}</p>
+                            <p>Highlight: {{ pageData.smallDesc }}</p>
+                            <p>Total rounds: {{ pageData.matchRoundCount }}</p>
+                            <p>Seats: {{ pageData.seats }}</p>
+                            <p>Entry fee: {{ pageData.entryFee }}</p>
+                            <p>Reward: {{ pageData.totalReward }}</p>
+                            <p>Total winners: {{ pageData.totalWinners }}</p>
+                            <p>Tournament type: {{ pageData.visibility }}</p>
+                            <p>Round break interval: {{ pageData.roundBreakInv }}</p>
+                            <p>Entry fee: {{ pageData.entryFee }}</p>
+                            <p>Last updated: {{ formatDateTime(pageData.updatedAt) }}</p>
+                            <p>Created at: {{ formatDateTime(pageData.createdAt) }}</p>
+                        </div>
+                    </div>
+
+                    <div v-if="pageData.totalReward" class="reward card">
                         <h4>Game Reward</h4>
                         <div class="content">
 
@@ -46,51 +132,39 @@ function back() {
                                     <p class="icon">{{ item }}</p>
                                     <span class="amount">₹100</span>
                                 </div>
-
                             </div>
 
                         </div>
-
                     </div>
 
                     <div class="joined-players card">
-                        <h4>Registered Players · 10/100</h4>
+                        <h4>Registered Players · {{ registeredPlayers.length }}/{{ pageData.seats }}</h4>
                         <div class="content">
-                           <RegisteredPlayers :is-editable="true"/>
+                            <RegisteredPlayers :data="registeredPlayers" :is-editable="false" />
                         </div>
                     </div>
 
                 </div>
                 <div class="right">
-                    <div>
+                    <div v-if="pageData.description">
                         <h4>About Tournament</h4>
                         <div class="markdown">
-                            <h4>Tournament rules</h4>
-                            <ol>
-                                <li>Ensure participants meet any age or location requirements</li>
-                                <li>Specify whether the tournament is open to individuals or teams</li>
-                                <li>Set a clear registration deadline</li>
-                                <li>Outline the registration process, including any fees if applicable.</li>
-                            </ol>
+                            {{ pageData.description }}
                         </div>
                     </div>
-                    <div>
+                    <div v-if="pageData.rules">
                         <h4>Tournament Rules</h4>
                         <div class="markdown">
                             <h4>Tournament rules</h4>
                             <ol>
-                                <li>Ensure participants meet any age or location requirements</li>
-                                <li>Specify whether the tournament is open to individuals or teams</li>
-                                <li>Set a clear registration deadline</li>
-                                <li>Outline the registration process, including any fees if applicable.</li>
+                                <li v-for="item, index in pageData.rules.split('\n')" :key="index">{{ item }}</li>
                             </ol>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <div class="card match-history">
+            <div v-if="isTournamentStarted" class="card match-history">
                 <h4>Match History</h4>
                 <div class="content">
                     <MatchHistoryTable />
@@ -104,6 +178,21 @@ function back() {
 </template>
 <style scoped>
 /* reward */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 100px;
+}
+
+.top-bar .timer {
+    font-size: var(--big-font);
+    margin-top: 0.2em;
+    letter-spacing: 0px;
+    display: block;
+    font-family: 'Courier New', Courier, monospace;
+}
 
 .rewards-container {
     display: flex;

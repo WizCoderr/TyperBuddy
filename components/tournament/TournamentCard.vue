@@ -1,43 +1,66 @@
 <script setup lang='ts'>
 import { navigateTo } from 'nuxt/app';
+import { PeopleIcon, TrophyIcon, GameIcon } from "../icons"
+import { TournamentData } from '~/lib/DataType';
+import { onMounted, onUnmounted, ref } from '#imports';
+import { getTimeLeft } from '~/lib/utils';
+const prop = defineProps<{
+    data: TournamentData
+}>()
 
-import {PeopleIcon, TrophyIcon, GameIcon} from "../icons"
+
+let timer: any = null
+const timeLeft = ref("00:00:00:00")
+
+onMounted(() => {
+
+    if (prop.data) {
+        timer = setInterval(() => {
+            const time = getTimeLeft(prop.data.startDateTime)
+            timeLeft.value = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
+        }, 1000)
+    }
 
 
-function onJoin(){
-    navigateTo('tournaments/view/sdfsadf')
-}
+})
+
+onUnmounted(() => {
+    clearInterval(timer)
+})
+
 </script>
 <template>
     <div class="card">
         <div class="left">
             <div>
-                <h3>KeyMaster Challenge</h3>
-                <p>Elevate your typing skills in this thrilling tournament of speed and precision.</p>
+                <h3>{{ data.name }}</h3>
+                <p>{{ data.smallDesc.slice(0, 200) }}{{ data.smallDesc.length > 200 && "..." }}</p>
             </div>
             <div class="bottom">
                 <div class="item">
-                   <TrophyIcon style="width: 24px; height: 24px;" />
-                    <span>Prize: <b>$100</b></span>
+                    <TrophyIcon style="width: 24px; height: 24px;" />
+                    <span>Prize: <b>₹{{ data.totalReward }}</b></span>
                 </div>
                 <div class="item red">
                     <PeopleIcon style="width: 24px; height: 24px;" />
-                    <span><b>49/100</b></span>
+                    <span><b>{{ data.joinedPlayers }}/{{ data.seats }}</b></span>
                 </div>
                 <div class="item black">
                     <GameIcon style="width: 24px; height: 24px;" />
-                    <span>Rounds: <b>7</b></span>
+                    <span>Rounds: <b>{{ data.matchRoundCount }}</b></span>
                 </div>
             </div>
 
         </div>
         <div class="right">
-            <span class="chip">Paid</span>
+            <span class="chip">{{ data.entryFee ? "Paid" : "Free" }}</span>
             <div class="time">
                 <span>Time Left</span>
-                <span>00:12:10:13</span>
+                <span>{{ timeLeft }}</span>
             </div>
-            <button :onClick="onJoin">Join Now</button>
+            <NuxtLink :to="'/tournaments/view/' + data.id">
+                <button>{{ data.isJoined ? "View" : "Join Now" }}</button>
+            </NuxtLink>
         </div>
     </div>
 </template>
@@ -51,7 +74,6 @@ function onJoin(){
     grid-template-columns: 1fr 220px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-
 
 .card .bottom {
     display: flex;
@@ -100,7 +122,7 @@ function onJoin(){
 
 .card .right {
     height: 100%;
-    border-radius: 100px var(--border-radius-2) var(--border-radius-2) 100px;
+    border-radius: 300px var(--border-radius-2) var(--border-radius-2) 300px;
     background-color: #3d5a80;
     padding-top: 50px;
     padding-bottom: 12px;
@@ -132,9 +154,10 @@ function onJoin(){
 
 .card .right .time span:last-child {
     font-size: var(--big-font);
-    font-weight: bold;
-    letter-spacing: 4px;
+    margin-top: 0.2em;
+    letter-spacing: 0px;
     display: block;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 
@@ -147,7 +170,13 @@ function onJoin(){
     justify-content: space-between;
 }
 
+
+.card a {
+    display: block;
+}
+
 .card button {
+    width: 100%;
     border: none;
     font-size: var(--medium-font);
     background-color: white;
@@ -159,4 +188,5 @@ function onJoin(){
 
 .card button:hover {
     opacity: 0.8;
-}</style>
+}
+</style>

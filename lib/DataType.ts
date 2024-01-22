@@ -4,11 +4,11 @@ export interface TyperData {
 }
 
 export enum SocketMessageType {
-  error = 'error',
-  kick = 'kick',
-  roomFull = 'roomFull',
-  forbidden = 'forbidden',
-  info = 'info'
+  error = "error",
+  kick = "kick",
+  roomFull = "roomFull",
+  forbidden = "forbidden",
+  info = "info",
 }
 
 export interface CursorPos {
@@ -107,7 +107,7 @@ export interface PlayerData {
     errors: number;
     rank: number;
   };
-  isAdmin: boolean
+  isAdmin: boolean;
 }
 
 export interface Leaderboard {
@@ -121,11 +121,39 @@ export interface Leaderboard {
   updatedAt: Date;
 }
 
-
-
-
-export interface TournamentMatchHistory{
-  round: number,
+export interface TournamentMatchHistory {
+  round: number;
 }
 
+interface Tournament {
+  id: string;
+  name: string;
+  smallDesc: string;
+  matchRoundCount: number;
+  seats: number;
+  entryFee: number;
+  totalReward: number;
+  totalWinners: number;
+  visibility: string;
+  startDateTime: string;
+  createdAt: string;
+}
+export interface TournamentFullData extends Tournament {
+  updatedAt: string;
+  description: string;
+  roundBreakInv: number;
+  rules: string;
+  isJoined: boolean;
+  joinedPlayers: number;
+}
 
+export interface TournamentData extends Tournament {
+  isJoined: boolean;
+  joinedPlayers: number;
+}
+
+export interface ParticipantData {
+  id: string;
+  name: string;
+  avatar: string;
+}

@@ -1,18 +1,55 @@
 <script setup lang='ts'>
-import { useSeoMeta } from '#imports';
+import { onMounted, ref, useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRoute } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
 import TournamentCard from '~/components/tournament/TournamentCard.vue';
-import {AddIcon} from "../../components/icons"
+import { AddIcon } from "../../components/icons"
+import ApiTournament from '~/lib/api/ApiTournament';
+import { useProfileStore } from '~/store/profile';
+import { watch } from 'fs';
+import { TournamentData } from '~/lib/DataType';
+import { useToast } from 'vue-toast-notification';
 
 useSeoMeta({
     title: 'Tournaments',
 })
 
+const $toast = useToast();
+
+const profileStore = useProfileStore()
+
 function hostTournament() {
     navigateTo('/tournaments/host')
 
+}
+
+
+profileStore.$subscribe((mutation, state) => {
+    if (state.profile) loadTournaments(state.profile.id)
+    else loadTournaments("")
+})
+
+onMounted(() => {
+
+    if (profileStore.isLoaded) {
+        if (profileStore.profile) loadTournaments(profileStore.profile.id)
+        else loadTournaments("")
+    }
+
+})
+
+
+
+const tournaments = ref(Array<TournamentData>())
+
+async function loadTournaments(playerId: string) {
+    const res = await ApiTournament.getTournaments(playerId);
+    if (res.data) {
+        tournaments.value = res.data
+    } else {
+        $toast.error(res.error!!.message)
+    }
 }
 
 </script>
@@ -27,23 +64,25 @@ function hostTournament() {
 
             <hr />
 
-            <Button :onclick="hostTournament" class="button primary">  <AddIcon style="width: 24px; height: 24px;"/> Host Tournament</Button>
+            <Button :onclick="hostTournament" class="button primary">
+                <AddIcon style="width: 24px; height: 24px;" /> Host Tournament
+            </Button>
 
             <div class="tournament">
                 <h4>Today Tournaments</h4>
                 <div class="card-holder">
-                    <TournamentCard v-for="item, index in 3" :key="index" />
+                    <TournamentCard v-for="item, index in tournaments" :key="index" :data="item" />
                 </div>
 
             </div>
 
-            <div class="tournament">
+            <!-- <div class="tournament">
                 <h4>Upcoming Tournaments</h4>
                 <div class="card-holder">
                     <TournamentCard v-for="item, index in 4" :key="index" />
                 </div>
 
-            </div>
+            </div> -->
         </section>
         <RightPanel />
     </main>

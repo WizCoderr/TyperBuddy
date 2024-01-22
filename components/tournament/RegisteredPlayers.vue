@@ -1,62 +1,26 @@
 <script setup lang='ts'>
 import { generateAvatar } from '~/lib/utils';
 import FriendListDialog from '../dialog/FriendListDialog.vue';
+export interface PlayerChipData {
+    id: string
+    name: string,
+    avatar: string,
+}
+
 
 defineProps({
     isEditable: Boolean,
+    data: Array<PlayerChipData>
 })
 
-
-
-const namesArray = [
-    'Emma Johnson',
-    'Alexander Martinez',
-    'Olivia Wang',
-    'Ethan Reynolds',
-    'Sophia Mitchell',
-    'Liam Patel',
-    'Ava Rodriguez',
-    'Noah Taylor',
-    'Isabella Nguyen',
-    'Lucas Thompson',
-    'Emma Johnson',
-    'Alexander Martinez',
-    'Olivia Wang',
-    'Ethan Reynolds',
-    'Sophia Mitchell',
-    'Liam Patel',
-    'Ava Rodriguez',
-    'Noah Taylor',
-    'Isabella Nguyen',
-    'Lucas Thompson',
-    'Emma Johnson',
-    'Alexander Martinez',
-    'Olivia Wang',
-    'Ethan Reynolds',
-    'Sophia Mitchell',
-    'Liam Patel',
-    'Ava Rodriguez',
-    'Noah Taylor',
-    'Isabella Nguyen',
-    'Lucas Thompson',
-    'Emma Johnson',
-    'Alexander Martinez',
-    'Olivia Wang',
-    'Ethan Reynolds',
-    'Sophia Mitchell',
-    'Liam Patel',
-    'Ava Rodriguez',
-    'Noah Taylor',
-    'Isabella Nguyen',
-    'Lucas Thompson'
-];
 
 </script>
 <template>
     <div class="chips">
-        <div class="item" v-for="item, index in namesArray" :key="index">
-            <img :src='generateAvatar(item)' />
-            {{ item }}
+        <div class="item" v-for="item, index in data" :key="index">
+            <img v-if="item.avatar" :src='item.avatar' />
+            <img v-else :src='generateAvatar(item.name)' />
+            {{ item.name }}
         </div>
     </div>
     <template v-if="isEditable">
@@ -69,7 +33,7 @@ const namesArray = [
             Add Players
         </div>
 
-        <FriendListDialog :isVisible="false"/>
+        <FriendListDialog :isVisible="false" />
     </template>
 </template>
 <style scoped>

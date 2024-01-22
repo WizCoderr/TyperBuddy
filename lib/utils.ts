@@ -33,14 +33,14 @@ export function timeToWord(seconds: number) {
 
   let word = "";
   if (hours != 0) {
-    word += hours + "hrs ";
+    word += hours + "h ";
   }
   if (minutes != 0) {
-    word += minutes + "mins ";
+    word += minutes + "m ";
   }
 
   if (sec != 0) {
-    word += sec + "secs";
+    word += sec + "s";
   }
 
   return word;
@@ -179,4 +179,29 @@ export function calculatePrize(totalReward: number, totalPlayer: number) {
   }
 
   return reward;
+}
+
+
+export function getTimeLeft(dateTime: string) {
+  const future = new Date(dateTime);
+  const now = new Date();
+  const diff = new Date(future.getTime() - now.getTime());
+
+  return [
+    diff.getDate(),
+    diff.getHours(),
+    diff.getMinutes(),
+    diff.getSeconds(),
+  ];
+}
+
+export function formatDateTime(date: string) {
+  const inputDate = new Date(date);
+  const day = inputDate.getDate();
+  const month = inputDate.toLocaleString("en-US", { month: "short" });
+  const year = inputDate.getFullYear();
+  const hour = inputDate.getHours();
+  const minute = inputDate.getMinutes();
+
+  return `${day} ${month} ${year} at ${hour}:${minute}`;
 }

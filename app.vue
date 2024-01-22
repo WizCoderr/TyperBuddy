@@ -1,14 +1,14 @@
 <script setup>
-import {saveLocal, getLocalData, getSimpleData, saveSimpleData} from "~/lib/LocalStorageManager"
+import { saveLocal, getLocalData, getSimpleData, saveSimpleData } from "~/lib/LocalStorageManager"
 import { useProfileStore } from '~/store/profile';
 import { uid } from "uid";
 import { onMounted } from 'vue';
-import { NuxtPage } from "#components";
+import { NuxtPage, NuxtLayout, NuxtLoadingIndicator } from "#components";
 
 const profileStore = useProfileStore()
 
-onMounted(function(){
-  if(getSimpleData("multiplayerId") == null){
+onMounted(function () {
+  if (getSimpleData("multiplayerId") == null) {
     saveSimpleData("multiplayerId", uid(16))
   }
 })
@@ -16,5 +16,8 @@ onMounted(function(){
 </script>
 
 <template>
-  <NuxtPage/>
+  <NuxtLoadingIndicator color="red" />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>

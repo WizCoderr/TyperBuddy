@@ -24,6 +24,8 @@ export const useProfileStore = defineStore("profile", {
 
       if (result.isOk) {
         this.profile = result.data;
+
+        console.log(this.profile)
       } else {
         console.log(result.error);
       }

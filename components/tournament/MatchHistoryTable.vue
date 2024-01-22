@@ -20,13 +20,11 @@ import { generateAvatar } from '~/lib/utils';
                 <th>R5</th>
                 <th>R6</th>
                 <th>R7</th>
-                <th>R8</th>
-                <th>R9</th>
                 <th>Score</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item, index in 19">
+            <tr v-for="item, index in 10">
                 <td class="profile">
                     <div><img :src='generateAvatar("Nitesh Kumar")'></div>
                 </td>
@@ -34,8 +32,6 @@ import { generateAvatar } from '~/lib/utils';
                     <NuxtLink :to="'/'">{{ "Nitesh Kumar" }}</NuxtLink>
                 </td>
                 <td>{{ index + 1 }}</td>
-                <td>10</td>
-                <td>10</td>
                 <td>10</td>
                 <td>10</td>
                 <td>10</td>
