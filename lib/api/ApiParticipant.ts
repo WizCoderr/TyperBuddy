@@ -32,6 +32,14 @@ namespace ApiParticipant {
 
     return { ...res, data: formattedData };
   }
+
+  export async function joinTournament(tournamentId: string) {
+    return (await AxiosInstance.post(
+      "/participants/join/tournament/" + tournamentId,
+      {},
+      header
+    )) as any as AxiosResult<any>;
+  }
 }
 
 interface ParticipantRes {

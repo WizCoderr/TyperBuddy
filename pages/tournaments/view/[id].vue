@@ -50,18 +50,21 @@ onMounted(() => {
 })
 
 watch(pageData, () => {
+    setCountdown()
     clearInterval(timer)
-    timer = setInterval(() => {
-        if (!pageData.value) return
-        const time = getTimeLeft(pageData.value.startDateTime)
-        const str = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
-        timeLeft.value = str
-        if (str == '00:00:00:00') {
-            clearInterval(timer)
-            isTournamentStarted.value = true
-        }
-    }, 1000)
+    timer = setInterval(setCountdown, 1000)
 })
+
+function setCountdown() {
+    if (!pageData.value) return
+    const time = getTimeLeft(pageData.value.startDateTime)
+    const str = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
+    timeLeft.value = str
+    if (str == '00:00:00:00') {
+        clearInterval(timer)
+        isTournamentStarted.value = true
+    }
+}
 
 function loadPageData(tournamentId: string, playerId: string = "") {
 
@@ -83,6 +86,31 @@ function loadPageData(tournamentId: string, playerId: string = "") {
 }
 
 
+const isJoining = ref(false)
+async function joinTournament() {
+    if (isJoining.value) return
+    if (!profileStore.profile) {
+        $toast.error('Please login first to join')
+        return
+    }
+
+    if (pageData.value && !pageData.value.isJoined) {
+        isJoining.value = true
+        const res = await ApiParticipant.joinTournament(route.params.id as string)
+        isJoining.value = true
+        if (res.data) {
+            pageData.value.isJoined = true
+            $toast.success("You were joined successfully")
+        } else {
+            $toast.error(res.error!!.message)
+        }
+    }
+
+
+    // TODO: implement the condition to enter the tournament room
+
+}
+
 
 </script>
 <template>
@@ -98,7 +126,8 @@ function loadPageData(tournamentId: string, playerId: string = "") {
             <div v-if="pageData" class="top-bar">
                 <div></div>
                 <span class="timer">{{ timeLeft }}</span>
-                <Button class="button primary">{{ pageData.isJoined ? "Joined" : "Join tournament" }}</Button>
+                <button @click="joinTournament" class="button primary">{{ pageData.isJoined ? "Joined" :
+                    profileStore.profile ? "Join tournament" : 'Login to join' }}</button>
             </div>
 
             <div v-if="pageData" class="content-area">

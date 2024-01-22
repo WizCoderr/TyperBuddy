@@ -16,7 +16,7 @@ onMounted(function () {
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="red" />
+  <NuxtLoadingIndicator color="#D33396" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
