@@ -1,4 +1,9 @@
-import { AxiosResult, TournamentData, TournamentFullData } from "../DataType";
+import {
+  AxiosResult,
+  TournamentData,
+  TournamentFullData,
+  TournamentRawData,
+} from "../DataType";
 import AxiosInstance from "../axios";
 
 namespace ApiTournament {
@@ -25,6 +30,21 @@ namespace ApiTournament {
       "/tournaments/tournament/" + tournamentId + "/player/" + playerId,
       header
     )) as any as AxiosResult<TournamentFullData>;
+  }
+
+  export async function getUserCreatedTournaments() {
+    return (await AxiosInstance.get(
+      "/tournaments/user",
+      header
+    )) as any as AxiosResult<Array<TournamentRawData>>;
+  }
+
+  export async function createTournament(data: any) {
+    return (await AxiosInstance.post(
+      "/tournaments/create",
+      data,
+      header
+    )) as any as AxiosResult<TournamentRawData>;
   }
 }
 

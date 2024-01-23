@@ -170,6 +170,11 @@ button.outline:hover {
     background-color: transparent;
 }
 
+button.disabled {
+    opacity: 0.7 !important;
+    cursor: not-allowed;
+}
+
 
 a {
     text-decoration: none;
@@ -226,7 +231,7 @@ main hr {
     margin-bottom: 1.5em;
 }
 
-.input-holder .info{
+.input-holder .info {
     margin-top: 4px;
     font-size: var(--small-font);
     opacity: 0.7;
@@ -235,7 +240,7 @@ main hr {
     gap: 0.5em;
 }
 
-.input-holder .info svg{
+.input-holder .info svg {
     fill: var(--color-on-surface);
 }
 
@@ -244,7 +249,8 @@ main hr {
     margin-bottom: 0.4em;
 }
 
-.input-holder input, .input-holder textarea {
+.input-holder input,
+.input-holder textarea {
 
     border: none;
     outline: none;
@@ -254,10 +260,22 @@ main hr {
     outline: 1px solid rgb(224, 224, 224);
 }
 
+.input-holder input:focus,
+.input-holder textarea:focus{
+    outline-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
 .input-holder textarea {
     resize: none;
     display: block;
     width: 100%;
+}
+
+.input-holder input.danger,
+.input-holder textarea.danger {
+    outline-color: var(--color-error);
+    color: var(--color-error);
 }
 
 .input-holder input.block {
@@ -270,15 +288,52 @@ main hr {
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
+
+
+.loading {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+.loading.dark {
+    border-color: #1f202f;
+    border-bottom-color: transparent;
+}
+
+.loading.mini {
+    width: 16px;
+    height: 16px;
+}
+
+.loading.small {
+    width: 24px;
+    height: 24px;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 
 

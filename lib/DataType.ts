@@ -62,6 +62,7 @@ export interface ProfileData {
   roomCode: string;
   profileImage: string;
   premiumEnd: string;
+  isPremium: boolean;
   createdAt: string;
 }
 
@@ -134,10 +135,34 @@ interface Tournament {
   entryFee: number;
   totalReward: number;
   totalWinners: number;
-  visibility: string;
+  visibility: Visibility;
   startDateTime: string;
   createdAt: string;
 }
+
+export interface TournamentRawData extends Tournament {
+  updatedAt: string;
+  description: string;
+  roundBreakInv: number;
+  rules: string;
+  maxMatchWordsCount: number;
+  tournamentStatus: TournamentStatus;
+}
+
+export enum Visibility {
+  PUBLIC = "PUBLIC",
+  PRIVATE = "PRIVATE",
+}
+
+export enum TournamentStatus {
+  IDEAL = "IDEAL",
+  UPCOMING = "UPCOMING",
+  RUNNING = "RUNNING",
+  FINISHED = "FINISHED",
+  DRAFT = "DRAFT",
+  CANCELED = "CANCELED",
+}
+
 export interface TournamentFullData extends Tournament {
   updatedAt: string;
   description: string;

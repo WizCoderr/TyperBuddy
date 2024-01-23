@@ -181,18 +181,26 @@ export function calculatePrize(totalReward: number, totalPlayer: number) {
   return reward;
 }
 
-
 export function getTimeLeft(dateTime: string) {
   const future = new Date(dateTime);
   const now = new Date();
-  const diff = new Date(future.getTime() - now.getTime());
+  let diff = future.getTime() - now.getTime();
+  if (diff < 1) return [0, 0, 0, 0];
 
-  return [
-    diff.getDate(),
-    diff.getHours(),
-    diff.getMinutes(),
-    diff.getSeconds(),
-  ];
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  const days = Math.floor(diff / oneDay);
+  diff -= days * oneDay;
+
+  const hours = Math.floor(diff / (60 * 60 * 1000));
+  diff -= hours * 60 * 60 * 1000;
+
+  const minutes = Math.floor(diff / (60 * 1000));
+  diff -= minutes * 60 * 1000;
+
+  const seconds = Math.floor(diff / 1000);
+
+  return [days, hours, minutes, seconds];
 }
 
 export function formatDateTime(date: string) {
@@ -204,4 +212,11 @@ export function formatDateTime(date: string) {
   const minute = inputDate.getMinutes();
 
   return `${day} ${month} ${year} at ${hour}:${minute}`;
+}
+
+export function isTodayDate(dateTime: string) {
+  const future = new Date(dateTime);
+  const now = new Date();
+  const diff = future.getTime() - now.getTime();
+  return diff < 1000 * 60 * 60 * 24;
 }

@@ -1,7 +1,11 @@
 <script setup lang='ts'>
 import { ref, watch } from 'vue';
-import {countWords, filterAllowedChars} from '../../lib/utils'
+import { countWords, filterAllowedChars } from '../../lib/utils'
+import { LoadingIcon } from '../icons';
+import ApiContent from '~/lib/api/ApiContents';
+import { useToast } from 'vue-toast-notification';
 
+const $toast = useToast()
 
 const props = defineProps<{
     maxLength: number,
@@ -13,7 +17,7 @@ const emit = defineEmits<{
 }>()
 
 
-function emitData(value: string){
+function emitData(value: string) {
     emit('change', value)
 }
 
@@ -25,7 +29,7 @@ watch(props, (value) => {
 
 })
 watch(gameContent, (value) => {
-    if(countWords(value) > props.maxLength){
+    if (countWords(value) > props.maxLength) {
         gameContent.value = textToArray(value).slice(0, props.maxLength).join(" ")
         return
     }
@@ -47,13 +51,30 @@ function onBeforeType(event: any) {
 }
 
 
+const isLoading = ref(false)
+
+async function loadGameContent() {
+    if (isLoading.value) return
+    isLoading.value = true
+    const res = await ApiContent.getTypingContent(props.maxLength)
+    isLoading.value = false
+    if (res.data) {
+        gameContent.value = res.data
+    } else {
+        $toast.error(res.error!!.message)
+    }
+}
+
+
 </script>
 <template>
     <div class="g-content">
-        <textarea @input="onBeforeType" rows="15"  v-model="gameContent"></textarea>
+        <textarea @input="onBeforeType" rows="15" v-model="gameContent"></textarea>
         <div class="bottom">
             <span class="count">{{ countWords(gameContent) + "/" + maxLength }}</span>
-            <button class="button secondary">Generate Text</button>
+            <button @click="loadGameContent" class="button secondary">
+                <LoadingIcon v-if="isLoading" size="mini" />Generate Text
+            </button>
         </div>
     </div>
 </template>
@@ -62,12 +83,12 @@ function onBeforeType(event: any) {
     position: relative;
 }
 
-.g-content textarea{
+.g-content textarea {
     width: 100%;
     display: block;
 }
 
-.g-content .bottom{
+.g-content .bottom {
     height: 3em;
     width: 100%;
     display: flex;
@@ -77,7 +98,7 @@ function onBeforeType(event: any) {
 }
 
 
-.g-content .count{
+.g-content .count {
     /* position: absolute;
     bottom: 1em;
     right: 1em; */
@@ -87,5 +108,4 @@ function onBeforeType(event: any) {
     font-size: var(--small-font);
     color: white;
 }
-
 </style>

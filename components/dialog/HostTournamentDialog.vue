@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { } from '~/lib/DataType';
+import { TournamentRawData, TournamentStatus, Visibility } from '~/lib/DataType';
 import CheckBox from '../widgets/CheckBox.vue';
 import Dropdown from '../widgets/Dropdown.vue';
 import GameContent from '../widgets/GameContent.vue';
@@ -11,44 +11,74 @@ import { useTextareaAutosize } from '@vueuse/core'
 import HelpIcon from '../icons/HelpIcon.vue';
 import InfoIcon from '../icons/InfoIcon.vue';
 const { textarea } = useTextareaAutosize()
-
 import { calculatePrize } from "@/lib/utils"
+import { useToast } from 'vue-toast-notification';
+import { toRaw } from '#imports';
+import ApiTournament from '~/lib/api/ApiTournament';
+const $toast = useToast();
 
 const emit = defineEmits<{
-    (event: 'close'): void
+    (event: 'close'): void,
+    (event: 'save', value: TournamentRawData): void
 }>()
 
+const isSaving = ref(false)
 
-interface TournamentBasicData {
-    name: string,
-    seats: number,
-    visibility: "public" | "private",
-    headline: string,
-    about: string,
-    startDate: string,
-    startTime: string,
-    roundBreak: string,
-    rules: string,
-    maxMatchWordCount: number,
-    matchRoundCount: number,
-    matchRoundSentence: Array<string>,
-    entryFee: number,
-    totalReward: number,
-    totalWinners: number
+
+// interface TournamentBasicData {
+//     name: string,
+//     seats: number,
+//     visibility: string,
+//     headline: string,
+//     about: string,
+//     startDatetime: string,
+//     roundBreak: string,
+//     rules: string,
+//     maxMatchWordCount: number,
+//     matchRoundCount: number,
+//     matchRoundSentence: Array<string>,
+//     entryFee: number,
+//     totalReward: number,
+//     totalWinners: number
+// }
+
+interface TournamentFormData extends Omit<TournamentRawData, 'createdAt' | 'updatedAt' | 'id'> {
+    matchRoundContent: Array<{
+        id: string,
+        text: string
+    }>
 }
 
 
 
 
-const basicData = ref<TournamentBasicData>({
+
+const basicData = ref<TournamentFormData>({
+    description: '',
+    roundBreakInv: 5,
+    rules: '',
+    maxMatchWordsCount: 30,
+    tournamentStatus: TournamentStatus.IDEAL,
+    name: '',
+    smallDesc: '',
+    matchRoundCount: 3,
+    seats: 100,
+    entryFee: 0,
+    totalReward: 0,
+    totalWinners: 5,
+    visibility: Visibility.PUBLIC,
+    startDateTime: '',
+    matchRoundContent: [{ id: '', text: '' }, { id: '', text: '' }, { id: '', text: '' }]
+})
+
+
+/*
     name: '',
     seats: 100,
     visibility: 'public',
-    headline: '',
     about: '',
-    startDate: '',
-    startTime: '',
-    roundBreak: '',
+    startDatetime: 'd',
+    roundBreak: '5m',
     rules: "",
     maxMatchWordCount: 30,
     matchRoundCount: 5,
@@ -56,7 +86,7 @@ const basicData = ref<TournamentBasicData>({
     entryFee: 0,
     totalReward: 0,
     totalWinners: 5
-})
+*/
 
 
 
@@ -69,19 +99,19 @@ function changeTab(index: number) {
 }
 
 
-watch(() => basicData.value.maxMatchWordCount, (newData, oldData) => {
+watch(() => basicData.value.maxMatchWordsCount, (newData, oldData) => {
 
-    const oldArr = basicData.value.matchRoundSentence.slice()
+    const oldArr = basicData.value.matchRoundContent.slice()
     let index = 0
     for (const iterator of oldArr) {
 
-        let words = textToArray(iterator)
-        if (words.length > basicData.value.maxMatchWordCount) words = words.slice(0, basicData.value.maxMatchWordCount)
-        oldArr[index] = words.join(" ")
+        let words = textToArray(iterator.text)
+        if (words.length > basicData.value.maxMatchWordsCount) words = words.slice(0, basicData.value.maxMatchWordsCount)
+        oldArr[index] = { ...iterator, text: words.join(" ") }
         index++
     }
 
-    basicData.value.matchRoundSentence = oldArr
+    basicData.value.matchRoundContent = oldArr
 })
 
 
@@ -91,11 +121,14 @@ function textToArray(text: string) {
 }
 
 watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
-    const oldArr = basicData.value.matchRoundSentence.slice()
+    const oldArr = basicData.value.matchRoundContent.slice()
     const diff = newData - oldData
     if (diff > 0) {       // add items
         for (const iterator of Array(diff)) {
-            oldArr.push('')
+            oldArr.push({
+                id: "",
+                text: ""
+            })
         }
 
     } else if (diff < 0) { // remove items
@@ -108,7 +141,7 @@ watch(() => basicData.value.matchRoundCount, (newData, oldData) => {
         activeContentTab.value = oldArr.length - 1
     }
 
-    basicData.value.matchRoundSentence = oldArr
+    basicData.value.matchRoundContent = oldArr
 })
 
 
@@ -132,11 +165,83 @@ function isFloat(n: number) {
 
 
 function validateDecimalNumber(event: any) {
-    if (event.key == '.') {
+    if (event.key == '.' || event.key == '-') {
         event.preventDefault()
     }
 }
 
+async function onHost() {
+
+    if (isSaving.value) return
+
+    // validate the fields
+    try {
+        if (!basicData.value.name) throw Error("Please enter tournament name.")
+        if (!basicData.value.smallDesc) throw Error("Please enter small description.")
+        if (!basicData.value.description) throw Error("Please enter about tournament.")
+        if (!basicData.value.startDateTime) throw Error("Please enter tournament datetime.")
+        if (basicData.value.entryFee < 0) throw Error("Please enter entry fee or left 0 for free tournament.")
+        if (basicData.value.totalReward < 0) throw Error("Please enter reward or left 0 for free tournament.")
+
+        let round = 1
+        for (const iterator of basicData.value.matchRoundContent) {
+            if (countWords(iterator.text) <= basicData.value.maxMatchWordsCount / 2) throw Error("Please enter at least 50% words in round " + round)
+            round++
+        }
+
+        // send data to server
+        const clone = structuredClone(toRaw(basicData.value))
+        clone.startDateTime = dateInputToStringFormat(clone.startDateTime)
+
+        isSaving.value = true
+        const res = await ApiTournament.createTournament(clone)
+        isSaving.value = false
+        if (res.data) {
+            $toast.success('Tournament created successfully')
+            emit('save', res.data)
+        } else {
+            $toast.error(res.error!!.message)
+        }
+
+    } catch (error: any) {
+        $toast.error(error.message)
+    }
+}
+
+function intervalToNumber(value: string) {
+
+    // number is minutes
+    const split = value.split(" ")
+    if (split.length != 2) return 5
+
+    if (split[1] == "M") return parseInt(split[0])
+    if (split[1] == "H") return parseInt(split[0]) * 60
+
+    return 5
+}
+
+function intervalToString(value: number) {
+
+    // number is minutes
+    if (value > 59) return `${Math.round(value / 60)} H`
+    if (value < 60) return `${value} M`
+
+    return "5 M"
+
+}
+
+function dateInputToStringFormat(value: string) {
+    return new Date(value).toISOString()
+}
+
+function dateStringToInputFormat(value: string) {
+    return new Date(value).toISOString().slice(0, 16)
+}
+
+
+function closeDialog() {
+    if (!isSaving.value) emit('close')
+}
 
 
 </script>
@@ -153,7 +258,7 @@ function validateDecimalNumber(event: any) {
                     <span @click="changeTab(3)" :class="{ 'active': tabActiveIndex == 3 }">Content</span>
                     <span @click="changeTab(4)" :class="{ 'active': tabActiveIndex == 4 }">Prizes</span>
                     <span @click="changeTab(5)" :class="{ 'active': tabActiveIndex == 5 }">Sponsorship</span>
-                    
+
                 </div>
                 <div class="tab-contents">
 
@@ -162,25 +267,27 @@ function validateDecimalNumber(event: any) {
                         <div class="content card-holder">
                             <h4>General</h4>
                             <div class="input-holder">
-                                <span class="title">Tournament Name</span>
+                                <span class="title">Tournament Name*</span>
                                 <input v-model="basicData.name" type="text" style="width: 50%;" />
                             </div>
 
                             <div class="col-3">
                                 <div class="input-holder">
-                                    <span class="title">Seats</span>
-                                    <Dropdown :default-value="basicData.seats.toString()" :onChange="e => basicData.seats = parseInt(e)" :items="['100', '200', '500']" />
+                                    <span class="title">Seats*</span>
+                                    <Dropdown :is-editable="true" :default-value="basicData.seats.toString()"
+                                        :onChange="e => basicData.seats = parseInt(e)" :items="['100', '200', '500']" />
                                 </div>
 
                                 <div class="input-holder">
-                                    <span class="title">Visibility</span>
-                                    <Dropdown :default-value="basicData.visibility" :onChange="(e: any) => basicData.visibility = e" :items="['public', 'private']" />
+                                    <span class="title">Visibility*</span>
+                                    <Dropdown :is-editable="true" :default-value="basicData.visibility"
+                                        :onChange="(e: any) => basicData.visibility = e" :items="['PUBLIC', 'PRIVATE']" />
                                 </div>
                             </div>
 
                             <div class="input-holder">
-                                <span class="title">Small Info</span>
-                                <textarea v-model="basicData.headline" maxlength="30" rows="3"></textarea>
+                                <span class="title">Small Info*</span>
+                                <textarea v-model="basicData.smallDesc" maxlength="100" rows="3"></textarea>
                                 <span class="info">
                                     <InfoIcon style="width: 18px; height: 18px;" /> Small description which is visible on
                                     tournament card.
@@ -188,8 +295,8 @@ function validateDecimalNumber(event: any) {
                             </div>
 
                             <div class="input-holder">
-                                <span class="title">About Tournament</span>
-                                <textarea v-model="basicData.about" maxlength="10000" rows="5"></textarea>
+                                <span class="title">About Tournament*</span>
+                                <textarea v-model="basicData.description" maxlength="10000" rows="5"></textarea>
                                 <span class="info">
                                     <InfoIcon style="width: 18px; height: 18px;" /> Write your tournament description
                                 </span>
@@ -204,17 +311,15 @@ function validateDecimalNumber(event: any) {
                             <h4>Tournament timing</h4>
                             <div class="col-3">
                                 <div class="input-holder">
-                                    <span class="title">Start Date</span>
-                                    <input class="block" type="date" />
+                                    <span class="title">Start Datetime*</span>
+                                    <input v-model="basicData.startDateTime" class="block" type="datetime-local" />
                                 </div>
 
                                 <div class="input-holder">
-                                    <span class="title">Start Time</span>
-                                    <input class="block" type="time" />
-                                </div>
-                                <div class="input-holder">
-                                    <span class="title">Round Break Interval</span>
-                                    <input class="block" type="time" />
+                                    <span class="title">Round Break Interval*</span>
+                                    <Dropdown :is-editable="true" :default-value="intervalToString(basicData.roundBreakInv)"
+                                        :onChange="e => basicData.roundBreakInv = intervalToNumber(e)"
+                                        :items="['5 M', '10 M', '15 M', '30 M', '1 H', '5 H', '10 H']" />
                                 </div>
                             </div>
 
@@ -239,15 +344,15 @@ function validateDecimalNumber(event: any) {
                             <h4>Contents</h4>
                             <div class="col-3">
                                 <div class="input-holder">
-                                    <span class="title">Max Word Count</span>
-                                    <Dropdown :default-value="basicData.maxMatchWordCount.toString()"
-                                        :onChange="e => basicData.maxMatchWordCount = parseInt(e)"
+                                    <span class="title">Max Word Count*</span>
+                                    <Dropdown :is-editable="true" :default-value="basicData.maxMatchWordsCount.toString()"
+                                        :onChange="e => basicData.maxMatchWordsCount = parseInt(e)"
                                         :items="['30', '50', '70', '100', '120']" />
                                 </div>
 
                                 <div class="input-holder">
-                                    <span class="title">Match Rounds</span>
-                                    <Dropdown :default-value="basicData.matchRoundCount.toString()"
+                                    <span class="title">Match Rounds*</span>
+                                    <Dropdown :is-editable="true" :default-value="basicData.matchRoundCount.toString()"
                                         :onChange="e => basicData.matchRoundCount = parseInt(e)" :items="['3', '5', '7']" />
                                 </div>
 
@@ -257,15 +362,15 @@ function validateDecimalNumber(event: any) {
                                     <template v-for="item, index in basicData.matchRoundCount" :key="index">
                                         <span :onClick="() => activeContentTab = index"
                                             :class="{ 'active': index == activeContentTab }">Round {{ item }}
-                                            <b>{{ countWords(basicData.matchRoundSentence[index]) }}/{{
-                                                basicData.maxMatchWordCount }}</b></span>
+                                            <b>{{ countWords(basicData.matchRoundContent[index].text) }}/{{
+                                                basicData.maxMatchWordsCount }}</b></span>
                                     </template>
                                 </div>
-                                <template v-for="item, index in basicData.matchRoundSentence">
+                                <template v-for="item, index in basicData.matchRoundContent">
                                     <div v-if="activeContentTab == index" :key="index" class="input-holder">
-                                        <GameContent :default-value="basicData.matchRoundSentence[index]"
-                                            :onChange="e => basicData.matchRoundSentence[index] = e"
-                                            :max-length="basicData.maxMatchWordCount" />
+                                        <GameContent :default-value="basicData.matchRoundContent[index].text"
+                                            :onChange="e => basicData.matchRoundContent[index] = { ...basicData.matchRoundContent[index], text: e }"
+                                            :max-length="basicData.maxMatchWordsCount" />
                                     </div>
                                 </template>
 
@@ -287,21 +392,21 @@ function validateDecimalNumber(event: any) {
                                 </div>
 
                                 <div class="input-holder">
-                                    <span class="title">Total reward(₹)</span>
-                                    <input @keydown="validateDecimalNumber" v-model="basicData.totalReward" class="block"
-                                        type="number" />
+                                    <span class="title">Total reward(₹)*</span>
+                                    <input @keydown="validateDecimalNumber" v-model="basicData.totalReward"
+                                        class="block" type="number" />
                                 </div>
 
                                 <div v-if="basicData.totalReward > 0" class="input-holder">
-                                    <span class="title">Total winners</span>
-                                    <Dropdown :default-value="basicData.totalWinners.toString()"
+                                    <span class="title">Total winners*</span>
+                                    <Dropdown :is-editable="true" :default-value="basicData.totalWinners.toString()"
                                         :onChange="e => basicData.totalWinners = parseInt(e)"
                                         :items="['3', '5', '10', '20']" />
                                 </div>
                             </div>
 
                             <div v-if="basicData.totalReward > 0" class="input-holder">
-                                <span class="title">Winner rewards(₹)</span>
+                                <span class="title">Winner rewards(₹)*</span>
                                 <div class="winner-rewards">
                                     <div v-for="item, index in calculatePrize(basicData.totalReward, basicData.totalWinners)"
                                         :key="index">
@@ -314,15 +419,23 @@ function validateDecimalNumber(event: any) {
                         </div>
                     </template>
 
+                    <!-- tab content 6 -->
+                    <template v-if="tabActiveIndex == 5">
+                        <div class="content card-holder">
+                            <h4>Sponsorship</h4>
+                        </div>
+                    </template>
+
                 </div>
             </div>
 
 
             <hr>
             <div class="buttons">
-                <button class="button primary outline" @click="emit('close')">close</button>
-                <button class="button primary" @click="emit('close')">Host</button>
-
+                <button class="button primary outline" @click="closeDialog">close</button>
+                <button class="button primary" @click="onHost">
+                    <div v-if="isSaving" class="loading mini"></div>Host
+                </button>
             </div>
 
         </div>
@@ -331,6 +444,10 @@ function validateDecimalNumber(event: any) {
 <style scoped>
 @import '~/public/style/dialog.css';
 
+
+.content {
+    min-height: 600px;
+}
 
 .winner-rewards {
     display: flex;

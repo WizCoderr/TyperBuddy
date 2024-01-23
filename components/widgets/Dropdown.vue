@@ -4,7 +4,8 @@ import { ref } from 'vue';
 
 const props = defineProps<{
     defaultValue: string,
-    items: Array<string>
+    items: Array<string>,
+    isEditable: boolean
 }>()
 
 const emit = defineEmits<{
@@ -23,7 +24,7 @@ function changeValue(value: string) {
 
 </script>
 <template>
-    <div class="dropdown">
+    <div :class="isEditable? 'dropdown active' : 'dropdown'">
         <p>{{ dropdownValue }}</p>
         <div class="content">
             <span :onclick="() => changeValue(item)" v-for="item, index in items" :key="index">{{ item }}</span>
@@ -45,7 +46,7 @@ function changeValue(value: string) {
     background-color: white;
 }
 
-.dropdown:hover .content {
+.dropdown.active:hover .content {
     display: block;
 
 }

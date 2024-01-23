@@ -1,25 +1,49 @@
 <script setup lang='ts'>
-import { navigateTo } from 'nuxt/app';
+import { ref, onMounted, onUnmounted } from '#imports';
+import { TournamentRawData } from '~/lib/DataType';
+import { getTimeLeft } from '~/lib/utils';
+const prop = defineProps<{
+    data: TournamentRawData
+}>()
 
 
-function onJoin() {
-    navigateTo('tournaments/view/sdfsadf')
+let timer: any = null
+const timeLeft = ref("00:00:00:00")
+
+onMounted(() => {
+    setCountdown()
+    timer = setInterval(setCountdown, 1000)
+})
+
+function setCountdown() {
+    const time = getTimeLeft(prop.data.startDateTime)
+    timeLeft.value = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
 }
+
+onUnmounted(() => {
+    clearInterval(timer)
+})
+
+
+
+
 </script>
 <template>
     <div class="card">
-        <h4>KeyMaster Challenge</h4>
-        <p>Elevate your typing skills in this thrilling tournament of speed and precision.</p>
+        <div>
+            <h4>{{ data.name }}</h4>
+            <p>{{ data.smallDesc.slice(0, 200) }}{{ data.smallDesc.length > 200 && "..." }}</p>
+        </div>
         <div class="content">
-            <p>Prizes: <b>$100</b></p>
-            <p>Total seats: <b>100</b></p>
-            <p>Mode: <b>Public</b></p>
-            <p>Rounds: <b>7</b></p>
-            <p class="full">Round Break Inv: <b>10min</b></p>
+            <p>Prizes: <b>${{ data.totalReward }}</b></p>
+            <p>Total seats: <b>{{ data.seats }}</b></p>
+            <p>Mode: <b>{{ data.visibility }}</b></p>
+            <p>Rounds: <b>{{ data.matchRoundCount }}</b></p>
+            <p class="full">Round Break Inv: <b>{{ data.roundBreakInv }}</b></p>
             <p class="full">Sponsorship Count: <b>7</b></p>
             <p class="full">Elimination: <b>No Elimination</b></p>
             <p class="full">Game Level: <b>Medium</b></p>
-            <p class="full border"><b>12 dec, 12:30am</b> to <b>12 dec, 1:00am</b></p>
+            <p class="full border">{{ timeLeft }}</p>
             <button class="full">View</button>
         </div>
 
@@ -40,6 +64,9 @@ h4 {
     position: relative;
     padding: 8px 16px;
     padding-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .card .countdown {
@@ -83,6 +110,8 @@ h4 {
     padding: 0.5em;
     text-align: center;
     margin-top: 8px;
+    font-size: var(--average-font);
+    font-family: 'Courier New', Courier, monospace;
 }
 
 

@@ -8,8 +8,8 @@ namespace ApiContent {
     },
   };
 
-  export async function getTypingContent<T>(wordCount: number) {
-    return await AxiosInstance.get("/contents/get-content/" + wordCount, header) as any as AxiosResult<T>;
+  export async function getTypingContent(wordCount: number) {
+    return await AxiosInstance.get("/contents/get-content/" + wordCount, header) as any as AxiosResult<string>;
   }
 }
 

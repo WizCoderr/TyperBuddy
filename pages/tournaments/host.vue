@@ -1,28 +1,99 @@
 <script setup lang='ts'>
-import { ref, useSeoMeta } from '#imports';
+import { onMounted, ref, useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toast-notification';
 import RightPanel from '~/components/RightPanel.vue';
 import HostTournamentDialog from '~/components/dialog/HostTournamentDialog.vue';
 import TournamentCreateCard from '~/components/tournament/TournamentCreateCard.vue';
-
+import { TournamentRawData, TournamentStatus } from '~/lib/DataType';
+import ApiTournament from '~/lib/api/ApiTournament';
+import { getTimeLeft, isTodayDate } from '~/lib/utils';
+import { useProfileStore } from '~/store/profile';
+const $toast = useToast();
 const router = useRouter()
-
-
 const hostDialogVisible = ref(false)
-
+const tournaments = ref(Array<TournamentRawData>())
 
 useSeoMeta({
     title: 'Host Tournament',
 })
 
 
+const profileStore = useProfileStore()
+profileStore.$subscribe((mutation, state) => {
+    if (state.profile) {
+        loadPageData()
+    }
+})
+
+onMounted(() => {
+    if (profileStore.isLoaded) {
+        if (profileStore.profile) {
+            loadPageData()
+        }
+    }
+})
+
+function loadPageData() {
+
+    if (!profileStore.profile!!.isPremium) {
+        $toast.error("Your plan is expired, please renew it.")
+        router.push("/tournaments")
+        return
+    }
+
+    ApiTournament.getUserCreatedTournaments().then(res => {
+        if (res.data) {
+
+            const arr = Array<TournamentRawData>()
+            for (const iterator of res.data) {
+                if (iterator.tournamentStatus == TournamentStatus.IDEAL && !isTodayDate(iterator.startDateTime)) {
+                    iterator.tournamentStatus = TournamentStatus.UPCOMING
+                }
+
+                arr.push(iterator)
+            }
+            tournaments.value = arr
+        } else {
+            $toast.error(res.error!!.message)
+        }
+    });
+
+
+
+    // ApiParticipant.getRegisteredPlayers(tournamentId).then(res => {
+    //     if (res.data) {
+    //         registeredPlayers.value = res.data
+    //     } else {
+    //         $toast.error(res.error!!.message)
+    //     }
+    // });
+}
+
+
+function filterTournament(status: TournamentStatus) {
+    return tournaments.value.filter((item) => item.tournamentStatus == status)
+}
+
+function changeActiveTab(status: TournamentStatus) {
+    activeTab.value = status
+}
+
+const activeTab = ref<TournamentStatus>(TournamentStatus.IDEAL)
+
+
+function onTournamentCreate(data: TournamentRawData) {
+    hostDialogVisible.value = false
+    tournaments.value.push(data)
+}
+
 
 </script>
 <template>
     <main>
         <Sidebar :activeTabIndex="6" />
-        <section class="main">
+        <section v-if="profileStore.profile?.isPremium" class="main">
             <h2>Host Tournaments</h2>
             <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
                 dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
@@ -32,42 +103,75 @@ useSeoMeta({
 
             <div class="button-holder">
 
-                <Button @click="() => hostDialogVisible = true" class="button primary"><svg width="24" height="24"
+                <button @click="() => hostDialogVisible = true" class="button primary"><svg width="24" height="24"
                         fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M11.883 3.007 12 3a1 1 0 0 1 .993.883L13 4v7h7a1 1 0 0 1 .993.883L21 12a1 1 0 0 1-.883.993L20 13h-7v7a1 1 0 0 1-.883.993L12 21a1 1 0 0 1-.993-.883L11 20v-7H4a1 1 0 0 1-.993-.883L3 12a1 1 0 0 1 .883-.993L4 11h7V4a1 1 0 0 1 .883-.993L12 3l-.117.007Z" />
                     </svg> Host Tournament
-                </Button>
+                </button>
+
             </div>
 
-
+            <div class="price-card">
+                <h4>Wallet</h4>
+                <span class="price">$100</span>
+                <button class="button primary">Add money</button>
+            </div>
 
             <div class="tabs-holder">
-                <div class="item active">
-                    Upcoming (4)
+                <div @click="() => changeActiveTab(TournamentStatus.IDEAL)"
+                    :class="activeTab == TournamentStatus.IDEAL ? 'item active' : 'item'">
+                    Upcoming ({{ filterTournament(TournamentStatus.IDEAL).length }})
                 </div>
-                <div class="item">
-                    Running (3)
+                <div @click="() => changeActiveTab(TournamentStatus.UPCOMING)"
+                    :class="activeTab == TournamentStatus.UPCOMING ? 'item active' : 'item'">
+                    Running ({{ filterTournament(TournamentStatus.UPCOMING).length }})
                 </div>
-                <div class="item">
-                    Finished (0)
+                <div @click="() => changeActiveTab(TournamentStatus.DRAFT)"
+                    :class="activeTab == TournamentStatus.DRAFT ? 'item active' : 'item'">
+                    Draft ({{ filterTournament(TournamentStatus.DRAFT).length }})
                 </div>
-                <div class="item">
-                    Canceled (1)
+                <div @click="() => changeActiveTab(TournamentStatus.FINISHED)"
+                    :class="activeTab == TournamentStatus.FINISHED ? 'item active' : 'item'">
+                    Finished ({{ filterTournament(TournamentStatus.FINISHED).length }})
+                </div>
+                <div @click="() => changeActiveTab(TournamentStatus.CANCELED)"
+                    :class="activeTab == TournamentStatus.CANCELED ? 'item active' : 'item'">
+                    Canceled ({{ filterTournament(TournamentStatus.CANCELED).length }})
                 </div>
             </div>
 
             <div class="tournament-holder">
-                <TournamentCreateCard v-for="item, index in 5" :key="index" />
+                <TournamentCreateCard v-for="item, index in filterTournament(activeTab)" :key="index" :data="item" />
             </div>
 
         </section>
+        <div v-else></div>
         <RightPanel />
     </main>
 
-    <HostTournamentDialog v-if="hostDialogVisible" :onClose="() => hostDialogVisible = false" />
+    <HostTournamentDialog v-if="hostDialogVisible" :onSave="onTournamentCreate"
+        :onClose="() => hostDialogVisible = false" />
 </template>
 <style scoped>
+.price-card {
+    padding: 1em;
+    background-color: white;
+    border-radius: var(--border-radius);
+    width: max-content;
+    margin-bottom: 50px;
+}
+
+.price-card h4 {
+    margin-top: 0;
+}
+
+.price-card span {
+    font-size: var(--average-font);
+    display: block;
+    margin-bottom: 1em;
+}
+
 .button-holder {
     display: flex;
     align-items: center;

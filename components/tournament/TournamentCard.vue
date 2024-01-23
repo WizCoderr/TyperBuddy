@@ -20,8 +20,6 @@ onMounted(() => {
             timeLeft.value = `${String(time[0]).padStart(2, "0")}:${String(time[1]).padStart(2, "0")}:${String(time[2]).padStart(2, "0")}:${String(time[3]).padStart(2, "0")}`
         }, 1000)
     }
-
-
 })
 
 onUnmounted(() => {

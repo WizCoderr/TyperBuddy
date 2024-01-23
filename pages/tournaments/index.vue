@@ -20,8 +20,8 @@ const $toast = useToast();
 const profileStore = useProfileStore()
 
 function hostTournament() {
+    if(!profileStore.profile?.isPremium) return
     navigateTo('/tournaments/host')
-
 }
 
 
@@ -64,9 +64,10 @@ async function loadTournaments(playerId: string) {
 
             <hr />
 
-            <Button :onclick="hostTournament" class="button primary">
+            <button @click="hostTournament"
+                :class="profileStore.profile?.isPremium ? 'button primary' : 'button primary disabled'">
                 <AddIcon style="width: 24px; height: 24px;" /> Host Tournament
-            </Button>
+            </button>
 
             <div class="tournament">
                 <h4>Today Tournaments</h4>
