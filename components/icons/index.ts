@@ -18,4 +18,7 @@ import PeopleIcon from "./PeopleIcon.vue";
 import AddIcon from "./AddIcon.vue";
 import ArrowLeftIcon from "./ArrowLeftIcon.vue";
 import LoadingIcon from "./LoadingIcon.vue";
-export { CarIcon, LoadingIcon, ArrowLeftIcon, AddIcon, PeopleIcon, GameIcon, ArrowUpIcon, CloseIcon, GoogleIcon, GithubIcon, DeleteIcon, TurtleIcon, HelpIcon, LeaderboardIcon, MeterIcon, SignInIcon, StatisticsIcon, TrophyIcon, TypingIcon, FriendsIcon };
+import WalletIcon from "./WalletIcon.vue";
+import WithdrawIcon from "./WithdrawIcon.vue";
+import NotificationIcon from "./NotificationIcon.vue";
+export { CarIcon, NotificationIcon, WithdrawIcon, WalletIcon, LoadingIcon, ArrowLeftIcon, AddIcon, PeopleIcon, GameIcon, ArrowUpIcon, CloseIcon, GoogleIcon, GithubIcon, DeleteIcon, TurtleIcon, HelpIcon, LeaderboardIcon, MeterIcon, SignInIcon, StatisticsIcon, TrophyIcon, TypingIcon, FriendsIcon };

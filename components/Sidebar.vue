@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import SignInDialog from './dialog/SignInDialog.vue';
 import { useProfileStore } from '~/store/profile'
-import {CarIcon, FriendsIcon, SignInIcon, TypingIcon, TrophyIcon, LeaderboardIcon, StatisticsIcon, MeterIcon, HelpIcon} from './icons';
+import {CarIcon, FriendsIcon, SignInIcon, TypingIcon, TrophyIcon, LeaderboardIcon, StatisticsIcon, MeterIcon, HelpIcon, WalletIcon} from './icons';
 
 
 defineProps({
@@ -121,6 +121,14 @@ function closeSignInDialog() {
                         <span class="marker"></span>
                         <TrophyIcon style="width: 24px; height: 24px;" />
                         <p>Tournaments</p>
+                    </NuxtLink>
+                </li>
+
+                <li :class="{ 'active': activeTabIndex == 8 }">
+                    <NuxtLink to="/wallet">
+                        <span class="marker"></span>
+                        <WalletIcon style="width: 24px; height: 24px;" />
+                        <p>Wallet</p>
                     </NuxtLink>
                 </li>
 
