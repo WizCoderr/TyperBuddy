@@ -124,7 +124,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 8 }">
+                <li v-if="profileStore.profile" :class="{ 'active': activeTabIndex == 8 }">
                     <NuxtLink to="/wallet">
                         <span class="marker"></span>
                         <WalletIcon style="width: 24px; height: 24px;" />

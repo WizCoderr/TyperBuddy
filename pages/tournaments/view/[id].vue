@@ -6,7 +6,7 @@ import RightPanel from '~/components/RightPanel.vue';
 import MatchHistoryTable from '~/components/tournament/MatchHistoryTable.vue';
 import RegisteredPlayers from '~/components/tournament/RegisteredPlayers.vue';
 import { formatDateTime, generateAvatar, getTimeLeft } from '~/lib/utils';
-import { ArrowLeftIcon } from "../../../components/icons"
+import { ArrowLeftIcon, LoadingIcon } from "../../../components/icons"
 import { ParticipantData, TournamentFullData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
 import { useProfileStore } from '~/store/profile';
@@ -97,9 +97,10 @@ async function joinTournament() {
     if (pageData.value && !pageData.value.isJoined) {
         isJoining.value = true
         const res = await ApiParticipant.joinTournament(route.params.id as string)
-        isJoining.value = true
+        isJoining.value = false
         if (res.data) {
             pageData.value.isJoined = true
+            registeredPlayers.value.push({ id: profileStore.profile.id, name: profileStore.profile.name, avatar: profileStore.profile.profileImage })
             $toast.success("You were joined successfully")
         } else {
             $toast.error(res.error!!.message)
@@ -126,8 +127,10 @@ async function joinTournament() {
             <div v-if="pageData" class="top-bar">
                 <div></div>
                 <span class="timer">{{ timeLeft }}</span>
-                <button @click="joinTournament" class="button primary">{{ pageData.isJoined ? "Joined" :
-                    profileStore.profile ? "Join tournament" : 'Login to join' }}</button>
+                <button @click="joinTournament" class="button primary">
+                    <LoadingIcon v-if="isJoining" size="mini" />{{ pageData.isJoined ? "Joined" :
+                        profileStore.profile ? "Join tournament" : 'Login to join' }}
+                </button>
             </div>
 
             <div v-if="pageData" class="content-area">
@@ -274,7 +277,7 @@ async function joinTournament() {
 
 /* card */
 .card {
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
     background-color: white;
     border-radius: var(--border-radius-2);
     min-height: 200px;
@@ -324,7 +327,7 @@ async function joinTournament() {
     height: max-content;
     background-color: white;
     margin-bottom: 24px;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
     border-radius: var(--border-radius-2);
 
 }

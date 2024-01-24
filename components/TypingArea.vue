@@ -466,14 +466,14 @@ function onBeforeType(event: any) {
 /* -------------------- Typing content ------------------- */
 .typing-content {
     width: 100%;
-    max-width: 1000px;
+    max-width: 800px;
     margin: auto;
     background-color: white;
     border-radius: 0.6rem;
     color: var(--color-on-surface);
     line-height: 1.8em;
     padding: 1rem 1.6rem;
-    font-size: var(--big-2-font);
+    font-size: var(--big-font);
     position: relative;
 }
 
@@ -528,7 +528,7 @@ function onBeforeType(event: any) {
 
 
 .typing-content .content {
-    height: 300px;
+    height: 250px;
     overflow: hidden;
     filter: blur(4px);
     scroll-behavior: smooth;

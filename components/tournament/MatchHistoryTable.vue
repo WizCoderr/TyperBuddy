@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { generateAvatar } from '~/lib/utils';
+import Paginate from '../widgets/Paginate.vue';
 
 </script>
 <template>
@@ -44,46 +45,18 @@ import { generateAvatar } from '~/lib/utils';
             </tr>
         </tbody>
     </table>
-    <div class="paginate">
-        <span v-for="item, index in 5" :key="index" :class="{active : index == 2}">{{ item }}</span>
-
-    </div>
+    <Paginate/>
 </template>
 <style scoped>
 /* match history */
 
 
 
-.paginate {
-    margin-top: 1em;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
 
-.paginate span{
-    cursor: pointer;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid var(--color-surface);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 200ms;
-    background-color: transparent;
-}
-
-.paginate span:hover, .paginate span.active{
-    background-color: var(--color-on-surface);
-    border-color: var(--color-on-surface);
-    color: white;
-    font-weight: bold;
-}
 
 
 table {
+    margin-top: 0;
     width: 100%;
     border-collapse: collapse;
 }

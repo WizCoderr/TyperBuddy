@@ -9,7 +9,7 @@ useSeoMeta({
 })
 
 onMounted(() => {
-    console.log(localStorage.getItem('access_token'));
+    
 });
 
 </script>

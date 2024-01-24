@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 defineProps<{
-    size: string
+    size: 'mini' | 'small'
 }>()
 </script>
 <template>

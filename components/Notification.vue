@@ -7,7 +7,7 @@ import { NotificationIcon } from './icons';
         <h4>
             <NotificationIcon /> Notifications
         </h4>
-        <div class="holder">
+        <div class="holder scroll-bar">
             <div v-for="item, index in 6" class="item" :key="index">
                 <div class="top">
                     <span class="title">Earning</span>

@@ -394,6 +394,26 @@ table .text-arrow svg.down {
 }
 
 
+/* width */
+.scroll-bar::-webkit-scrollbar {
+    width: 4px;
+}
+
+/* Track */
+.scroll-bar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+.scroll-bar::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+.scroll-bar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 
 
 

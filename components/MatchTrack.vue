@@ -2,7 +2,7 @@
 import { PlayerData } from '~/lib/DataType';
 import KickPlayerDialog from './dialog/KickPlayerDialog.vue';
 import { ref } from 'vue';
-import {DeleteIcon, TurtleIcon} from './icons';
+import { DeleteIcon, TurtleIcon } from './icons';
 
 const prop = defineProps<{
     players: Array<PlayerData>,
@@ -79,7 +79,7 @@ function onKick() {
         <h2>{{ message }}</h2>
         <table>
             <colgroup>
-                <col style="width: 12rem;">
+                <col style="width: 10rem;">
                 <col style="width: auto;">
                 <col v-if="isAdmin" style="width: 4rem;">
             </colgroup>
@@ -90,12 +90,12 @@ function onKick() {
                         <div class="profile">
                             <img v-if="player.profileImage == ''" src="../public/extra/no_image.png" :alt="player.name">
                             <img v-else :src="player.profileImage" :alt="player.name">
-                            <span>{{ player.name }}</span>
+                            <span class="name">{{ player.name }}</span>
                         </div>
                     </td>
                     <td>
                         <div class="track">
-                            <TurtleIcon  :style="{ left: getProgress(player.score.cursorPos), fill: getColor(index) }"/>
+                            <TurtleIcon :style="{ left: getProgress(player.score.cursorPos), fill: getColor(index) }" />
                             <div class="status">
                                 <span>Rank: <b>{{ getRank(player.score.rank) }}</b></span>
                                 <span>Progress: <b>{{ getProgress(player.score.cursorPos) }}</b></span>
@@ -139,9 +139,16 @@ function onKick() {
 section {
     margin: auto;
     margin-bottom: 2rem;
-    max-width: 1200px;
+    max-width: 800px;
     width: 100%;
 
+}
+
+.name {
+    font-size: var(--small-font);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 h2 {
@@ -152,6 +159,10 @@ h2 {
 
 table {
     width: 100%;
+}
+
+table td {
+    padding: 0;
 }
 
 table tr {
@@ -170,13 +181,14 @@ table .profile {
 table img {
     border-radius: 50%;
     margin-left: 3px;
-    width: 36px;
+    width: 32px !important;
+    height: 32px !important;
     display: block;
 }
 
 table .track {
     position: relative;
-    height: 50px;
+    height: 2.5em;
     margin: 0 2rem;
 }
 
@@ -188,7 +200,7 @@ table .blink {
 
 table .track svg {
     fill: var(--color-primary);
-    width: 45px;
+    width: 32px;
     position: absolute;
     top: 50%;
     z-index: 1;
@@ -198,7 +210,7 @@ table .track svg {
 }
 
 table .status {
-    width: 360px;
+    width: 320px;
     justify-content: space-between;
     backdrop-filter: blur(4px);
     position: absolute;
@@ -209,7 +221,7 @@ table .status {
     z-index: 2;
     background-color: rgba(6, 0, 95, 0.1);
     padding: 0.4em 1em;
-    font-size: var(--very-small-font);
+    font-size: 10px;
 }
 
 
