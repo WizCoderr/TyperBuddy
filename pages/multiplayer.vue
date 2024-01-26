@@ -308,10 +308,16 @@ function onTyping(data: { cursorPos: number, error: number }) {
                 Type as fast as you can to win the race!</p>
 
             <template v-if="isKicked == false">
-                <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length"
-                    :message="messageText" />
-                <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
-                    :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true" :message="'Please wait'" />
+                <div class="typing-chat">
+                    <div>
+                        <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length"
+                            :message="messageText" />
+                        <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
+                            :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
+                            :message="'Please wait'" />
+                    </div>
+                    <Chatbox style="margin-top: 90px;"/>
+                </div>
             </template>
 
             <div v-else class="kick">
@@ -328,10 +334,16 @@ function onTyping(data: { cursorPos: number, error: number }) {
             </div>
 
         </section>
-        <RightPanel/>
+        <RightPanel />
     </main>
 </template>
 <style scoped>
+
+.typing-chat{
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    gap: 1em;
+}
 .kick {
     width: 100%;
     min-height: 400px;

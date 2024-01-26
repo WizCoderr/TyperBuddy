@@ -9,7 +9,7 @@ useSeoMeta({
 })
 
 onMounted(() => {
-    
+
 });
 
 </script>
@@ -75,8 +75,6 @@ onMounted(() => {
 
                <Notification/>
             </div>
-
-
 
         </section>
         <RightPanel />

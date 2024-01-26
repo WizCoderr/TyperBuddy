@@ -138,10 +138,9 @@ function onKick() {
 <style scoped>
 section {
     margin: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 1em;
     max-width: 800px;
     width: 100%;
-
 }
 
 .name {
@@ -159,6 +158,8 @@ h2 {
 
 table {
     width: 100%;
+    border-radius: 0.6rem;
+    clip-path: inset(0% 0% 0% 0% round 0.6rem);
 }
 
 table td {

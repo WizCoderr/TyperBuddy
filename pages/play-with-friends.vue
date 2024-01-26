@@ -379,11 +379,16 @@ function onKick(playerId: string) {
                 </div>
 
                 <template v-if="isKicked == false">
-                    <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers"
-                        :totalChars="typingContent.length" :message="messageText" />
-                    <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
-                        :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
-                        :message="'Please wait'" />
+                    <div class="typing-chat">
+                        <div>
+                            <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers"
+                                :totalChars="typingContent.length" :message="messageText" />
+                            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted"
+                                :onTyping="onTyping" :is-edit-allowed="isWriteAllowed" :forgive-error="false"
+                                :multiplayer="true" :message="'Please wait'" />
+                        </div>
+                        <Chatbox />
+                    </div>
                 </template>
 
                 <div v-else class="kick">
@@ -403,11 +408,17 @@ function onKick(playerId: string) {
 
 
         </section>
-        <RightPanel/>
+        <RightPanel />
 
     </main>
 </template>
 <style scoped>
+.typing-chat {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1em;
+}
+
 .button-tabs {
     display: flex;
     gap: 12px;

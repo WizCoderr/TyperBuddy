@@ -106,7 +106,7 @@ export function generateAvatar(name: string) {
 
   var canvas = document.createElement("canvas");
   var radius = 30;
-  var margin = 5;
+  var margin = 0;
   canvas.width = radius * 2 + margin * 2;
   canvas.height = radius * 2 + margin * 2;
 
@@ -123,7 +123,7 @@ export function generateAvatar(name: string) {
     ctx.fillStyle = "white";
     ctx.font = "bold 28px Arial";
     ctx.textAlign = "center";
-    ctx.fillText(initials, radius + 5, (radius * 4) / 3 + margin);
+    ctx.fillText(initials, radius, (radius * 4) / 3 + margin);
     return canvas.toDataURL();
   }
 
