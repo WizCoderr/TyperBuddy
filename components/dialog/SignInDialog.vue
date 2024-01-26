@@ -83,12 +83,12 @@ function signInWithGithub() {
                 </svg>
                 <span>Continue with Facebook</span>
             </button> -->
-
+<!-- 
             <button @click="signInWithGithub()" class="btn github">
                 
                 <GithubIcon style="width: 24px; height: 24px;" />
                 <span>Continue with Github</span>
-            </button>
+            </button> -->
 
         </div>
     </div>
