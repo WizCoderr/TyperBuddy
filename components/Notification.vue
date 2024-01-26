@@ -4,7 +4,7 @@ import { NotificationIcon, LoadingIcon } from './icons';
 import ago from 'ts-ago'
 import ApiNotification from '~/lib/api/ApiNotification';
 import { useToast } from 'vue-toast-notification';
-
+import { marked } from 'marked'
 
 const $toast = useToast()
 defineProps<{
@@ -37,12 +37,12 @@ async function onRead(id: string) {
             <div v-for="item, index in notification" class="item" :key="index">
                 <div class="top">
                     <span class="title">{{ item.title }}</span>
-                    <p>{{ item.message }}</p>
+                    <div v-html="marked(item.message)"></div>
                 </div>
                 <div class="bottom">
                     <span class="time">{{ ago(item.createdAt) }}</span>
                     <button class="button primary" @click="() => onRead(item.id)">
-                        <LoadingIcon size="mini" />Read
+                        Read
                     </button>
                 </div>
             </div>
@@ -78,6 +78,7 @@ async function onRead(id: string) {
     padding: 0.5em;
 }
 
+
 .notification .holder {
     padding: 0 1em;
     max-height: 500px;
@@ -88,26 +89,29 @@ async function onRead(id: string) {
 }
 
 .notification .item {
+    background-color: var(--color-surface);
     cursor: pointer;
     border-radius: var(--border-radius);
-    border: 1px solid var(--color-surface);
+    border: 2px solid var(--color-surface);
 }
 
 .notification .item .title {
     font-weight: bold;
+    margin-bottom: 0.5em;
+    display: block;
 }
 
 
 .notification .item p {
-    line-height: 1em;
     margin-top: 0.7em;
     margin-bottom: 0.4em;
     opacity: 0.7;
+
 }
 
 .notification .item .bottom {
     height: 32px;
-    background-color: var(--color-surface);
+    background-color: white;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -122,5 +126,12 @@ async function onRead(id: string) {
     padding: 0 0.8em;
     height: 1.7em;
     font-size: var(--small-font);
+}
+</style>
+
+<style>
+.notification .holder p {
+    line-height: 1.2em;
+    opacity: 0.8;
 }
 </style>
