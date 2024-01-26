@@ -1,8 +1,19 @@
 <script setup lang='ts'>
+
+defineProps<{
+    total: number,
+    active: number
+}>()
+
+
+const emit = defineEmits<{
+    (event: 'onChange', active: number): void
+}>()
+
 </script>
 <template>
     <div class="paginate">
-        <span v-for="item, index in 5" :key="index" :class="{ active: index == 2 }">{{ item }}</span>
+        <span v-for="item, index in total" :key="index" :class="{ active: index == active }">{{ item }}</span>
     </div>
 </template>
 <style scoped>

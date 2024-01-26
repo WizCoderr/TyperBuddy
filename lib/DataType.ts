@@ -182,3 +182,39 @@ export interface ParticipantData {
   name: string;
   avatar: string;
 }
+
+
+
+export interface Wallet {
+  id: string;
+  balance: number;
+  withdrawal: number;
+  updatedAt: string;
+  userId: string;
+}
+
+export interface TransactionHistory {
+  totalPage: number;
+  transactionHistory: Array<{
+    id: string;
+    transactionId: string;
+    amount: number;
+    createdAt: string;
+    walletId: string;
+  }>;
+}
+
+export interface WalletPageData {
+  wallet: Wallet;
+  transactionHistory: TransactionHistory;
+  notifications: Array<NotificationData>;
+}
+
+export interface NotificationData {
+  id: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  userId: string;
+}

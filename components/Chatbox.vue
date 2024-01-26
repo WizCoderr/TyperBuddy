@@ -130,7 +130,7 @@ import IconStack from '@/components/widgets/IconStack.vue'
 .chat-box .chats .item {
     background-color: var(--color-surface);
     padding: 0.5em;
-    margin-bottom: 0.3em;
+    margin-bottom: 0.2em;
     border-radius: 0.6rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }

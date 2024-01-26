@@ -1,5 +1,31 @@
 <script setup lang='ts'>
-import { NotificationIcon } from './icons';
+import { NotificationData } from '~/lib/DataType';
+import { NotificationIcon, LoadingIcon } from './icons';
+import ago from 'ts-ago'
+import ApiNotification from '~/lib/api/ApiNotification';
+import { useToast } from 'vue-toast-notification';
+
+
+const $toast = useToast()
+defineProps<{
+    notification: Array<NotificationData>
+}>()
+
+
+const emit = defineEmits<{
+    (event: 'notificationRead', ids: Array<string>): void
+}>()
+
+
+async function onRead(id: string) {
+    const res = await ApiNotification.markNotificationAsRead([id])
+    if (res.data) {
+        $toast.success('Notification read successful')
+        emit('notificationRead', [id])
+    } else {
+        $toast.error(res.error!!.message)
+    }
+}
 
 </script>
 <template>
@@ -8,18 +34,21 @@ import { NotificationIcon } from './icons';
             <NotificationIcon /> Notifications
         </h4>
         <div class="holder scroll-bar">
-            <div v-for="item, index in 6" class="item" :key="index">
+            <div v-for="item, index in notification" class="item" :key="index">
                 <div class="top">
-                    <span class="title">Earning</span>
-                    <p>You have earned $50 by playing the tournament.</p>
+                    <span class="title">{{ item.title }}</span>
+                    <p>{{ item.message }}</p>
                 </div>
                 <div class="bottom">
-                    <span class="time">2 days ago</span>
-                    <button class="button primary">Read</button>
+                    <span class="time">{{ ago(item.createdAt) }}</span>
+                    <button class="button primary" @click="() => onRead(item.id)">
+                        <LoadingIcon size="mini" />Read
+                    </button>
                 </div>
             </div>
-        </div>
 
+            <p v-if="!notification.length">No new notification</p>
+        </div>
     </div>
 </template>
 <style scoped>
@@ -45,7 +74,7 @@ import { NotificationIcon } from './icons';
     fill: var(--color-on-surface);
 }
 
-.notification .top{
+.notification .top {
     padding: 0.5em;
 }
 
@@ -89,7 +118,7 @@ import { NotificationIcon } from './icons';
     font-size: var(--small-font);
 }
 
-.notification .item button{
+.notification .item button {
     padding: 0 0.8em;
     height: 1.7em;
     font-size: var(--small-font);

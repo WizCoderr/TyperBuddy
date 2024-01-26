@@ -1,16 +1,44 @@
 <script setup lang='ts'>
-import { onMounted, useSeoMeta } from '#imports';
+import { onMounted, ref, useSeoMeta } from '#imports';
+import { useToast } from 'vue-toast-notification';
 import { WalletIcon, WithdrawIcon } from '~/components/icons';
 import { ArrowUpIcon } from '~/components/icons';
 import Notification from '~/components/Notification.vue';
+import Paginate from '~/components/widgets/Paginate.vue';
+import ApiWallet from '~/lib/api/ApiWallet';
+import { WalletPageData } from '~/lib/DataType';
+import { formatDateTime } from '~/lib/utils';
+const $toast = useToast()
 
+const walletPageData = ref<WalletPageData>()
 useSeoMeta({
     title: 'Wallet',
 })
 
 onMounted(() => {
-
+    loadPageData()
 });
+
+
+async function loadPageData() {
+    const res = await ApiWallet.getWalletPageData()
+    if (res.data) {
+        walletPageData.value = res.data
+
+    } else {
+        $toast.error(res.error!!.message)
+    }
+}
+
+
+
+// TODO: implement onPaginate change listener callback
+
+function removeReadNotification(ids: string[]) {
+    if (walletPageData.value) {
+        walletPageData.value.notifications = walletPageData.value.notifications.filter((item) => !ids.includes(item.id))
+    }
+}
 
 </script>
 <template>
@@ -21,72 +49,75 @@ onMounted(() => {
             <p>Manage your wallet easy from here</p>
             <hr />
 
-            <div class="top-bar">
-                <div class="card">
-                    <h4>
-                        <WalletIcon />Current balance
-                    </h4>
-                    <h2>$100</h2>
+            <template v-if="walletPageData">
+                <div class="top-bar">
+                    <div class="card">
+                        <h4>
+                            <WalletIcon />Current balance
+                        </h4>
+                        <h2>${{ walletPageData.wallet.balance }}</h2>
 
-                </div>
-                <div class="card">
-                    <h4>
-                        <WithdrawIcon />Withdrawal
-                    </h4>
-                    <h2>$100</h2>
-                </div>
-            </div>
-
-            <br />
-            <div class="history-notification">
-                <div class="card">
-                    <h4>Transaction history</h4>
-                    <table>
-                        <!-- <colgroup>
-                        <col style="width: 52px;">
-                        <col style="width: auto;">
-                    </colgroup> -->
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Transaction ID</th>
-                                <th>Type</th>
-                                <th>Value</th>
-                                <th>Date Received</th>
-                                <th>Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item, index in 10">
-                                <td>{{ index }}</td>
-                                <td>sdf45sdf65sd</td>
-                                <td>
-                                    <div class="text-arrow">Received
-                                        <ArrowUpIcon :class="'down'" />
-                                    </div>
-                                </td>
-                                <td>$100</td>
-                                <td>4 Dec 2019</td>
-                                <td>12:45PM</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    </div>
+                    <div class="card">
+                        <h4>
+                            <WithdrawIcon />Withdrawal
+                        </h4>
+                        <h2>${{ walletPageData.wallet.withdrawal }}</h2>
+                    </div>
                 </div>
 
-               <Notification/>
-            </div>
+                <br />
+                <div class="history-notification">
+                    <div class="card">
+                        <h4>Transaction history</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Transaction ID</th>
+                                    <th>Type</th>
+                                    <th>Value</th>
+                                    <th>Datetime</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item, index in walletPageData.transactionHistory.transactionHistory">
+                                    <td>{{ index }}</td>
+                                    <td>{{ item.transactionId }}</td>
+                                    <td>
+                                        <div v-if="item.amount > 0" class="text-arrow">Received
+                                            <ArrowUpIcon :class="'down'" />
+                                        </div>
+                                        <div v-else class="text-arrow">Sent
+                                            <ArrowUpIcon />
+                                        </div>
+                                    </td>
+                                    <td>${{ Math.abs(item.amount) }}</td>
+                                    <td>{{ formatDateTime(item.createdAt) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <Paginate :active="1" :total="walletPageData.transactionHistory.totalPage" />
+
+                    </div>
+
+                    <Notification :notification="walletPageData.notifications"
+                        :onNotificationRead="removeReadNotification" />
+                </div>
+            </template>
 
         </section>
         <RightPanel />
     </main>
 </template>
 <style scoped>
-
-.history-notification{
+.history-notification {
     display: grid;
     grid-template-columns: auto 300px;
     gap: 1em;
 }
+
 .top-bar {
     display: flex;
     flex-wrap: wrap;
@@ -96,6 +127,7 @@ onMounted(() => {
 table {
     margin-top: 0;
     background-color: var(--color-surface);
+    min-height: 500px;
 }
 
 table tr {
