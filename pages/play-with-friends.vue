@@ -475,4 +475,11 @@ function onKick(playerId: string) {
 .kick h2 {
     text-align: center;
 }
+
+
+@media only screen and (max-width: 1600px) {
+    .typing-chat {
+        grid-template-columns: 100%;
+    }
+}
 </style>

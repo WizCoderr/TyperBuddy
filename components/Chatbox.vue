@@ -54,8 +54,6 @@ import IconStack from '@/components/widgets/IconStack.vue'
     </div>
 </template>
 <style scoped>
-
-
 .chat-box {
     width: 100%;
     min-height: 400px;
@@ -196,7 +194,7 @@ import IconStack from '@/components/widgets/IconStack.vue'
     position: relative;
 }
 
-.footer .typing-stack{
+.footer .typing-stack {
     display: grid;
     grid-template-columns: max-content max-content;
     gap: 1em;
@@ -246,5 +244,12 @@ import IconStack from '@/components/widgets/IconStack.vue'
     font-size: var(--medium-font);
     background-color: transparent;
     color: var(--color-on-surface);
+}
+
+
+@media only screen and (max-width: 1600px) {
+    .chat-box {
+        margin: auto;
+    }
 }
 </style>

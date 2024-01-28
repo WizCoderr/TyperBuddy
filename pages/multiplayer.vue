@@ -316,7 +316,7 @@ function onTyping(data: { cursorPos: number, error: number }) {
                             :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
                             :message="'Please wait'" />
                     </div>
-                    <Chatbox style="margin-top: 90px;"/>
+                    <Chatbox />
                 </div>
             </template>
 
@@ -338,12 +338,12 @@ function onTyping(data: { cursorPos: number, error: number }) {
     </main>
 </template>
 <style scoped>
-
-.typing-chat{
+.typing-chat {
     display: grid;
     grid-template-columns: 1fr max-content;
     gap: 1em;
 }
+
 .kick {
     width: 100%;
     min-height: 400px;
@@ -367,5 +367,11 @@ function onTyping(data: { cursorPos: number, error: number }) {
 
 .kick h2 {
     text-align: center;
+}
+
+@media only screen and (max-width: 1600px) {
+    .typing-chat {
+        grid-template-columns: 100%;
+    }
 }
 </style>
