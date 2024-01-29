@@ -101,7 +101,7 @@ export interface PlayerData {
   playerId: string;
   name: string;
   profileImage: string;
-  isInMatch: boolean;
+  isInMatch: boolean; 
   score: {
     cursorPos: number;
     speed: number;

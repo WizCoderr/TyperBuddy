@@ -27,7 +27,7 @@ const profileData = {
     accountId: ""
 }
 
-let roomCode = ""
+const roomCode = ref('')
 
 useSeoMeta({
     title: 'Play with Friends',
@@ -74,9 +74,9 @@ function setup() {
 
     // player are not joining to other room, so create a new room for him
     if (route.query.room == undefined || route.query.room == "") {
-        roomCode = profileStore.profile.roomCode
+        roomCode.value = profileStore.profile.roomCode
     } else {
-        roomCode = route.query.room as string
+        roomCode.value = route.query.room as string
     }
 
     if (profileStore.profile != null) {
@@ -110,7 +110,7 @@ function onConnect() {
     socket!!.on("onMessage", onMessage)
     socket!!.on("onGameMessage", onGameMessage)
 
-    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: roomCode });
+    socket!!.emit('joinRoom', { name: profileData.name, accountId: profileData.accountId, profileImage: profileData.profileImage, multiplayerId: getSimpleData("multiplayerId")!!, roomCode: roomCode.value });
 
 }
 
@@ -196,7 +196,7 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
 
         })
 
-        roomCode = player.roomCode
+        roomCode.value = player.roomCode
 
         // check for admin existence 
         if (player.isAdmin && socket!!.id == player.playerId) isAdmin.value = true
@@ -311,11 +311,11 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 function onTyping(data: { cursorPos: number, error: number }) {
-    if (socket != null && roomCode != '') {
+    if (socket != null && roomCode.value != '') {
         socket.emit("updateScore", {
             playerId: socket.id,
             cursorPos: data.cursorPos,
-            roomCode: roomCode,
+            roomCode: roomCode.value,
             errors: data.error
         })
     }
@@ -336,7 +336,7 @@ function startMatch() {
     if (socket != null) {
         socket.emit("startMatch", {
             playerId: socket.id,
-            roomCode: roomCode
+            roomCode: roomCode.value
         })
     }
 }
@@ -346,7 +346,7 @@ function onKick(playerId: string) {
     if (socket != null) {
         socket.emit("kickPlayer", {
             playerId: socket.id,
-            roomCode: roomCode,
+            roomCode: roomCode.value,
             playerRemoveId: playerId
         })
 
@@ -387,7 +387,7 @@ function onKick(playerId: string) {
                                 :onTyping="onTyping" :is-edit-allowed="isWriteAllowed" :forgive-error="false"
                                 :multiplayer="true" :message="'Please wait'" />
                         </div>
-                        <Chatbox />
+                        <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="0" />
                     </div>
                 </template>
 

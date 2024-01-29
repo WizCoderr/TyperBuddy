@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { onMounted, useSeoMeta } from '#imports';
+import Chatbox from '~/components/Chatbox.vue';
 
 useSeoMeta({
     title: 'Help',
