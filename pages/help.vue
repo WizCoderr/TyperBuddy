@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { onMounted, useSeoMeta } from '#imports';
+import Chatbox from '~/components/Chatbox.vue';
 
 useSeoMeta({
     title: 'Help',
@@ -15,6 +16,8 @@ onMounted(() => {
         <Sidebar :activeTabIndex="7" />
         <section class="main">
             <h2>Helps</h2>
+
+            <Chatbox/>
 
             <h3>About</h3>
             <p>This web application will help you to learn touch typing, which means typing through muscle memory without

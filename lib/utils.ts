@@ -95,7 +95,7 @@ export function delay(ms: number) {
 
 const colors = ["#ef476fff", "#06d6a0ff", "#118ab2ff", "#073b4cff"];
 
-export function generateAvatar(name: string) {
+export function generateAvatar(name: string, color = "") {
   var initials = name
     .split(" ")
     .filter((item, index) => item && index < 2)
@@ -110,7 +110,11 @@ export function generateAvatar(name: string) {
   canvas.width = radius * 2 + margin * 2;
   canvas.height = radius * 2 + margin * 2;
 
-  const randColor = colors[Math.round(Math.random() * (colors.length - 1))];
+  let randColor = color;
+  if (color && colors.includes(color)) {
+  } else {
+    randColor = colors[Math.round(Math.random() * (colors.length - 1))];
+  }
 
   // Get the drawing context
   var ctx = canvas.getContext("2d");
@@ -219,4 +223,24 @@ export function isTodayDate(dateTime: string) {
   const now = new Date();
   const diff = future.getTime() - now.getTime();
   return diff < 1000 * 60 * 60 * 24;
+}
+
+export function objectToString(data: any) {
+  return JSON.stringify(data);
+}
+
+export function stringToObject<T>(data: string) {
+  return JSON.parse(data) as T;
+}
+
+export function getCurrentTime() {
+  return new Date().getTime();
+}
+
+export function getTimeString(time: string) {
+  const date = new Date(time);
+
+  return `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes()
+  ).padStart(2, "0")}`;
 }

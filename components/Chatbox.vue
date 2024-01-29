@@ -1,30 +1,293 @@
 <script setup lang='ts'>
-import { generateAvatar } from '@/lib/utils'
+import { generateAvatar, getCurrentTime, objectToString } from '@/lib/utils'
 import IconStack from '@/components/widgets/IconStack.vue'
+import { onMounted, onUnmounted, ref } from '#imports';
+import { getTimeString } from '@/lib/utils'
+
+const socket = ref<WebSocket | null>(null)
+const players = ref<Array<PlayerData>>([])
+const playerChats = ref<Array<PlayerChat>>([])
+const typingPlayers = ref<Array<string>>([])
+const historyChats = ref<Array<PlayerRawChat>>([])
+let timer: any = null
+let playerId = ""
+
+onMounted(() => {
+    const ws = new WebSocket("ws://localhost:3001/chat");
+    ws.onopen = onConnect
+    socket.value = ws
+
+    timer = setInterval(updateTypingPlayers, 500)
+
+})
+
+onUnmounted(() => {
+    if (socket.value) socket.value.close()
+    if (timer) {
+        clearInterval(timer)
+        timer = null
+    }
+})
+
+
+
+function onConnect() {
+    if (!socket.value) return
+    socket.value.onmessage = onRawMessage
+    socket.value.onclose = onClose
+
+    // send player profile data
+    const data: RawMessage<any> = {
+        type: 'join',
+        data: {
+            name: 'Nitesh Kumar',
+            roomId: 'abcd',
+            avatar: 'https://avatars.githubusercontent.com/u/29686102?v=4'
+        }
+    }
+
+    socket.value.send(objectToString(data))
+}
+
+
+
+
+
+
+function onClose(event: CloseEvent) {
+    console.log(event)
+}
+
+
+function onRawMessage(event: MessageEvent) {
+    console.log(event.data)
+    const data = JSON.parse(event.data) as RawMessage<any>;
+    switch (data.type) {
+        case 'join':
+            onJoin(data.data)
+            break;
+        case 'leave':
+            onLeave(data.data)
+            break;
+        case 'chat':
+            onChat(data.data)
+            break;
+        case 'typing':
+            onTyping(data.data.playerId)
+            break;
+        case 'history':
+            onHistory(data.data)
+            break;
+        case 'error':
+            onError(data.data)
+            break;
+        default:
+            break;
+    }
+}
+
+interface RawMessage<T> {
+    type: "join" | "typing" | "chat" | "error" | "leave" | "history"
+    data: T
+}
+
+
+interface SocketMessage {
+    playerId: string,
+}
+
+interface PlayerRawChat extends SocketMessage {
+    message: string,
+    time: string,
+}
+
+interface PlayerChat {
+    player: PlayerRawData,
+    chats: Array<PlayerRawChat>
+}
+
+interface TypingStatus extends SocketMessage {
+    time: number
+}
+
+interface PlayerRawData extends SocketMessage {
+    name: string,
+    avatar: string,
+    time: number
+}
+
+interface PlayerData extends PlayerRawData {
+    lastTyping: number,
+    active: boolean
+}
+
+interface Leave extends SocketMessage { }
+
+
+function onChat(data: PlayerRawChat) {
+    historyChats.value.push(data)
+    playerChats.value = groupChats(historyChats.value)
+}
+
+
+function onTyping(playerId: string) {
+    const index = players.value.findIndex((item) => item.playerId == playerId)
+    if (index == -1) return
+
+    players.value[index].lastTyping = getCurrentTime()
+    updateTypingPlayers()
+}
+
+function onJoin(data: PlayerRawData) {
+
+    // skip if player already exist
+    const playerIndex = players.value.findIndex((item) => item.playerId == data.playerId)
+    if (playerIndex > -1) return
+
+    const profile = { ...data, lastTyping: 0, active: true }
+
+    // generate a profile image if player don't have any
+    if (profile.avatar.length < 10) {
+        profile.avatar = generateAvatar(profile.name, profile.avatar)
+    }
+    players.value.push(profile)
+}
+
+function onLeave(data: Leave) {
+
+    // find player
+    const index = players.value.findIndex((item) => item.playerId == data.playerId)
+    if (index > -1) {
+        players.value[index].active = false
+    }
+}
+
+function onError(message: string) {
+    console.log(message)
+}
+
+function onHistory(data: { playerId: string, chatHistory: PlayerRawChat[], players: PlayerRawData[] }) {
+    playerId = data.playerId
+
+    // add history players
+    data.players.forEach(element => {
+        onJoin(element)
+    });
+
+    const history = data.chatHistory
+    playerChats.value = groupChats(history)
+    historyChats.value = history
+}
+
+
+
+// extra
+function updateTypingPlayers() {
+
+    const avatars = Array<string>()           // store avatar
+    const current = getCurrentTime()
+    for (const iterator of players.value) {
+        // test for 1 seconds delay
+        const diff = current - iterator.lastTyping
+        if (diff < 1000) avatars.push(iterator.avatar)
+    }
+
+    typingPlayers.value = avatars
+}
+
+
+function getPlayerById(playerId: string) {
+    return players.value.find((item) => item.playerId == playerId)
+}
+
+function groupChats(chats: PlayerRawChat[]) {
+    const tempChats: PlayerChat[] = []
+    let lastPlayerId = ""
+
+    for (const element of chats) {
+        // create new chat group
+        if (lastPlayerId != element.playerId) {
+
+            const player = getPlayerById(element.playerId)
+            if (player) {
+                lastPlayerId = element.playerId
+                tempChats.push({ player: player, chats: [] })
+            } else {
+
+                // TODO: temporarily because old unconnected profile is empty on server but message still exist
+                continue
+            }
+
+        }
+
+        // add chat to last chat group
+        tempChats[tempChats.length - 1].chats.push(element)
+    }
+
+
+    return tempChats
+}
+
+
+function onSubmit(event: any) {
+    if (socket.value) {
+        const formData = new FormData(event.target);
+        const msg = formData.get('msg')
+        event.target.reset()
+
+        if (!msg) return
+
+        // send data to server
+        const data: RawMessage<any> = {
+            type: 'chat',
+            data: {
+                message: msg.toString(),
+            }
+        }
+        socket.value.send(objectToString(data))
+    }
+}
+
+
+
+function emitTypingStatus() {
+
+    if (!socket.value || !playerId) return
+    const data: RawMessage<any> = {
+        type: 'typing',
+        data: {}
+    }
+
+    socket.value.send(objectToString(data))
+}
+
 
 </script>
 <template>
     <div class="chat-box">
         <div class="header">
             <h4>Chat</h4>
-            <span>3 online</span>
+            <span>{{ players.filter(item => item.active).length }} online</span>
         </div>
         <div class="content scroll-bar">
-            <div v-for="item, index in 3" :key="index" class="chat-holder">
-                <img :src="generateAvatar('Nitesh Kumar')" />
-                <div class="chats">
-                    <div v-for="item, index in Math.max(1, Math.round(Math.random() * 3))" :key="index" class="item">
-                        <div class="title">
-                            <span class="name">Nitesh</span>
+            <template v-for="chats, index in playerChats" :key="index">
+                <div :class="chats.player.playerId == playerId ? 'chat-holder right' : 'chat-holder'">
+                    <img :src="chats.player.avatar" />
+                    <div class="chats">
+                        <div v-for="chat, index2 in chats.chats" :key="index2" class="item">
+                            <div class="title">
+                                <span class="name">{{ chats.player.name }}</span>
 
+                            </div>
+                            <p>{{ chat.message }}</p>
+                            <span class="time">{{ getTimeString(chat.time) }}</span>
                         </div>
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Similique velo</p>
-                        <span class="time">1 min ago</span>
                     </div>
                 </div>
-            </div>
+            </template>
 
-            <div class="chat-holder right">
+
+            <!-- <div class="chat-holder right">
                 <img :src="generateAvatar('Nitesh Kumar')" />
                 <div class="chats">
                     <div v-for="item, index in Math.max(1, Math.round(Math.random() * 3))" :key="index" class="item">
@@ -35,15 +298,15 @@ import IconStack from '@/components/widgets/IconStack.vue'
                         <span class="time">1 min ago</span>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
         </div>
-        <form class="footer">
-            <div class="typing-stack">
-                <IconStack :avatars="[generateAvatar('Nitesh'), generateAvatar('Kishan')]" />
+        <form @submit.prevent="onSubmit" class="footer">
+            <div v-if="typingPlayers.length" class="typing-stack">
+                <IconStack :avatars="typingPlayers" />
                 Typing...
             </div>
-            <input type="text" placeholder="Type your message here..." />
+            <input @input="emitTypingStatus" type="text" name="msg" placeholder="Type your message here..." />
             <button>
                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -54,8 +317,6 @@ import IconStack from '@/components/widgets/IconStack.vue'
     </div>
 </template>
 <style scoped>
-
-
 .chat-box {
     width: 100%;
     min-height: 400px;
@@ -116,7 +377,7 @@ import IconStack from '@/components/widgets/IconStack.vue'
 
 
 .chat-box .chat-holder .time {
-    font-size: var(--small-font);
+    font-size: var(--very-small-font);
     display: block;
     text-align: end;
     opacity: 0.7;
@@ -129,10 +390,12 @@ import IconStack from '@/components/widgets/IconStack.vue'
 
 .chat-box .chats .item {
     background-color: var(--color-surface);
-    padding: 0.5em;
+    padding: 0.4em 0.5em;
     margin-bottom: 0.2em;
     border-radius: 0.6rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
+    width: fit-content;
+    min-width: 100px;
 }
 
 
@@ -176,9 +439,10 @@ import IconStack from '@/components/widgets/IconStack.vue'
 }
 
 .chat-box img {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     object-fit: cover;
+    border-radius: 50%;
 }
 
 
@@ -196,7 +460,7 @@ import IconStack from '@/components/widgets/IconStack.vue'
     position: relative;
 }
 
-.footer .typing-stack{
+.footer .typing-stack {
     display: grid;
     grid-template-columns: max-content max-content;
     gap: 1em;
