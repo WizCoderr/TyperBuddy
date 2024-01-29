@@ -1,8 +1,30 @@
 <script setup lang='ts'>
 import { generateAvatar, getCurrentTime, objectToString } from '@/lib/utils'
 import IconStack from '@/components/widgets/IconStack.vue'
-import { onMounted, onUnmounted, ref } from '#imports';
-import { getTimeString } from '@/lib/utils'
+import { navigateTo, onMounted, onUnmounted, ref } from '#imports';
+import { getTimeString, getAvatarColor } from '@/lib/utils'
+import { useToast } from 'vue-toast-notification';
+import { useProfileStore } from '~/store/profile';
+
+const $toast = useToast();
+const profileStore = useProfileStore()
+//@ts-ignore
+const serverUrl = import.meta.env.VITE_SOCKET_URL
+
+const props = defineProps<{
+    roomId: string,
+    botCount: number
+}>()
+
+profileStore.$subscribe((mutation, state) => {
+    setupChatbot()
+})
+
+onMounted(() => {
+    if (profileStore.isLoaded) {
+        setupChatbot()
+    }
+})
 
 const socket = ref<WebSocket | null>(null)
 const players = ref<Array<PlayerData>>([])
@@ -12,14 +34,6 @@ const historyChats = ref<Array<PlayerRawChat>>([])
 let timer: any = null
 let playerId = ""
 
-onMounted(() => {
-    const ws = new WebSocket("ws://localhost:3001/chat");
-    ws.onopen = onConnect
-    socket.value = ws
-
-    timer = setInterval(updateTypingPlayers, 500)
-
-})
 
 onUnmounted(() => {
     if (socket.value) socket.value.close()
@@ -30,19 +44,30 @@ onUnmounted(() => {
 })
 
 
+function setupChatbot() {
+    const ws = new WebSocket(serverUrl + '/chat');
+    ws.onopen = onConnect
+    socket.value = ws
+    timer = setInterval(updateTypingPlayers, 500)
+}
+
+
 
 function onConnect() {
     if (!socket.value) return
     socket.value.onmessage = onRawMessage
     socket.value.onclose = onClose
 
+    const name = profileStore.profile ? profileStore.profile.name : "Unknown"
+    const avatar = profileStore.profile ? profileStore.profile.profileImage : getAvatarColor()
+
     // send player profile data
     const data: RawMessage<any> = {
         type: 'join',
         data: {
-            name: 'Nitesh Kumar',
-            roomId: 'abcd',
-            avatar: 'https://avatars.githubusercontent.com/u/29686102?v=4'
+            name: name,
+            roomId: props.roomId,
+            avatar: avatar
         }
     }
 
@@ -60,7 +85,6 @@ function onClose(event: CloseEvent) {
 
 
 function onRawMessage(event: MessageEvent) {
-    console.log(event.data)
     const data = JSON.parse(event.data) as RawMessage<any>;
     switch (data.type) {
         case 'join':
@@ -267,7 +291,7 @@ function emitTypingStatus() {
     <div class="chat-box">
         <div class="header">
             <h4>Chat</h4>
-            <span>{{ players.filter(item => item.active).length }} online</span>
+            <span>{{ players.filter(item => item.active).length + botCount }} online</span>
         </div>
         <div class="content scroll-bar">
             <template v-for="chats, index in playerChats" :key="index">

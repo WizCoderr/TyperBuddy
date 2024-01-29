@@ -29,13 +29,13 @@ useSeoMeta({
 })
 
 
-let roomCode = ''
+const roomCode = ref('')
 let socket: Socket | null = null
 const messageText = ref("")
 const isInCurrentMatch = ref(false)
 const isWriteAllowed = ref(false)
-
 const allPlayers = ref(Array<PlayerData>())
+const botsId = ref(Array<string>())
 
 
 // const playerName = names[Math.round(Math.random() * (names.length - 1))]
@@ -171,7 +171,8 @@ function onExistingData(previousData: Array<{ name: string, playerId: string, pr
             }
         })
 
-        roomCode = player.roomCode
+        updateBotCount(player.playerId, player.name, player.profileImage)
+        roomCode.value = player.roomCode
     }
 
 }
@@ -192,11 +193,26 @@ function onPlayerJoin(playerData: { name: string, playerId: string, profileImage
             rank: 0
         }
     })
+    updateBotCount(playerData.playerId, playerData.name, playerData.profileImage)
+}
+
+function updateBotCount(playerId: string, name: string, avatar: string, isRemove = false) {
+
+    if (isRemove) {
+        botsId.value = botsId.value.filter((item) => item != playerId)
+        return
+    }
+    // update bot count, check for bot
+    if (!avatar && name != 'Unknown') botsId.value.push(playerId)
 }
 
 
 function onPlayerLeft(playerData: { playerId: string }) {
-    console.log(playerData)
+
+    // find the removed player
+    const player = allPlayers.value.find((item) => item.playerId == playerData.playerId)
+    if (player) updateBotCount(player.playerId, '', '', true)
+
     allPlayers.value = allPlayers.value.filter((value) => {
         if (playerData.playerId != value.playerId) {
             return value
@@ -284,11 +300,11 @@ async function onTypingCompleted(reportData: TypingReport) {
 
 
 function onTyping(data: { cursorPos: number, error: number }) {
-    if (socket != null && roomCode != '') {
+    if (socket != null && roomCode.value != '') {
         socket.emit("updateScore", {
             playerId: socket.id,
             cursorPos: data.cursorPos,
-            roomCode: roomCode,
+            roomCode: roomCode.value,
             errors: data.error
         })
     }
@@ -316,7 +332,7 @@ function onTyping(data: { cursorPos: number, error: number }) {
                             :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
                             :message="'Please wait'" />
                     </div>
-                    <Chatbox style="margin-top: 90px;"/>
+                    <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="botsId.length" style="margin-top: 90px;" />
                 </div>
             </template>
 
@@ -338,12 +354,12 @@ function onTyping(data: { cursorPos: number, error: number }) {
     </main>
 </template>
 <style scoped>
-
-.typing-chat{
+.typing-chat {
     display: grid;
     grid-template-columns: 1fr max-content;
     gap: 1em;
 }
+
 .kick {
     width: 100%;
     min-height: 400px;

@@ -95,6 +95,10 @@ export function delay(ms: number) {
 
 const colors = ["#ef476fff", "#06d6a0ff", "#118ab2ff", "#073b4cff"];
 
+export function getAvatarColor() {
+  return colors[Math.round(Math.random() * (colors.length - 1))];
+}
+
 export function generateAvatar(name: string, color = "") {
   var initials = name
     .split(" ")
@@ -113,7 +117,7 @@ export function generateAvatar(name: string, color = "") {
   let randColor = color;
   if (color && colors.includes(color)) {
   } else {
-    randColor = colors[Math.round(Math.random() * (colors.length - 1))];
+    randColor = getAvatarColor();
   }
 
   // Get the drawing context

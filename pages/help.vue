@@ -17,8 +17,6 @@ onMounted(() => {
         <section class="main">
             <h2>Helps</h2>
 
-            <Chatbox/>
-
             <h3>About</h3>
             <p>This web application will help you to learn touch typing, which means typing through muscle memory without
                 using your eyesight to find the keys on the keyboard. It can improve your typing speed and accuracy
