@@ -9,7 +9,7 @@ import { useProfileStore } from '~/store/profile';
 const $toast = useToast();
 const profileStore = useProfileStore()
 //@ts-ignore
-const serverUrl = import.meta.env.VITE_SOCKET_URL
+const serverUrl = import.meta.env.VITE_CHAT_SOCKET_URL
 
 const props = defineProps<{
     roomId: string,
