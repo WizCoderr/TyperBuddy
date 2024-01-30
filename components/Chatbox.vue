@@ -45,7 +45,7 @@ onUnmounted(() => {
 
 
 function setupChatbot() {
-    const ws = new WebSocket(serverUrl + '/chat');
+    const ws = new WebSocket(serverUrl);
     ws.onopen = onConnect
     socket.value = ws
     timer = setInterval(updateTypingPlayers, 500)
