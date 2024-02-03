@@ -57,6 +57,7 @@ function setupChatbot() {
 
 
 
+
 function onConnect() {
     if (!socket.value) return
     socket.value.onmessage = onRawMessage
