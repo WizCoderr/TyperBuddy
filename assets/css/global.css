@@ -510,7 +510,6 @@ table .text-arrow svg.down {
     border-radius: 50%;
     background: rgb(255, 255, 255);
     animation: loading_492 1s ease infinite;
-    animation-delay: 1s;
 }
 
 @keyframes loading_492 {
