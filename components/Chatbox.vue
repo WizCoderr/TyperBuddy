@@ -5,6 +5,7 @@ import { navigateTo, onMounted, onUnmounted, ref } from '#imports';
 import { getTimeString, getAvatarColor } from '@/lib/utils'
 import { useToast } from 'vue-toast-notification';
 import { useProfileStore } from '~/store/profile';
+import { ChatIcon, CloseIcon } from './icons';
 
 const $toast = useToast();
 const profileStore = useProfileStore()
@@ -24,6 +25,8 @@ onMounted(() => {
     if (profileStore.isLoaded) {
         setupChatbot()
     }
+
+    toggleOutsideClickListener(false)
 })
 
 const socket = ref<WebSocket | null>(null)
@@ -36,6 +39,7 @@ let playerId = ""
 
 
 onUnmounted(() => {
+    toggleOutsideClickListener(true)
     if (socket.value) socket.value.close()
     if (timer) {
         clearInterval(timer)
@@ -45,7 +49,7 @@ onUnmounted(() => {
 
 
 function setupChatbot() {
-    const ws = new WebSocket(serverUrl);
+    const ws = new WebSocket(serverUrl + '/chat');
     ws.onopen = onConnect
     socket.value = ws
     timer = setInterval(updateTypingPlayers, 500)
@@ -132,7 +136,7 @@ interface PlayerChat {
 
 interface TypingStatus extends SocketMessage {
     time: number
-    
+
 }
 
 interface PlayerRawData extends SocketMessage {
@@ -287,72 +291,146 @@ function emitTypingStatus() {
 }
 
 
+const isOpen = ref(false)
+const chatBox = ref<HTMLDivElement>()
+function toggleOutsideClickListener(remove: boolean) {
+    if (remove) {
+        document.body.addEventListener('click', onClickOutside, true)
+    } else {
+        document.body.addEventListener('click', onClickOutside, true)
+    }
+}
+
+function onClickOutside(event: any) {
+
+    const isChatBtn = event.target.className == 'chat-btn'
+    if (isChatBtn) return
+    if (chatBox.value) {
+        const isInside = chatBox.value.contains(event.target)
+        if (!isInside) {
+            isOpen.value = false
+        }
+
+    }
+}
+
+
 </script>
 <template>
-    <div class="chat-box">
-        <div class="header">
-            <h4>Chat</h4>
-            <span>{{ players.filter(item => item.active).length + botCount }} online</span>
-        </div>
-        <div class="content scroll-bar">
-            <template v-for="chats, index in playerChats" :key="index">
-                <div :class="chats.player.playerId == playerId ? 'chat-holder right' : 'chat-holder'">
-                    <img :src="chats.player.avatar" />
-                    <div class="chats">
-                        <div v-for="chat, index2 in chats.chats" :key="index2" class="item">
-                            <div class="title">
-                                <span class="name">{{ chats.player.name }}</span>
-
-                            </div>
-                            <p>{{ chat.message }}</p>
-                            <span class="time">{{ getTimeString(chat.time) }}</span>
-                        </div>
-                    </div>
-                </div>
-            </template>
-
-
-            <!-- <div class="chat-holder right">
-                <img :src="generateAvatar('Nitesh Kumar')" />
-                <div class="chats">
-                    <div v-for="item, index in Math.max(1, Math.round(Math.random() * 3))" :key="index" class="item">
-                        <div class="title">
-                            <span class="name">Nitesh</span>
-                        </div>
-                        <p>Lorem ipsum dolor</p>
-                        <span class="time">1 min ago</span>
-                    </div>
-                </div>
-            </div> -->
-
-        </div>
-        <form @submit.prevent="onSubmit" class="footer">
-            <div v-if="typingPlayers.length" class="typing-stack">
-                <IconStack :avatars="typingPlayers" />
-                Typing...
+    <div class="chat-box-holder">
+        <div v-if="isOpen" ref="chatBox" class="chat-box">
+            <div class="header">
+                <h4>Chat</h4>
+                <span>{{ players.filter(item => item.active).length + botCount }} online</span>
             </div>
-            <input @input="emitTypingStatus" type="text" name="msg" placeholder="Type your message here..." />
-            <button>
-                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="m12.815 12.197-7.532 1.256a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 0 0 0-1.342l-18-9c-.614-.307-1.283.304-1.035.943l2.598 6.957a.5.5 0 0 0 .386.319l7.532 1.255a.2.2 0 0 1 0 .394Z" />
-                </svg>
-            </button>
-        </form>
+            <div class="content scroll-bar">
+                <template v-for="chats, index in playerChats" :key="index">
+                    <div :class="chats.player.playerId == playerId ? 'chat-holder right' : 'chat-holder'">
+                        <img :src="chats.player.avatar" />
+                        <div class="chats">
+                            <div v-for="chat, index2 in chats.chats" :key="index2" class="item">
+                                <div class="title">
+                                    <span class="name">{{ chats.player.name }}</span>
+
+                                </div>
+                                <p>{{ chat.message }}</p>
+                                <span class="time">{{ getTimeString(chat.time) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+            <form autocomplete="off" @submit.prevent="onSubmit" class="footer">
+                <div v-if="typingPlayers.length" class="typing-stack">
+                    <IconStack :avatars="typingPlayers" />
+                    Typing...
+                </div>
+                <input @input="emitTypingStatus" type="text" name="msg" placeholder="Type your message here..." />
+                <button>
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="m12.815 12.197-7.532 1.256a.5.5 0 0 0-.386.318L2.3 20.728c-.248.64.421 1.25 1.035.943l18-9a.75.75 0 0 0 0-1.342l-18-9c-.614-.307-1.283.304-1.035.943l2.598 6.957a.5.5 0 0 0 .386.319l7.532 1.255a.2.2 0 0 1 0 .394Z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+        <button class="chat-btn" @click="() => isOpen = !isOpen">
+            <div v-if="typingPlayers.length" class="dots">
+                <div class="loader-dots">
+                    <span class="progress"></span>
+                    <span class="progress"></span>
+                    <span class="progress"></span>
+                </div>
+            </div>
+            <ChatIcon v-if="!isOpen" />
+            <CloseIcon v-else />
+        </button>
     </div>
 </template>
 <style scoped>
+.chat-box-holder {
+    position: fixed;
+    right: 1em;
+    bottom: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1em;
+
+}
+
+
+.chat-box-holder .dots {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-on-surface);
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+
+
+}
+
+.chat-box-holder>button {
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    background-color: var(--color-primary);
+}
+
+.chat-box-holder>button svg {
+    width: 32px;
+    height: auto;
+    fill: white;
+    pointer-events: none;
+}
+
+
 .chat-box {
-    width: 100%;
-    min-height: 400px;
-    max-height: 600px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    width: 300px;
+    height: 500px;
     background-color: white;
     border-radius: 0.6rem;
-    max-width: 400px;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
+
+
 
 
 .chat-box .header {
@@ -388,6 +466,8 @@ function emitTypingStatus() {
 
 .chat-box .chats {
     margin-right: 10%;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -398,6 +478,7 @@ function emitTypingStatus() {
 .chat-box .chat-holder.right .chats {
     margin-right: 0;
     margin-left: 10%;
+    align-items: flex-end;
 }
 
 
@@ -437,6 +518,8 @@ function emitTypingStatus() {
     margin-bottom: 0.5em;
 }
 
+
+
 .chat-box .chats .item:first-child .title {
     display: flex;
 }
@@ -455,12 +538,16 @@ function emitTypingStatus() {
 }
 
 .chat-box .chats .item>div :last-child {
-    font-size: var(--small-font);
+    font-size: var(--very-small-font);
 }
 
 .chat-box .chats p {
     line-height: 1.3em;
     margin: 0;
+}
+
+.chat-box .chat-holder.right .chats p {
+    text-align: end;
 }
 
 .chat-box img {
@@ -505,6 +592,7 @@ function emitTypingStatus() {
 
 .footer button svg {
     fill: var(--color-on-surface);
+    height: 20px;
 }
 
 .footer button {

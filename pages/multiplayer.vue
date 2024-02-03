@@ -231,6 +231,7 @@ function onMessage(res: { type: SocketMessageType, message: string }) {
         case SocketMessageType.kick:
             isKicked.value = true
             kickMsg.value = res.message
+            botsId.value = []
             $toast.info(res.message, { position: "bottom" });
             break;
 
