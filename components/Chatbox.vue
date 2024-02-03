@@ -5,7 +5,7 @@ import { navigateTo, onMounted, onUnmounted, ref } from '#imports';
 import { getTimeString, getAvatarColor } from '@/lib/utils'
 import { useToast } from 'vue-toast-notification';
 import { useProfileStore } from '~/store/profile';
-import { ChatIcon, CloseIcon } from './icons';
+import { ChatIcon, CloseIcon, VisibleIcon, InVisibleIcon } from './icons';
 
 const $toast = useToast();
 const profileStore = useProfileStore()
@@ -294,6 +294,7 @@ function emitTypingStatus() {
 
 const isOpen = ref(false)
 const chatBox = ref<HTMLDivElement>()
+const isAutoClose = ref(true)
 function toggleOutsideClickListener(remove: boolean) {
     if (remove) {
         document.body.addEventListener('click', onClickOutside, true)
@@ -304,6 +305,7 @@ function toggleOutsideClickListener(remove: boolean) {
 
 function onClickOutside(event: any) {
 
+    if (!isAutoClose.value) return
     const isChatBtn = event.target.className == 'chat-btn'
     if (isChatBtn) return
     if (chatBox.value) {
@@ -322,9 +324,16 @@ function onClickOutside(event: any) {
         <div v-if="isOpen" ref="chatBox" class="chat-box">
             <div class="header">
                 <h4>Chat</h4>
-                <span>{{ players.filter(item => item.active).length + botCount }} online</span>
+                <div>
+                    <button @click="() => isAutoClose = !isAutoClose">
+                        <InVisibleIcon v-if="isAutoClose" />
+                        <VisibleIcon v-else />
+                    </button>
+                    <span>{{ players.filter(item => item.active).length + botCount }} online</span>
+                </div>
             </div>
             <div class="content scroll-bar">
+                <p v-if="!playerChats.length" class="default-msg">No message yet</p>
                 <template v-for="chats, index in playerChats" :key="index">
                     <div :class="chats.player.playerId == playerId ? 'chat-holder right' : 'chat-holder'">
                         <img :src="chats.player.avatar" />
@@ -418,6 +427,16 @@ function onClickOutside(event: any) {
     pointer-events: none;
 }
 
+.default-msg {
+    color: var(--color-on-surface);
+    text-align: center;
+    background-color: var(--color-surface);
+    width: max-content;
+    padding: 0.4em 1em;
+    margin: auto;
+    border-radius: 32px;
+}
+
 
 .chat-box {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -444,6 +463,32 @@ function onClickOutside(event: any) {
     justify-content: space-between;
     color: white;
     font-size: var(--small-font);
+}
+
+.chat-box .header button {
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    width: 24px;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+
+}
+
+.chat-box .header div {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.chat-box .header button svg {
+    width: 18px;
+    height: auto;
+    fill: white;
 }
 
 .chat-box .header h4 {
