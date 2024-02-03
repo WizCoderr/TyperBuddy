@@ -132,6 +132,7 @@ interface PlayerChat {
 
 interface TypingStatus extends SocketMessage {
     time: number
+    
 }
 
 interface PlayerRawData extends SocketMessage {
