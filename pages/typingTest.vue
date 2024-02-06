@@ -28,6 +28,7 @@ function updateProgress(progress: number) {
 
 useSeoMeta({
     title: 'Typing Test',
+    description: 'Test your typing speed and accuracy with our interactive typing test. Choose from a variety of exercises tailored to your skill level and track your progress effortlessly. Start testing today!',
 })
 
 

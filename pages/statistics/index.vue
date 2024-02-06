@@ -10,6 +10,7 @@ onMounted(function(){
 
 useSeoMeta({
     title: 'Statistics',
+    description: "Dive into detailed statistics and insights about your typing performance. Analyze your speed, accuracy, and progress over time to identify areas for improvement. Get valuable insights into your typing habits today!"
 })
 
 

@@ -19,6 +19,7 @@ onMounted(setup)
 
 useSeoMeta({
     title: 'Leaderboard',
+    description: 'Check out the top 20 players worldwide and see how you rank against them. Compete with other players and improve your typing skills. Join the leaderboard today!'
 })
 
 

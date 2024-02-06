@@ -26,6 +26,7 @@ const profileData = {
 
 useSeoMeta({
     title: 'Multiplayer',
+    description: 'Compete against other players in this online multiplayer game. The faster you type, the faster your car goes. Type as fast as you can to win the race.'
 })
 
 

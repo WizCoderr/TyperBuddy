@@ -31,6 +31,7 @@ const roomCode = ref('')
 
 useSeoMeta({
     title: 'Play with Friends',
+    description: "Connect with friends and challenge them to exciting typing duels. Compete head-to-head in friendly matches or collaborate in team challenges. Invite your friends and start typing together now!"
 })
 
 

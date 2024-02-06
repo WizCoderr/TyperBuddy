@@ -4,6 +4,7 @@ import Chatbox from '~/components/Chatbox.vue';
 
 useSeoMeta({
     title: 'Help',
+    description: "Find answers to your questions and get helpful tips and tutorials in our comprehensive help section. Whether you're a beginner or an advanced typist, we've got you covered. Access our helpful resources and improve your typing skills today!"
 })
 
 onMounted(() => {
@@ -62,7 +63,7 @@ onMounted(() => {
             <h3>Typing test</h3>
             <p>Test yourself by typing books and novels</p>
         </section>
-        <RightPanel/>
+        <RightPanel />
     </main>
 </template>
 <style scoped>
