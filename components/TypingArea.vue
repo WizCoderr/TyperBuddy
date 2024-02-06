@@ -401,8 +401,6 @@ function manipulateText(text: string) {
 
     // used for multiplayer
     emit('typing', { error: typingReport.totalError, cursorPos: cursorPos })
-
-
     nextTick(() => checkForTypingEnd())
 }
 

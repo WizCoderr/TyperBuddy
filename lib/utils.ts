@@ -3,7 +3,9 @@ export function getUniqueCharacters(sentence: string) {
 
   for (let i = 0; i < sentence.length; i++) {
     const char = sentence.charAt(i).toUpperCase();
-    uniqueChars.add(char);
+
+    // skip the spaces
+    if(char != ' ') uniqueChars.add(char);
   }
 
   return Array.from(uniqueChars).sort();
