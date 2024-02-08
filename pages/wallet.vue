@@ -6,7 +6,7 @@ import { ArrowUpIcon } from '~/components/icons';
 import Notification from '~/components/Notification.vue';
 import Paginate from '~/components/widgets/Paginate.vue';
 import ApiWallet from '~/lib/api/ApiWallet';
-import { WalletPageData } from '~/lib/DataType';
+import type { WalletPageData } from '~/lib/DataType';
 import { formatDateTime } from '~/lib/utils';
 const $toast = useToast()
 

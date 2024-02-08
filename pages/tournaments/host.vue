@@ -6,7 +6,7 @@ import { useToast } from 'vue-toast-notification';
 import RightPanel from '~/components/RightPanel.vue';
 import HostTournamentDialog from '~/components/dialog/HostTournamentDialog.vue';
 import TournamentCreateCard from '~/components/tournament/TournamentCreateCard.vue';
-import { TournamentRawData, TournamentStatus } from '~/lib/DataType';
+import { type TournamentRawData, TournamentStatus } from '~/lib/DataType';
 import ApiTournament from '~/lib/api/ApiTournament';
 import { getTimeLeft, isTodayDate } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';

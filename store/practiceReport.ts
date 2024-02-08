@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { AxiosResult, ProfileData, TypingReport } from "~/lib/DataType";
+import type { AxiosResult, ProfileData, TypingReport } from "~/lib/DataType";
 
 import ApiUser from "~/lib/api/ApiUser";
 

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { TypingReport } from '~/lib/DataType';
+import type { TypingReport } from '~/lib/DataType';
 import { timeToWord } from '~/lib/utils';
 
 defineProps<{

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
+import { nextTick } from "vue";
 import { generateSentence } from "~/data/wordSample";
-import { AxiosResult, ProfileData, SettingData } from "~/lib/DataType";
+import  type{ AxiosResult, ProfileData, SettingData } from "~/lib/DataType";
 import { getLocalData } from "~/lib/LocalStorageManager";
 import ApiContent from "~/lib/api/ApiContents";
 
@@ -47,7 +48,7 @@ export const usePracticeLessonStore = defineStore("practiceLesson", {
         }
       } else {
         // generate fetch content from server
-        const result = await ApiContent.getTypingContent<string>(40);
+        const result = await ApiContent.getTypingContent(40);
         if (result.isOk) {
           this.lesson = result.data!!
         }

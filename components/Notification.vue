@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { NotificationData } from '~/lib/DataType';
+import type { NotificationData } from '~/lib/DataType';
 import { NotificationIcon, LoadingIcon } from './icons';
 import ago from 'ts-ago'
 import ApiNotification from '~/lib/api/ApiNotification';

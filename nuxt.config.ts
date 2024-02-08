@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
+    "@nuxtjs/sitemap"
   ],
   css: ["@/assets/css/global.css", "@/assets/css/skeleton.css", "vue-toast-notification/dist/theme-sugar.css"],
   pinia: {
@@ -12,7 +13,7 @@ export default defineNuxtConfig({
     // ],
   },
   imports: {
-    autoImport: false
-  }
+    autoImport: false,
+  },
 
 });

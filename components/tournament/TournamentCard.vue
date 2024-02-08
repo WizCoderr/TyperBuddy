@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { navigateTo } from 'nuxt/app';
 import { PeopleIcon, TrophyIcon, GameIcon } from "../icons"
-import { TournamentData } from '~/lib/DataType';
+import type { TournamentData } from '~/lib/DataType';
 import { onMounted, onUnmounted, ref } from '#imports';
 import { getTimeLeft } from '~/lib/utils';
 const prop = defineProps<{

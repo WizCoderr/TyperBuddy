@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { generateSentence } from '~/data/wordSample';
-import { SettingData, TypingReport } from '~/lib/DataType';
+import  type{ SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 import PracticeCompleteDialog from '~/components/dialog/PracticeCompleteDialog.vue';

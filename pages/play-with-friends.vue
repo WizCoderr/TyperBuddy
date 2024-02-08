@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { Socket, io } from "socket.io-client";
-import { PlayerData, SocketMessageType, TypingReport } from '~/lib/DataType'
+import { type PlayerData, SocketMessageType, type TypingReport } from '~/lib/DataType'
 import { useProfileStore } from "~/store/profile";
 import { getSimpleData } from "~/lib/LocalStorageManager"
 import ApiStatistics from "~/lib/api/ApiStatistics";

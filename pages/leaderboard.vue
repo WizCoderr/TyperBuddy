@@ -3,9 +3,9 @@ import { NuxtLink } from '#components'
 import { useSeoMeta } from '#imports';
 import ago from 'ts-ago'
 import { ref, onMounted } from 'vue';
-import { AxiosResult, Leaderboard } from '~/lib/DataType';
+import type { AxiosResult, Leaderboard } from '~/lib/DataType';
 import ApiLeaderboard from '~/lib/api/ApiLeaderboard';
-import { RGBColor, getColor } from '~/lib/utils';
+import { type RGBColor, getColor } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';
 
 import {ArrowUpIcon} from '../components/icons'

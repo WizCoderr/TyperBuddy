@@ -1,7 +1,7 @@
 
 <script setup lang='ts'>
 // import { CalendarHeatmap } from 'vue3-calendar-heatmap'
-import { MyChartData, StatisticPageData } from '~/lib/DataType';
+import type { MyChartData, StatisticPageData } from '~/lib/DataType';
 import { timeToWord } from '~/lib/utils'
 import Heatmap from '~/components/Heatmap.vue';
 import { useFetch } from 'nuxt/app';

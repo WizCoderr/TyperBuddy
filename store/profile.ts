@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { AxiosResult, ProfileData } from "~/lib/DataType";
+import type { AxiosResult, ProfileData } from "~/lib/DataType";
 
 import ApiUser from "~/lib/api/ApiUser";
 import { getTimeLeft } from "~/lib/utils";

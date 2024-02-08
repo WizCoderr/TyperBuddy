@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { ref, onMounted, onUnmounted } from '#imports';
-import { TournamentRawData } from '~/lib/DataType';
+import type { TournamentRawData } from '~/lib/DataType';
 import { getTimeLeft } from '~/lib/utils';
 const prop = defineProps<{
     data: TournamentRawData

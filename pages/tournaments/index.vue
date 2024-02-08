@@ -8,7 +8,7 @@ import { AddIcon } from "../../components/icons"
 import ApiTournament from '~/lib/api/ApiTournament';
 import { useProfileStore } from '~/store/profile';
 import { watch } from 'fs';
-import { TournamentData } from '~/lib/DataType';
+import type { TournamentData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
 
 useSeoMeta({

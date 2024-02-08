@@ -7,7 +7,7 @@ import MatchHistoryTable from '~/components/tournament/MatchHistoryTable.vue';
 import RegisteredPlayers from '~/components/tournament/RegisteredPlayers.vue';
 import { formatDateTime, generateAvatar, getTimeLeft } from '~/lib/utils';
 import { ArrowLeftIcon, LoadingIcon } from "../../../components/icons"
-import { ParticipantData, TournamentFullData } from '~/lib/DataType';
+import type { ParticipantData, TournamentFullData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
 import { useProfileStore } from '~/store/profile';
 import { useRoute } from '#vue-router';

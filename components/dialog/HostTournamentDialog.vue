@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { TournamentRawData, TournamentStatus, Visibility } from '~/lib/DataType';
+import { type TournamentRawData, TournamentStatus, Visibility } from '~/lib/DataType';
 import CheckBox from '../widgets/CheckBox.vue';
 import Dropdown from '../widgets/Dropdown.vue';
 import GameContent from '../widgets/GameContent.vue';

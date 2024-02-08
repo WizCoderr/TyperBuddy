@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { PlayerData } from '~/lib/DataType';
+import type { PlayerData } from '~/lib/DataType';
 import KickPlayerDialog from './dialog/KickPlayerDialog.vue';
 import { ref } from 'vue';
 import { DeleteIcon, TurtleIcon } from './icons';
