@@ -17,6 +17,9 @@ useSeoMeta({
 <template>
     <Header></Header>
     <HomeLanding />
-    <h1>Hllo</h1>
+    <HomeIntro/>
+    <HomeFeatures/>
+    <HomeGetStarted/>
+    <HomeWhyChooseUs/>
 </template>
 <style scoped></style>

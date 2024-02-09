@@ -13,7 +13,6 @@
                         <NuxtLink to="/game/practice">Practice</NuxtLink>
                         <NuxtLink to="/about">About</NuxtLink>
                         <NuxtLink to="/contact">Contact</NuxtLink>
-                        
                     </div>
                 </div>
             </div>
@@ -27,6 +26,7 @@ header{
     width: 100%;
     z-index: 1000;
     background-color: rgba(255, 255, 255, 0.068);
+    backdrop-filter: blur(10px);
 }
 
 header .page>div{
