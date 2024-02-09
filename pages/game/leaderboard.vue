@@ -8,7 +8,7 @@ import ApiLeaderboard from '~/lib/api/ApiLeaderboard';
 import { type RGBColor, getColor } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';
 
-import {ArrowUpIcon} from '../components/icons'
+import {ArrowUpIcon} from '../../components/icons'
 
 const isLoaded = ref(false)
 const leaderboard = ref<Array<Leaderboard>>()

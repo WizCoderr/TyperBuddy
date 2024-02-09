@@ -1,13 +1,11 @@
 <script setup lang='ts'>
 import { onMounted, ref, useSeoMeta } from '#imports';
 import { navigateTo } from 'nuxt/app';
-import { useRoute } from 'vue-router';
 import RightPanel from '~/components/RightPanel.vue';
-import TournamentCard from '~/components/tournament/TournamentCard.vue';
-import { AddIcon } from "../../components/icons"
+import TournamentCard from '/components/tournament/TournamentCard.vue';
+import { AddIcon } from "~/components/icons"
 import ApiTournament from '~/lib/api/ApiTournament';
 import { useProfileStore } from '~/store/profile';
-import { watch } from 'fs';
 import type { TournamentData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
 

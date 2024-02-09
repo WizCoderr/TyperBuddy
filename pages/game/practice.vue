@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { generateSentence } from '~/data/wordSample';
-import type { SettingData, TypingReport } from '~/lib/DataType';
+import  type{ SettingData, TypingReport } from '~/lib/DataType';
 import { getKeyColor } from '~/lib/utils';
 import PracticeSettingDialog from '~/components/dialog/PracticeSettingDialog.vue';
 import PracticeCompleteDialog from '~/components/dialog/PracticeCompleteDialog.vue';
@@ -9,7 +9,6 @@ import ApiStatistics from '~/lib/api/ApiStatistics';
 import { usePracticeReportStore } from '~/store/practiceReport'
 import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
-import ApiContent from '~/lib/api/ApiContents';
 import { ref, onMounted } from 'vue';
 import { useSeoMeta } from '#imports';
 
@@ -26,21 +25,22 @@ function updateProgress(progress: number) {
 }
 
 
-useSeoMeta({
-    title: 'Typing Test',
-    description: 'Test your typing speed and accuracy with our interactive typing test. Choose from a variety of exercises tailored to your skill level and track your progress effortlessly. Start testing today!',
-})
-
-
 onMounted(function () {
     startLesson()
 })
 
+useSeoMeta({
+    title: 'Practice',
+    description: 'Enhance your typing skills with our interactive practice sessions. Choose from a variety of exercises tailored to your skill level and track your progress effortlessly. Start practicing today!',
+
+})
 
 
-async function startLesson() {
+
+
+function startLesson() {
     isCompleteDialogVisible.value = false
-    lessonStore.updateLesson(40, false)
+    lessonStore.updateLesson(40, true)
 }
 
 function restartLesson() {
@@ -77,7 +77,7 @@ function openSetting() {
 function onSettingClose(isSaved: boolean) {
     isSettingDialogVisible.value = false
 
-    if (isSaved) lessonStore.updateLesson(40, false)
+    if (isSaved) lessonStore.updateLesson(40, true)
 }
 
 
@@ -105,7 +105,7 @@ async function onPracticeComplete(reportData: TypingReport) {
 </script>
 <template>
     <main>
-        <Sidebar :activeTabIndex="1" />
+        <Sidebar :activeTabIndex="0" />
         <section class="main">
             <div class="status-bar">
                 <h3>Speed: {{ reportStore.currentTypingReport.averageWPM }} ( <span
@@ -139,19 +139,17 @@ async function onPracticeComplete(reportData: TypingReport) {
                 <span ref="progressElement" class="progress"></span>
             </div>
 
-            <TypingArea :sentence="lessonStore.lesson" :onTypingCompleted="onPracticeComplete"
+            <TypingArea :sentence="lessonStore.lesson" :message="'Click to play'" :onTypingCompleted="onPracticeComplete"
                 :onSubmitTypingReport="reportStore.updateTypingReport" :onProgressChange="updateProgress"
-                :is-edit-allowed="true" :forgive-error="false" :multiplayer="false" :message="'Click to play'" />
+                :is-edit-allowed="true" :forgive-error="true" :multiplayer="false" />
             <Keyboard />
 
         </section>
-        <RightPanel />
+       <RightPanel/>
     </main>
 
-    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="event => onSettingClose(event)" />
+    <PracticeSettingDialog :is-visible="isSettingDialogVisible" :onClose="(event: boolean) => onSettingClose(event)" />
     <PracticeCompleteDialog :onRestart="restartLesson" :onStart="startLesson" :test-data="dialogTypingReport"
         v-if="isCompleteDialogVisible" />
 </template>
-<style scoped>
-@import '../assets/css/common.css';
-</style>
+<!-- <style scoped>@import './../assets/css/common.css';</style> -->

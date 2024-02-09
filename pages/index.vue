@@ -3,6 +3,7 @@
 import { useProfileStore } from '~/store/profile'
 import { ref, onMounted } from 'vue';
 import { useSeoMeta } from '#imports';
+import Header from '~/components/Header.vue';
 
 useSeoMeta({
     title: 'Home',
@@ -14,7 +15,8 @@ useSeoMeta({
 
 </script>
 <template>
-    <HomeLanding/>
+    <Header></Header>
+    <HomeLanding />
     <h1>Hllo</h1>
 </template>
 <style scoped></style>

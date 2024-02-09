@@ -8,6 +8,7 @@
                 <h1>Learn typing for free</h1>
                 <p>Enhance your typing skills with our interactive practice sessions. Choose from a variety of exercises
                     tailored to your skill level and track your progress effortlessly. Start practicing today!</p>
+                <br />
                 <button class="button">Get started</button>
             </div>
         </div>

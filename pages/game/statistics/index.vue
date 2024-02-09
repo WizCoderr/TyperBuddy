@@ -4,8 +4,8 @@ import { onMounted, useSeoMeta } from '#imports';
 import { useToast } from 'vue-toast-notification';
 const $toast = useToast();
 
-onMounted(function(){
-    $toast.default("Please signIn to see your statistics", {position: "bottom"})
+onMounted(function () {
+    $toast.default("Please signIn to see your statistics", { position: "bottom" })
 })
 
 useSeoMeta({
@@ -23,9 +23,9 @@ useSeoMeta({
         <section class="main">
             <h2>Statistics</h2>
             <p>Signin required to view your statistics</p>
-            
+
         </section>
-        <RightPanel/>
+        <RightPanel />
     </main>
 </template>
 <style scoped>
