@@ -20,6 +20,15 @@
     </section>
 </template>
 <style scoped>
+.landing h1{
+    font-size: 42px;
+    font-weight: normal;
+}
+
+.landing button{
+    color: black;
+    padding: 0.8em 2em;
+}
 .landing {
     min-height: 100vh;
     width: 100%;
@@ -30,7 +39,7 @@
 
 .landing .page>div {
     overflow-y: auto;
-    padding-top: 150px;
+    padding-top: 15vh;
     display: flex;
     flex-direction: column;
     align-items: center;
