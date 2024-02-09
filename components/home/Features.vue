@@ -32,6 +32,10 @@
                     <h3>Leaderboard</h3>
                     <p>See where you stand among the top typists in our global leaderboard.</p>
                 </div>
+                <div class="card">
+                    <h3>Chats</h3>
+                    <p>Easily able to chats with the opponents or with your friends while playing.</p>
+                </div>
             </div>
 
         </div>
