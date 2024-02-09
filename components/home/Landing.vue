@@ -8,7 +8,9 @@
                 <h1>Master Typing, Master Everything</h1>
                 <p>Welcome to TyperBuddy - where typing becomes an adventure! Start your journey to typing mastery with our interactive practice sessions. Choose from a variety of engaging exercises, tailored just for you. Let's embark on this typing adventure together!</p>
                 <br />
-                <button class="button">Get started</button>
+                <NuxtLink to="/game/practice">
+                    <button class="button">Get started</button>
+                </NuxtLink>
             </div>
         </div>
 

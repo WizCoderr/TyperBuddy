@@ -10,7 +10,9 @@
                     compete, and connect with friends. Whether you're a seasoned typist or just getting started, TyperBuddy
                     has everything you need to take your typing to the next level.</p>
                 <br />
-                <button class="button primary">Start typing</button>
+                <NuxtLink to="/game/practice">
+                    <button class="button primary">Start typing</button>
+                </NuxtLink>
             </div>
         </div>
     </section>

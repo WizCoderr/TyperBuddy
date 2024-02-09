@@ -11,8 +11,10 @@
                     <li>Challenge yourself with typing tests or join the multiplayer fun with friends.</li>
                     <li>Participate in tournament and earn real rewards - <b>coming soon</b></li>
                 </ul>
-                <br/>
-                <button class="button primary">Start typing</button>
+                <br />
+                <NuxtLink to="/game/practice">
+                    <button class="button primary">Start typing</button>
+                </NuxtLink>
             </div>
             <img src="../../assets/img/home/get-start.svg" alt="get-started">
         </div>
@@ -45,7 +47,7 @@ section ul {
     line-height: 1.5em;
 }
 
-section li{
+section li {
     margin-bottom: 0.5em;
 }
 </style>
