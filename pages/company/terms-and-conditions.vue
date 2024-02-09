@@ -1,10 +1,31 @@
 <script setup lang='ts'>
+import { useSeoMeta } from '#imports';
+import CommonLayout from '../layouts/CommonLayout.vue';
+
+useSeoMeta({
+    title: 'Terms & Conditions',
+
+})
+
+
 </script>
 <template>
-    <h1>Hello starter</h1>
+    <CommonLayout>
+        <section>
+            <div class="page">
+                <h1>Terms & Conditions</h1>
+                <p class="dev">Content are still under development</p>
+            </div>
+        </section>
+    </CommonLayout>
 </template>
 <style scoped>
-h1 {
-    color: red;
+section {
+    min-height: 600px;
+}
+
+.dev {
+    padding: 3em;
+    background-color: rgb(235, 235, 235);
 }
 </style>
