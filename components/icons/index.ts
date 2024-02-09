@@ -24,4 +24,33 @@ import NotificationIcon from "./NotificationIcon.vue";
 import ChatIcon from "./ChatIcon.vue";
 import VisibleIcon from "./VisibleIcon.vue";
 import InVisibleIcon from "./InVisibleIcon.vue";
-export {VisibleIcon, InVisibleIcon, CarIcon, ChatIcon, NotificationIcon, WithdrawIcon, WalletIcon, LoadingIcon, ArrowLeftIcon, AddIcon, PeopleIcon, GameIcon, ArrowUpIcon, CloseIcon, GoogleIcon, GithubIcon, DeleteIcon, TurtleIcon, HelpIcon, LeaderBoardIcon as LeaderboardIcon, MeterIcon, SignInIcon, StatisticsIcon, TrophyIcon, TypingIcon, FriendsIcon };
+import ArrowRightIcon from "./ArrowRightIcon.vue";
+export {
+  VisibleIcon,
+  ArrowRightIcon,
+  InVisibleIcon,
+  CarIcon,
+  ChatIcon,
+  NotificationIcon,
+  WithdrawIcon,
+  WalletIcon,
+  LoadingIcon,
+  ArrowLeftIcon,
+  AddIcon,
+  PeopleIcon,
+  GameIcon,
+  ArrowUpIcon,
+  CloseIcon,
+  GoogleIcon,
+  GithubIcon,
+  DeleteIcon,
+  TurtleIcon,
+  HelpIcon,
+  LeaderBoardIcon as LeaderboardIcon,
+  MeterIcon,
+  SignInIcon,
+  StatisticsIcon,
+  TrophyIcon,
+  TypingIcon,
+  FriendsIcon,
+};

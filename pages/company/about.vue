@@ -1,7 +1,12 @@
 <script setup lang='ts'>
+import CommonLayout from '../layouts/CommonLayout.vue';
+
+
 </script>
 <template>
-    <h1>Hello starter</h1>
+    <CommonLayout>
+        <h1>About Us</h1>
+    </CommonLayout>
 </template>
 <style scoped>
 h1 {
