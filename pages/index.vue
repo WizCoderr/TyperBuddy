@@ -15,7 +15,7 @@ useSeoMeta({
 
 </script>
 <template>
-    <Header></Header>
+    <Header :auto="true"></Header>
     <HomeLanding />
     <HomeIntro/>
     <HomeFeatures/>

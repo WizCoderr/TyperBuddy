@@ -18,7 +18,7 @@
                         <NuxtLink to="/game/practice">Practice</NuxtLink>
                         <NuxtLink to="/game/multiplayer">Multiplayer</NuxtLink>
                         <NuxtLink to="/game/play-with-friends">Play with Friends</NuxtLink>
-                        <NuxtLink to="/typing-test">Typing Test</NuxtLink>
+                        <NuxtLink to="/game/typing-test">Typing Test</NuxtLink>
                         <NuxtLink to="/game/leaderboard">Leaderboard</NuxtLink>
                         <NuxtLink to="/blogs">Blogs</NuxtLink>
 
@@ -31,6 +31,8 @@
                         <NuxtLink to="/company/cookies-policy">Cookies</NuxtLink>
                         <NuxtLink to="/company/terms-and-conditions">Term & conditions</NuxtLink>
                         <NuxtLink to="/company/faq">FAQ</NuxtLink>
+                        <NuxtLink to="/company/report-bugs">Report bugs</NuxtLink>
+                        <NuxtLink to="/company/careers">Careers</NuxtLink>
 
                     </div>
                     <div class="links">
