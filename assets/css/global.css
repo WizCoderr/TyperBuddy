@@ -64,6 +64,22 @@
     --very-small-font: 12px;
 
 
+    --max-page-width: 1020px;
+    --page-gap: 24px;
+
+
+}
+
+.page {
+
+    margin: 0 calc(max(0px, ((100% - var(--max-page-width)) * 0.5) - var(--page-gap) * 2));
+    margin-bottom: 0;
+    min-height: 200px;
+}
+
+.page>* {
+    margin-left: var(--page-gap);
+    margin-right: var(--page-gap);
 }
 
 body {
