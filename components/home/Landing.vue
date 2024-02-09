@@ -68,6 +68,10 @@
     margin: auto;
     outline: 10px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 0 80px rgba(255, 255, 255, 0.6);
+    animation-name: moon-anim;
+    animation-duration: 150s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 
 }
 
@@ -106,6 +110,16 @@
 
 }
 
+@keyframes moon-anim {
+    0% {
+       transform: rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateZ(360deg);
+    }
+
+}
 
 
 @keyframes cloud-anim {
