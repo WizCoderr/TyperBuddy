@@ -21,5 +21,6 @@ useSeoMeta({
     <HomeFeatures/>
     <HomeGetStarted/>
     <HomeWhyChooseUs/>
+    <Footer></Footer>
 </template>
 <style scoped></style>

@@ -19,6 +19,10 @@
                         leaderboard rankings.</p>
                 </div>
                 <div class="card">
+                    <h3>Chats</h3>
+                    <p>Chats with friends or with the unknown around the world.</p>
+                </div>
+                <div class="card">
                     <h3>Connect with Friends</h3>
                     <p>Compete, collaborate, and connect with friends in real-time typing battles and challenges.</p>
                 </div>

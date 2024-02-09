@@ -5,9 +5,8 @@
         <div class="page">
             <div>
                 <img class="moon" src="../../assets/img/home/moon.png" alt="moon">
-                <h1>Learn typing for free</h1>
-                <p>Enhance your typing skills with our interactive practice sessions. Choose from a variety of exercises
-                    tailored to your skill level and track your progress effortlessly. Start practicing today!</p>
+                <h1>Master Typing, Master Everything</h1>
+                <p>Welcome to TyperBuddy - where typing becomes an adventure! Start your journey to typing mastery with our interactive practice sessions. Choose from a variety of engaging exercises, tailored just for you. Let's embark on this typing adventure together!</p>
                 <br />
                 <button class="button">Get started</button>
             </div>
@@ -16,9 +15,6 @@
         <div class="cloud cloud1"></div>
         <div class="cloud cloud2"></div>
         <div class="cloud cloud3"></div>
-        <!-- <img class="cloud cloud1" src="../../assets/img/home/clouds3.png" alt="clouds">
-        <img class="cloud cloud2" src="../../assets/img/home/clouds1.png" alt="clouds">
-        <img class="cloud cloud3" src="../../assets/img/home/clouds2.png" alt="clouds"> -->
     </section>
 </template>
 <style scoped>
