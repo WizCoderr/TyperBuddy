@@ -15,4 +15,5 @@ useSeoMeta({
         <p class="dev">Content are still under development</p>
     </CommonLayout>
 </template>
-<style scoped></style>
+<style scoped>
+</style>

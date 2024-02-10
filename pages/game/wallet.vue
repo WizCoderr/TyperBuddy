@@ -43,69 +43,68 @@ function removeReadNotification(ids: string[]) {
 
 </script>
 <template>
-   <GameLayout>
-    <h2>Wallet</h2>
-            <p>Manage your wallet easy from here</p>
-            <hr />
+    <GameLayout>
+        <h2>Wallet</h2>
+        <p>Manage your wallet easy from here</p>
+        <hr />
 
-            <template v-if="walletPageData">
-                <div class="top-bar">
-                    <div class="card">
-                        <h4>
-                            <WalletIcon />Current balance
-                        </h4>
-                        <h2>${{ walletPageData.wallet.balance }}</h2>
+        <template v-if="walletPageData">
+            <div class="top-bar">
+                <div class="card">
+                    <h4>
+                        <WalletIcon />Current balance
+                    </h4>
+                    <h2>${{ walletPageData.wallet.balance }}</h2>
 
-                    </div>
-                    <div class="card">
-                        <h4>
-                            <WithdrawIcon />Withdrawal
-                        </h4>
-                        <h2>${{ walletPageData.wallet.withdrawal }}</h2>
-                    </div>
+                </div>
+                <div class="card">
+                    <h4>
+                        <WithdrawIcon />Withdrawal
+                    </h4>
+                    <h2>${{ walletPageData.wallet.withdrawal }}</h2>
+                </div>
+            </div>
+
+            <br />
+            <div class="history-notification">
+                <div class="card">
+                    <h4>Transaction history</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Transaction ID</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Datetime</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item, index in walletPageData.transactionHistory.transactionHistory">
+                                <td>{{ index }}</td>
+                                <td>{{ item.transactionId }}</td>
+                                <td>
+                                    <div v-if="item.amount > 0" class="text-arrow">Received
+                                        <ArrowUpIcon :class="'down'" />
+                                    </div>
+                                    <div v-else class="text-arrow">Sent
+                                        <ArrowUpIcon />
+                                    </div>
+                                </td>
+                                <td>${{ Math.abs(item.amount) }}</td>
+                                <td>{{ formatDateTime(item.createdAt) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <Paginate :active="1" :total="walletPageData.transactionHistory.totalPage" />
+
                 </div>
 
-                <br />
-                <div class="history-notification">
-                    <div class="card">
-                        <h4>Transaction history</h4>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Transaction ID</th>
-                                    <th>Type</th>
-                                    <th>Value</th>
-                                    <th>Datetime</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="item, index in walletPageData.transactionHistory.transactionHistory">
-                                    <td>{{ index }}</td>
-                                    <td>{{ item.transactionId }}</td>
-                                    <td>
-                                        <div v-if="item.amount > 0" class="text-arrow">Received
-                                            <ArrowUpIcon :class="'down'" />
-                                        </div>
-                                        <div v-else class="text-arrow">Sent
-                                            <ArrowUpIcon />
-                                        </div>
-                                    </td>
-                                    <td>${{ Math.abs(item.amount) }}</td>
-                                    <td>{{ formatDateTime(item.createdAt) }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <Paginate :active="1" :total="walletPageData.transactionHistory.totalPage" />
-
-                    </div>
-
-                    <Notification :notification="walletPageData.notifications"
-                        :onNotificationRead="removeReadNotification" />
-                </div>
-            </template>
-   </GameLayout>
+                <Notification :notification="walletPageData.notifications" :onNotificationRead="removeReadNotification" />
+            </div>
+        </template>
+    </GameLayout>
 </template>
 <style scoped>
 .history-notification {

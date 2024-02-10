@@ -108,7 +108,7 @@ function changeTab(index: number) {
     text-align: left;
 }
 
-.card-holder button{
+.card-holder button {
     border-radius: 40px;
     border: none;
     border: 1px solid rgba(0, 0, 0, 0.281);
@@ -118,18 +118,18 @@ function changeTab(index: number) {
     transition: all 200ms;
 }
 
-.card-holder button:hover{
+.card-holder button:hover {
     background-color: var(--color-on-surface);
     border-color: var(--color-on-surface);
     color: white;
 }
 
-.card-holder button.danger{
+.card-holder button.danger {
     border-color: var(--color-secondary);
     color: var(--color-secondary);
 }
 
-.card-holder button.danger:hover{
+.card-holder button.danger:hover {
     background-color: var(--color-secondary);
     color: white;
 }
