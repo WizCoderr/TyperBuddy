@@ -2,6 +2,7 @@
 <script setup lang='ts'>
 import { onMounted, useSeoMeta } from '#imports';
 import { useToast } from 'vue-toast-notification';
+import GameLayout from '~/pages/layouts/GameLayout.vue';
 const $toast = useToast();
 
 onMounted(function () {
@@ -18,18 +19,13 @@ useSeoMeta({
 
 
 <template>
-    <main>
-        <Sidebar :activeTabIndex="4" />
-        <section class="main">
-            <h2>Statistics</h2>
-            <p>Signin required to view your statistics</p>
-
-        </section>
-        <RightPanel />
-    </main>
+    <GameLayout>
+        <h2>Statistics</h2>
+        <p>Signin required to view your statistics</p>
+    </GameLayout>
 </template>
 <style scoped>
-.main {
+/* .main {
     max-width: 1000px;
 }
 
@@ -83,5 +79,5 @@ main .status-chips div span:first-child {
 .chart-holder canvas {
     width: 100%;
     aspect-ratio: 5/1;
-}
+} */
 </style>

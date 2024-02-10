@@ -253,26 +253,6 @@ a {
 
 
 
-main {
-    background-color: var(--color-surface);
-    display: grid;
-    grid-template-columns: max-content auto 200px;
-    width: 100%;
-    overflow: auto;
-    color: var(--color-on-surface);
-}
-
-main hr {
-    border: none;
-    border-top: 1px solid var(--color-surface-dark-2);
-    margin: 2rem 0;
-}
-
-
-.main {
-    margin: var(--page-margin);
-}
-
 
 
 
@@ -493,23 +473,9 @@ table .text-arrow svg.down {
         --medium-font: 14px;
         --medium-2-font: 14px;
     }
-
-    main {
-        grid-template-columns: max-content auto 150px;
-    }
 }
 
 
-@media only screen and (max-width: 1000px) {
-    main .right-panel {
-        display: none;
-    }
-
-    main {
-        grid-template-columns: max-content auto;
-    }
-
-}
 
 @media only screen and (max-width: 700px) {
     :root {
@@ -517,12 +483,6 @@ table .text-arrow svg.down {
     }
 }
 
-@media only screen and (max-width: 900px) {
-    main {
-        grid-template-columns: 100%;
-        width: 100%;
-    }
-}
 
 
 

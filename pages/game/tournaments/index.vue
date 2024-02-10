@@ -8,6 +8,7 @@ import ApiTournament from '~/lib/api/ApiTournament';
 import { useProfileStore } from '~/store/profile';
 import type { TournamentData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
+import GameLayout from '~/pages/layouts/GameLayout.vue';
 
 useSeoMeta({
     title: 'Tournaments',
@@ -52,10 +53,8 @@ async function loadTournaments(playerId: string) {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="6" />
-        <section class="main">
-            <h2>Tournaments</h2>
+   <GameLayout>
+    <h2>Tournaments</h2>
             <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
                 dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
                 Join page is your gateway to thrilling battles, epic showdowns, and incredible prizes!</p>
@@ -82,12 +81,10 @@ async function loadTournaments(playerId: string) {
                 </div>
 
             </div> -->
-        </section>
-        <RightPanel />
-    </main>
+   </GameLayout>
 </template>
 <style scoped>
-.main>button {
+.game-content>button {
     margin-left: auto;
     margin-bottom: 40px;
 }

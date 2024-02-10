@@ -13,6 +13,7 @@ import { useProfileStore } from '~/store/profile';
 import { useRoute } from '#vue-router';
 import ApiTournament from '~/lib/api/ApiTournament';
 import ApiParticipant from '~/lib/api/ApiParticipant';
+import GameLayout from '~/pages/layouts/GameLayout.vue';
 
 
 const router = useRouter()
@@ -115,98 +116,93 @@ async function joinTournament() {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="6" />
-        <section class="main">
-            <h2>View Tournaments</h2>
-            <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
-                dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
-                Join page is your gateway to thrilling battles, epic showdowns, and incredible prizes!</p>
-            <hr />
+    <GameLayout>
+        <h2>View Tournaments</h2>
+        <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
+            dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
+            Join page is your gateway to thrilling battles, epic showdowns, and incredible prizes!</p>
+        <hr />
 
-            <div v-if="pageData" class="top-bar">
-                <div></div>
-                <span class="timer">{{ timeLeft }}</span>
-                <button @click="joinTournament" class="button primary">
-                    <LoadingIcon v-if="isJoining" size="mini" />{{ pageData.isJoined ? "Joined" :
-                        profileStore.profile ? "Join tournament" : 'Login to join' }}
-                </button>
-            </div>
+        <div v-if="pageData" class="top-bar">
+            <div></div>
+            <span class="timer">{{ timeLeft }}</span>
+            <button @click="joinTournament" class="button primary">
+                <LoadingIcon v-if="isJoining" size="mini" />{{ pageData.isJoined ? "Joined" :
+                    profileStore.profile ? "Join tournament" : 'Login to join' }}
+            </button>
+        </div>
 
-            <div v-if="pageData" class="content-area">
-                <div class="left">
+        <div v-if="pageData" class="content-area">
+            <div class="left">
 
-                    <div class="joined-players card">
-                        <h4>Tournament</h4>
-                        <div class="content">
-                            <p>Tournament name: {{ pageData.name }}</p>
-                            <p>Highlight: {{ pageData.smallDesc }}</p>
-                            <p>Total rounds: {{ pageData.matchRoundCount }}</p>
-                            <p>Seats: {{ pageData.seats }}</p>
-                            <p>Entry fee: {{ pageData.entryFee }}</p>
-                            <p>Reward: {{ pageData.totalReward }}</p>
-                            <p>Total winners: {{ pageData.totalWinners }}</p>
-                            <p>Tournament type: {{ pageData.visibility }}</p>
-                            <p>Round break interval: {{ pageData.roundBreakInv }}</p>
-                            <p>Entry fee: {{ pageData.entryFee }}</p>
-                            <p>Last updated: {{ formatDateTime(pageData.updatedAt) }}</p>
-                            <p>Created at: {{ formatDateTime(pageData.createdAt) }}</p>
-                        </div>
+                <div class="joined-players card">
+                    <h4>Tournament</h4>
+                    <div class="content">
+                        <p>Tournament name: {{ pageData.name }}</p>
+                        <p>Highlight: {{ pageData.smallDesc }}</p>
+                        <p>Total rounds: {{ pageData.matchRoundCount }}</p>
+                        <p>Seats: {{ pageData.seats }}</p>
+                        <p>Entry fee: {{ pageData.entryFee }}</p>
+                        <p>Reward: {{ pageData.totalReward }}</p>
+                        <p>Total winners: {{ pageData.totalWinners }}</p>
+                        <p>Tournament type: {{ pageData.visibility }}</p>
+                        <p>Round break interval: {{ pageData.roundBreakInv }}</p>
+                        <p>Entry fee: {{ pageData.entryFee }}</p>
+                        <p>Last updated: {{ formatDateTime(pageData.updatedAt) }}</p>
+                        <p>Created at: {{ formatDateTime(pageData.createdAt) }}</p>
                     </div>
+                </div>
 
-                    <div v-if="pageData.totalReward" class="reward card">
-                        <h4>Game Reward</h4>
-                        <div class="content">
+                <div v-if="pageData.totalReward" class="reward card">
+                    <h4>Game Reward</h4>
+                    <div class="content">
 
-                            <div class="rewards-container">
-                                <div class="item" :key="index" v-for="item, index in 10">
-                                    <span class="layer">Rank</span>
-                                    <p class="icon">{{ item }}</p>
-                                    <span class="amount">₹100</span>
-                                </div>
+                        <div class="rewards-container">
+                            <div class="item" :key="index" v-for="item, index in 10">
+                                <span class="layer">Rank</span>
+                                <p class="icon">{{ item }}</p>
+                                <span class="amount">₹100</span>
                             </div>
+                        </div>
 
-                        </div>
-                    </div>
-
-                    <div class="joined-players card">
-                        <h4>Registered Players · {{ registeredPlayers.length }}/{{ pageData.seats }}</h4>
-                        <div class="content">
-                            <RegisteredPlayers :data="registeredPlayers" :is-editable="false" />
-                        </div>
-                    </div>
-
-                </div>
-                <div class="right">
-                    <div v-if="pageData.description">
-                        <h4>About Tournament</h4>
-                        <div class="markdown">
-                            {{ pageData.description }}
-                        </div>
-                    </div>
-                    <div v-if="pageData.rules">
-                        <h4>Tournament Rules</h4>
-                        <div class="markdown">
-                            <h4>Tournament rules</h4>
-                            <ol>
-                                <li v-for="item, index in pageData.rules.split('\n')" :key="index">{{ item }}</li>
-                            </ol>
-                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div v-if="isTournamentStarted" class="card match-history">
-                <h4>Match History</h4>
-                <div class="content">
-                    <MatchHistoryTable />
+                <div class="joined-players card">
+                    <h4>Registered Players · {{ registeredPlayers.length }}/{{ pageData.seats }}</h4>
+                    <div class="content">
+                        <RegisteredPlayers :data="registeredPlayers" :is-editable="false" />
+                    </div>
                 </div>
 
             </div>
+            <div class="right">
+                <div v-if="pageData.description">
+                    <h4>About Tournament</h4>
+                    <div class="markdown">
+                        {{ pageData.description }}
+                    </div>
+                </div>
+                <div v-if="pageData.rules">
+                    <h4>Tournament Rules</h4>
+                    <div class="markdown">
+                        <h4>Tournament rules</h4>
+                        <ol>
+                            <li v-for="item, index in pageData.rules.split('\n')" :key="index">{{ item }}</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        </section>
-        <RightPanel />
-    </main>
+        <div v-if="isTournamentStarted" class="card match-history">
+            <h4>Match History</h4>
+            <div class="content">
+                <MatchHistoryTable />
+            </div>
+
+        </div>
+    </GameLayout>
 </template>
 <style scoped>
 /* reward */

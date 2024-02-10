@@ -9,6 +9,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import RightPanel from "~/components/RightPanel.vue";
 import { useSeoMeta } from "#imports";
+import GameLayout from "../layouts/GameLayout.vue";
 const $toast = useToast();
 
 const route = useRoute()
@@ -360,58 +361,51 @@ function onKick(playerId: string) {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="3" />
-        <section class="main">
-            <h2>Play with Friends</h2>
-            <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
-                Type as fast as you can to win the race!</p>
+    <GameLayout>
+        <h2>Play with Friends</h2>
+        <p>Compete against your friends in this online multiplayer game. The faster you type, the faster your car goes.
+            Type as fast as you can to win the race!</p>
 
-            <template v-if="profileStore.profile">
-                <div class="button-tabs">
-                    <button @click="copyLink" v-if="profileStore.profile.roomCode == roomCode">
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
-                        </svg>
-                        Share Link</button>
-                    <button v-if="isAdmin" @click="startMatch">
-                        Start Match</button>
-                </div>
+        <template v-if="profileStore.profile">
+            <div class="button-tabs">
+                <button @click="copyLink" v-if="profileStore.profile.roomCode == roomCode">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M17 2.498a3.502 3.502 0 1 1-2.597 5.851l-4.558 2.604a3.5 3.5 0 0 1 0 2.093l4.557 2.606a3.502 3.502 0 1 1-.745 1.302L9.1 14.347a3.502 3.502 0 1 1 0-4.698l4.557-2.604A3.502 3.502 0 0 1 17 2.498Zm0 13.5a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm-10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Zm10.498-6a2.002 2.002 0 1 0 0 4.004 2.002 2.002 0 0 0 0-4.004Z" />
+                    </svg>
+                    Share Link</button>
+                <button v-if="isAdmin" @click="startMatch">
+                    Start Match</button>
+            </div>
 
-                <template v-if="isKicked == false">
-                    <div class="typing-chat">
-                        <div>
-                            <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers"
-                                :totalChars="typingContent.length" :message="messageText" />
-                            <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted"
-                                :onTyping="onTyping" :is-edit-allowed="isWriteAllowed" :forgive-error="false"
-                                :multiplayer="true" :message="'Please wait'" />
-                        </div>
-                        <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="0" />
+            <template v-if="isKicked == false">
+                <div class="typing-chat">
+                    <div>
+                        <MatchTrack :onKick="onKick" :is-admin="isAdmin" :players="allPlayers"
+                            :totalChars="typingContent.length" :message="messageText" />
+                        <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
+                            :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
+                            :message="'Please wait'" />
                     </div>
-                </template>
-
-                <div v-else class="kick">
-                    <div class="content">
-                        <img src="../public/images/kick.png" alt="kick">
-                        <h2>Oops!<br>{{ kickMsg }}</h2>
-                        <button @click="setup" class="button primary">
-                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
-                            </svg>
-                            Rejoin</button>
-                    </div>
+                    <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="0" />
                 </div>
             </template>
-            <p v-else-if="profileStore.isLoaded"> <br> SignIn required to use this features</p>
 
-
-        </section>
-        <RightPanel />
-
-    </main>
+            <div v-else class="kick">
+                <div class="content">
+                    <img src="../public/images/kick.png" alt="kick">
+                    <h2>Oops!<br>{{ kickMsg }}</h2>
+                    <button @click="setup" class="button primary">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
+                        </svg>
+                        Rejoin</button>
+                </div>
+            </div>
+        </template>
+        <p v-else-if="profileStore.isLoaded"> <br> SignIn required to use this features</p>
+    </GameLayout>
 </template>
 <style scoped>
 .typing-chat {

@@ -8,7 +8,8 @@ import ApiLeaderboard from '~/lib/api/ApiLeaderboard';
 import { type RGBColor, getColor } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';
 
-import {ArrowUpIcon} from '../../components/icons'
+import { ArrowUpIcon } from '../../components/icons'
+import GameLayout from '../layouts/GameLayout.vue';
 
 const isLoaded = ref(false)
 const leaderboard = ref<Array<Leaderboard>>()
@@ -72,53 +73,45 @@ async function setup() {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="5" />
-        <section class="main">
-            <h2>Leaderboard</h2>
-            <p>The below list show the top 20 players world wide. The more faster you will write the better rank you will
-                get.</p>
+    <GameLayout>
+        <h2>Leaderboard</h2>
+        <p>The below list show the top 20 players world wide. The more faster you will write the better rank you will
+            get.</p>
 
-            <table>
-                <colgroup>
-                    <col style="width: 52px;">
-                    <col style="width: auto;">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Rank</th>
-                        <th>Average (WPM)</th>
-                        <th>Highest (WPM)</th>
-                        <th>Last played</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in leaderboard">
-                        <td class="profile">
-                            <div><img :src="item.profileImage"></div>
-                        </td>
-                        <td>
-                            <NuxtLink :to="'/'">{{ item.name }}</NuxtLink>
-                        </td>
-                        <td>{{ item.rank }}</td>
-                        <td>
-                            <div class="text-arrow">{{ item.averageWPM }} <ArrowUpIcon :class="{ down: item.averageWPM < item.oldWPM }"/></div>
-                        </td>
-                        <td>{{ item.highestWPM }}</td>
-                        <td :style="{ color: colorsMap.get(ago(item.updatedAt) as string) }">{{ ago(item.updatedAt) }}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </section>
-       <RightPanel/>
-    </main>
+        <table>
+            <colgroup>
+                <col style="width: 52px;">
+                <col style="width: auto;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Rank</th>
+                    <th>Average (WPM)</th>
+                    <th>Highest (WPM)</th>
+                    <th>Last played</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in leaderboard">
+                    <td class="profile">
+                        <div><img :src="item.profileImage"></div>
+                    </td>
+                    <td>
+                        <NuxtLink :to="'/'">{{ item.name }}</NuxtLink>
+                    </td>
+                    <td>{{ item.rank }}</td>
+                    <td>
+                        <div class="text-arrow">{{ item.averageWPM }}
+                            <ArrowUpIcon :class="{ down: item.averageWPM < item.oldWPM }" />
+                        </div>
+                    </td>
+                    <td>{{ item.highestWPM }}</td>
+                    <td :style="{ color: colorsMap.get(ago(item.updatedAt) as string) }">{{ ago(item.updatedAt) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </GameLayout>
 </template>
-<style scoped>
-.main {
-    max-width: 1000px;
-}
-
-</style>
+<style scoped></style>

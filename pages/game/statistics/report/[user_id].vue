@@ -8,6 +8,7 @@ import { useFetch } from 'nuxt/app';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSeoMeta } from '#imports';
+import GameLayout from '~/pages/layouts/GameLayout.vue';
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')
@@ -168,116 +169,108 @@ function getThemeColor(name: string) {
 
 
 <template>
-    <main>
-        <Sidebar :activeTabIndex="4" />
-        <section class="main">
-            <h2>Statistics</h2>
-            <p>This is a page with detailed statistics about your learning progress. The more lessons you complete, the more
-                detailed and accurate these statistics will be.</p>
+    <GameLayout>
+        <h2>Statistics</h2>
+        <p>This is a page with detailed statistics about your learning progress. The more lessons you complete, the more
+            detailed and accurate these statistics will be.</p>
 
-            <hr>
-            <h3>Statistics for Today:</h3>
-            <div class="status-chips" v-for="stat in pageData.todayStat">
-                <div>
-                    <span>Total Time</span>
-                    <span>{{ timeToWord(stat.timeTaken) }}</span>
-                </div>
-                <div>
-                    <span>Total Words</span>
-                    <span>{{ stat.totalWords.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Total Chars</span>
-                    <span>{{ stat.totalCharacter.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Accuracy</span>
-                    <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
-                </div>
-                <div>
-                    <span>Error</span>
-                    <span>{{ stat.totalError.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Highest Speed (WPM)</span>
-                    <span>{{ stat.highestWPM }} WPM</span>
-                </div>
-                <div>
-                    <span>Average Speed (WPM)</span>
-                    <span>{{ stat.averageWPM }} WPM</span>
-                </div>
+        <hr>
+        <h3>Statistics for Today:</h3>
+        <div class="status-chips" v-for="stat in pageData.todayStat">
+            <div>
+                <span>Total Time</span>
+                <span>{{ timeToWord(stat.timeTaken) }}</span>
             </div>
-
-            <div class="chart-container" v-if="!isGraphHidden">
-                <select v-model="graphType">
-                    <option value="bar">Bar</option>
-                    <option value="line">Line</option>
-                </select>
-
-                <div class="chart-holder">
-                    <GraphChart :mode="graphType" :firstDataset="todaySecondDataset" :secondDataset="todayFirstDataset" />
-                </div>
+            <div>
+                <span>Total Words</span>
+                <span>{{ stat.totalWords.toLocaleString() }}</span>
             </div>
-
-            <hr>
-            <h3>All Time Statistics:</h3>
-            <div class="status-chips" v-for="stat in pageData.allTimeStat">
-                <div>
-                    <span>Total Time</span>
-                    <span>{{ timeToWord(stat.timeTaken) }}</span>
-                </div>
-                <div>
-                    <span>Total Words</span>
-                    <span>{{ stat.totalWords.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Total Chars</span>
-                    <span>{{ stat.totalCharacter.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Accuracy</span>
-                    <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
-                </div>
-                <div>
-                    <span>Error</span>
-                    <span>{{ stat.totalError.toLocaleString() }}</span>
-                </div>
-                <div>
-                    <span>Highest Speed (WPM)</span>
-                    <span>{{ stat.highestWPM }} WPM</span>
-                </div>
-                <div>
-                    <span>Average Speed (WPM)</span>
-                    <span>{{ stat.averageWPM }} WPM</span>
-                </div>
+            <div>
+                <span>Total Chars</span>
+                <span>{{ stat.totalCharacter.toLocaleString() }}</span>
             </div>
-
-            <div class="chart-container" v-if="!isGraphHidden">
-                <select v-model="graphType">
-                    <option value="bar">Bar</option>
-                    <option value="line">Line</option>
-                </select>
-
-                <div class="chart-holder">
-                    <GraphChart :mode="graphType" :firstDataset="allTimeSecondDataset"
-                        :secondDataset="allTimeFirstDataset" />
-                </div>
+            <div>
+                <span>Accuracy</span>
+                <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
             </div>
+            <div>
+                <span>Error</span>
+                <span>{{ stat.totalError.toLocaleString() }}</span>
+            </div>
+            <div>
+                <span>Highest Speed (WPM)</span>
+                <span>{{ stat.highestWPM }} WPM</span>
+            </div>
+            <div>
+                <span>Average Speed (WPM)</span>
+                <span>{{ stat.averageWPM }} WPM</span>
+            </div>
+        </div>
 
-            <hr>
+        <div class="chart-container" v-if="!isGraphHidden">
+            <select v-model="graphType">
+                <option value="bar">Bar</option>
+                <option value="line">Line</option>
+            </select>
 
-            <!-- <Heatmap/> -->
+            <div class="chart-holder">
+                <GraphChart :mode="graphType" :firstDataset="todaySecondDataset" :secondDataset="todayFirstDataset" />
+            </div>
+        </div>
 
-            <!-- <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/> -->
-        </section>
-       <RightPanel/>
-    </main>
+        <hr>
+        <h3>All Time Statistics:</h3>
+        <div class="status-chips" v-for="stat in pageData.allTimeStat">
+            <div>
+                <span>Total Time</span>
+                <span>{{ timeToWord(stat.timeTaken) }}</span>
+            </div>
+            <div>
+                <span>Total Words</span>
+                <span>{{ stat.totalWords.toLocaleString() }}</span>
+            </div>
+            <div>
+                <span>Total Chars</span>
+                <span>{{ stat.totalCharacter.toLocaleString() }}</span>
+            </div>
+            <div>
+                <span>Accuracy</span>
+                <span>{{ 100 - Math.round(stat.totalError / stat.totalCharacter * 100) }}%</span>
+            </div>
+            <div>
+                <span>Error</span>
+                <span>{{ stat.totalError.toLocaleString() }}</span>
+            </div>
+            <div>
+                <span>Highest Speed (WPM)</span>
+                <span>{{ stat.highestWPM }} WPM</span>
+            </div>
+            <div>
+                <span>Average Speed (WPM)</span>
+                <span>{{ stat.averageWPM }} WPM</span>
+            </div>
+        </div>
+
+        <div class="chart-container" v-if="!isGraphHidden">
+            <select v-model="graphType">
+                <option value="bar">Bar</option>
+                <option value="line">Line</option>
+            </select>
+
+            <div class="chart-holder">
+                <GraphChart :mode="graphType" :firstDataset="allTimeSecondDataset" :secondDataset="allTimeFirstDataset" />
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- <Heatmap/> -->
+
+        <!-- <CalendarHeatmap :values="[{ date: '2018-9-22', count: 6 }]" :end-date="2018-9-22"/> -->
+
+    </GameLayout>
 </template>
 <style scoped>
-.main {
-    max-width: 1000px;
-}
-
 main .status-chips {
     display: flex;
     flex-wrap: wrap;

@@ -9,6 +9,7 @@ import TournamentCreateCard from '~/components/tournament/TournamentCreateCard.v
 import { type TournamentRawData, TournamentStatus } from '~/lib/DataType';
 import ApiTournament from '~/lib/api/ApiTournament';
 import { getTimeLeft, isTodayDate } from '~/lib/utils';
+import GameLayout from '~/pages/layouts/GameLayout.vue';
 import { useProfileStore } from '~/store/profile';
 const $toast = useToast();
 const router = useRouter()
@@ -91,9 +92,8 @@ function onTournamentCreate(data: TournamentRawData) {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="6" />
-        <section v-if="profileStore.profile?.isPremium" class="main">
+    <GameLayout>
+        <template v-if="profileStore.profile?.isPremium">
             <h2>Host Tournaments</h2>
             <p>Are you ready to elevate your gaming experience? Dive into the world of competition and skill with our
                 dynamic tournaments platform. Whether you're a seasoned pro or a casual gamer, our Tournaments Create and
@@ -144,11 +144,9 @@ function onTournamentCreate(data: TournamentRawData) {
             <div class="tournament-holder">
                 <TournamentCreateCard v-for="item, index in filterTournament(activeTab)" :key="index" :data="item" />
             </div>
-
-        </section>
+        </template>
         <div v-else></div>
-        <RightPanel />
-    </main>
+    </GameLayout>
 
     <HostTournamentDialog v-if="hostDialogVisible" :onSave="onTournamentCreate"
         :onClose="() => hostDialogVisible = false" />

@@ -8,6 +8,7 @@ import { useToast } from 'vue-toast-notification';
 import { generateAvatar } from "~/lib/utils";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useSeoMeta } from "#imports";
+import GameLayout from "../layouts/GameLayout.vue";
 const $toast = useToast();
 
 
@@ -318,42 +319,37 @@ function onTyping(data: { cursorPos: number, error: number }) {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="2" />
-        <section class="main">
-            <h2>Multiplayer</h2>
-            <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
-                Type as fast as you can to win the race!</p>
+    <GameLayout>
+        <h2>Multiplayer</h2>
+        <p>Compete against other players in this online multiplayer game. The faster you type, the faster your car goes.
+            Type as fast as you can to win the race!</p>
 
-            <template v-if="isKicked == false">
-                <div class="typing-chat">
-                    <div>
-                        <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length"
-                            :message="messageText" />
-                        <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
-                            :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
-                            :message="'Please wait'" />
-                    </div>
-                    <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="botsId.length" style="margin-top: 90px;" />
+        <template v-if="isKicked == false">
+            <div class="typing-chat">
+                <div>
+                    <MatchTrack :is-admin="false" :players="allPlayers" :totalChars="typingContent.length"
+                        :message="messageText" />
+                    <TypingArea :sentence="typingContent" :onTypingCompleted="onTypingCompleted" :onTyping="onTyping"
+                        :is-edit-allowed="isWriteAllowed" :forgive-error="false" :multiplayer="true"
+                        :message="'Please wait'" />
                 </div>
-            </template>
-
-            <div v-else class="kick">
-                <div class="content">
-                    <img src="../public/images/kick.png" alt="kick">
-                    <h2>Oops!<br>{{ kickMsg }}</h2>
-                    <button @click="setup" class="button primary">
-                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
-                        </svg>
-                        Rejoin</button>
-                </div>
+                <Chatbox v-if="roomCode" :roomId="roomCode" :botCount="botsId.length" style="margin-top: 90px;" />
             </div>
+        </template>
 
-        </section>
-        <RightPanel />
-    </main>
+        <div v-else class="kick">
+            <div class="content">
+                <img src="../public/images/kick.png" alt="kick">
+                <h2>Oops!<br>{{ kickMsg }}</h2>
+                <button @click="setup" class="button primary">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 4.5a7.5 7.5 0 1 0 7.419 6.392c-.067-.454.265-.892.724-.892.37 0 .696.256.752.623A9 9 0 1 1 18 5.292V4.25a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-.75.75h-3a.75.75 0 0 1 0-1.5h1.35a7.474 7.474 0 0 0-5.1-2Z" />
+                    </svg>
+                    Rejoin</button>
+            </div>
+        </div>
+    </GameLayout>
 </template>
 <style scoped>
 .typing-chat {

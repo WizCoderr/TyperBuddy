@@ -3,17 +3,24 @@ import { onMounted, ref } from 'vue';
 import SignInDialog from './dialog/SignInDialog.vue';
 import { useProfileStore } from '~/store/profile'
 import { CarIcon, FriendsIcon, SignInIcon, TypingIcon, TrophyIcon, LeaderboardIcon, StatisticsIcon, MeterIcon, HelpIcon, WalletIcon } from './icons';
+import { useRoute } from '#imports';
 
-
-defineProps({
-    activeTabIndex: Number
-})
 
 const profileStore = useProfileStore()
+const activeTab = ref('')
 
 onMounted(function () {
+    const route = useRoute()
     if (profileStore.profile == null) {
         profileStore.fetchProfile()
+    }
+
+    const sub = route.path.split('/')
+    activeTab.value = sub[sub.length - 1]
+
+    // exception for statistics
+    if (sub.includes('statistics')) {
+        activeTab.value = 'statistics'
     }
 })
 
@@ -65,7 +72,7 @@ function closeSignInDialog() {
 
             <hr>
             <ul>
-                <li :class="{ 'active': activeTabIndex == 0 }">
+                <li :class="{ 'active': activeTab == 'practice' }">
                     <NuxtLink to="/game/practice">
                         <span class="marker"></span>
                         <TypingIcon style="width: 24px; height: 24px;" />
@@ -74,7 +81,7 @@ function closeSignInDialog() {
                 </li>
 
 
-                <li :class="{ 'active': activeTabIndex == 1 }">
+                <li :class="{ 'active': activeTab == 'typing-test' }">
                     <NuxtLink to="/game/typing-test">
                         <span class="marker"></span>
                         <MeterIcon style="width: 24px; height: 24px;" />
@@ -82,7 +89,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 2 }">
+                <li :class="{ 'active': activeTab == 'multiplayer' }">
                     <NuxtLink to="/game/multiplayer">
                         <span class="marker"></span>
                         <CarIcon style="width: 24px; height: 24px;" />
@@ -90,7 +97,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 3 }">
+                <li :class="{ 'active': activeTab == 'play-with-friends' }">
                     <NuxtLink to="/game/play-with-friends">
                         <span class="marker"></span>
                         <FriendsIcon style="width: 24px; height: 24px;" />
@@ -98,7 +105,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 4 }">
+                <li :class="{ 'active': activeTab == 'statistics' }">
                     <NuxtLink
                         :to="profileStore.profile ? '/game/statistics/report/' + profileStore.profile.id : '/game/statistics'">
                         <StatisticsIcon style="width: 24px; height: 24px;" />
@@ -108,7 +115,7 @@ function closeSignInDialog() {
 
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 5 }">
+                <li :class="{ 'active': activeTab == 'leaderboard' }">
                     <NuxtLink to="/game/leaderboard">
                         <span class="marker"></span>
                         <LeaderboardIcon style="width: 24px; height: 24px;" />
@@ -117,7 +124,7 @@ function closeSignInDialog() {
                 </li>
 
 
-                <li :class="{ 'active': activeTabIndex == 6 }">
+                <li :class="{ 'active': activeTab == 'tournaments' }">
                     <NuxtLink to="/game/tournaments">
                         <span class="marker"></span>
                         <TrophyIcon style="width: 24px; height: 24px;" />
@@ -125,7 +132,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li v-if="profileStore.profile" :class="{ 'active': activeTabIndex == 8 }">
+                <li v-if="profileStore.profile" :class="{ 'active': activeTab == 'wallet' }">
                     <NuxtLink to="/game/wallet">
                         <span class="marker"></span>
                         <WalletIcon style="width: 24px; height: 24px;" />
@@ -133,7 +140,7 @@ function closeSignInDialog() {
                     </NuxtLink>
                 </li>
 
-                <li :class="{ 'active': activeTabIndex == 7 }">
+                <li :class="{ 'active': activeTab == 'help' }">
                     <NuxtLink to="/game/help">
                         <span class="marker"></span>
                         <HelpIcon style="width: 24px; height: 24px;" />

@@ -8,6 +8,7 @@ import Paginate from '~/components/widgets/Paginate.vue';
 import ApiWallet from '~/lib/api/ApiWallet';
 import type { WalletPageData } from '~/lib/DataType';
 import { formatDateTime } from '~/lib/utils';
+import GameLayout from '../layouts/GameLayout.vue';
 const $toast = useToast()
 
 const walletPageData = ref<WalletPageData>()
@@ -42,10 +43,8 @@ function removeReadNotification(ids: string[]) {
 
 </script>
 <template>
-    <main>
-        <Sidebar :activeTabIndex="8" />
-        <section class="main">
-            <h2>Wallet</h2>
+   <GameLayout>
+    <h2>Wallet</h2>
             <p>Manage your wallet easy from here</p>
             <hr />
 
@@ -106,10 +105,7 @@ function removeReadNotification(ids: string[]) {
                         :onNotificationRead="removeReadNotification" />
                 </div>
             </template>
-
-        </section>
-        <RightPanel />
-    </main>
+   </GameLayout>
 </template>
 <style scoped>
 .history-notification {

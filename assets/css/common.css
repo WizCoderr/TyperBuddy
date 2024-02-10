@@ -1,4 +1,4 @@
-.main .status-bar {
+.game-area .status-bar {
     display: flex;
     flex-direction: row;
     gap: 4rem;
@@ -6,43 +6,43 @@
     margin-bottom: 1rem;
 }
 
-.main .status-bar div {
+.game-area .status-bar div {
     display: flex;
     margin-left: auto;
 }
 
-.main .status-bar h3 {
+.game-area .status-bar h3 {
     white-space: nowrap;
     margin: 0;
 }
 
-.main .status-bar h3 span {
+.game-area .status-bar h3 span {
     color: var(--color-error);
 }
 
-.main .status-bar h3 span.success {
+.game-area .status-bar h3 span.success {
     color: var(--color-success);
 }
 
 
-.main .key-status {
+.game-area .key-status {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.main .key-status h3 {
+.game-area .key-status h3 {
     white-space: nowrap;
 }
 
-.main .key-status .keys {
+.game-area .key-status .keys {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 2px;
 }
 
-.main .key-status .keys div {
+.game-area .key-status .keys div {
     width: 2rem;
     height: 2rem;
     background-color: var(--color-surface-variant);
@@ -51,7 +51,7 @@
     justify-content: center;
 }
 
-.main .key-status span {
+.game-area .key-status span {
     font-size: var(--average-font);
     color: var(--color-on-surface);
 }
