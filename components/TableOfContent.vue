@@ -54,7 +54,7 @@ function setupTableOfContent() {
 }
 </script>
 <template>
-    <div class="table-of-content">
+    <div v-if="tableData.length" class="table-of-content">
         <h4>Table of Content</h4>
         <ul>
             <template v-for="item, index in tableData" :key="index">
