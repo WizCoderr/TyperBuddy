@@ -75,7 +75,7 @@ function closeSignInDialog() {
 
 
                 <li :class="{ 'active': activeTabIndex == 1 }">
-                    <NuxtLink to="/game/typingTest">
+                    <NuxtLink to="/game/typing-test">
                         <span class="marker"></span>
                         <MeterIcon style="width: 24px; height: 24px;" />
                         <p>Typing Test</p>
