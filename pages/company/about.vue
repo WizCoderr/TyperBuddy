@@ -13,6 +13,8 @@ useSeoMeta({
     <CommonLayout>
         <h1>About Us</h1>
         <p class="dev">Content are still under development</p>
+        <!-- <p>Last updated:10-feb-2024 </p> -->
     </CommonLayout>
 </template>
-<style scoped></style>
+<style scoped>
+</style>
