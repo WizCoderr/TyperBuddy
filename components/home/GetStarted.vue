@@ -1,22 +1,24 @@
 <script setup lang='ts'>
 </script>
 <template>
-    <section>
+    <section class="get-started">
         <div class="page">
-            <div class="content">
-                <h2>Get Started Today</h2>
-                <ul>
-                    <li>Sign up for a free account to unlock almost all features.</li>
-                    <li>Dive into our practice sessions to start improving your typing skills immediately.</li>
-                    <li>Challenge yourself with typing tests or join the multiplayer fun with friends.</li>
-                    <li>Participate in tournament and earn real rewards - <b>coming soon</b></li>
-                </ul>
-                <br />
-                <NuxtLink to="/game/practice">
-                    <button class="button primary">Start typing</button>
-                </NuxtLink>
+            <div>
+                <div class="content">
+                    <h2>Get Started Today</h2>
+                    <ul>
+                        <li>Sign up for a free account to unlock almost all features.</li>
+                        <li>Dive into our practice sessions to start improving your typing skills immediately.</li>
+                        <li>Challenge yourself with typing tests or join the multiplayer fun with friends.</li>
+                        <li>Participate in tournament and earn real rewards - <b>coming soon</b></li>
+                    </ul>
+                    <br />
+                    <NuxtLink to="/game/practice">
+                        <button class="button primary">Start typing</button>
+                    </NuxtLink>
+                </div>
+                <img src="../../assets/img/home/get-start.svg" alt="get-started">
             </div>
-            <img src="../../assets/img/home/get-start.svg" alt="get-started">
         </div>
     </section>
 </template>
@@ -26,7 +28,7 @@ section {
     padding: 5em 0;
 }
 
-section .page {
+section .page>div {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
@@ -49,5 +51,14 @@ section ul {
 
 section li {
     margin-bottom: 0.5em;
+}
+
+
+@media only screen and (max-width: 600px) {
+    section .page>div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 </style>

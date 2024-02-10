@@ -106,4 +106,10 @@ function setupTableOfContent() {
 .table-of-content li a {
     color: inherit;
 }
+
+@media only screen and (max-width: 700px) {
+    .table-of-content {
+        position: static;
+    }
+}
 </style>

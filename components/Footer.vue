@@ -67,7 +67,8 @@ footer .info {
 footer a,
 footer p {
     color: rgba(235, 235, 235, 0.74);
-    transition: all 200ms
+    transition: all 200ms;
+    font-size: var(--medium-font);
 }
 
 footer a:hover {
@@ -92,5 +93,23 @@ footer a {
 
 footer .copyright {
     margin-top: 1.5em;
+}
+
+@media only screen and (max-width: 900px) {
+    footer .page>div {
+        grid-template-columns: 1.8fr 1fr 1fr;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    footer .page>div {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    footer .page>div {
+        grid-template-columns: 100%;
+    }
 }
 </style>

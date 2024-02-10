@@ -91,4 +91,10 @@ header .links a {
 header .links a:hover {
     text-decoration: underline;
 }
+
+@media only screen and (max-width: 700px) {
+    header .links {
+        display: none;
+    }
+}
 </style>

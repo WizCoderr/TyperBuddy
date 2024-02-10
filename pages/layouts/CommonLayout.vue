@@ -22,6 +22,20 @@
     gap: 1em;
     padding-bottom: 200px;
 }
+
+@media only screen and (max-width: 900px) {
+    .content {
+        grid-template-columns: 1fr 200px;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .content {
+        margin-top: 32px;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+}
 </style>
 
 <style>
