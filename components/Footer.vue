@@ -30,6 +30,7 @@
                         <NuxtLink to="/company/community-guideline">Guidelines</NuxtLink>
                         <NuxtLink to="/company/cookies-policy">Cookies</NuxtLink>
                         <NuxtLink to="/company/terms-and-conditions">Term & conditions</NuxtLink>
+                        <NuxtLink to="/company/privacy">Privacy</NuxtLink>
                         <NuxtLink to="/company/faq">FAQ</NuxtLink>
                         <NuxtLink to="/company/report-bugs">Report bugs</NuxtLink>
                         <NuxtLink to="/company/careers">Careers</NuxtLink>
