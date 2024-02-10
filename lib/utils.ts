@@ -5,7 +5,7 @@ export function getUniqueCharacters(sentence: string) {
     const char = sentence.charAt(i).toUpperCase();
 
     // skip the spaces
-    if(char != ' ') uniqueChars.add(char);
+    if (char != " ") uniqueChars.add(char);
   }
 
   return Array.from(uniqueChars).sort();
@@ -249,4 +249,11 @@ export function getTimeString(time: string) {
   return `${String(date.getHours()).padStart(2, "0")}:${String(
     date.getMinutes()
   ).padStart(2, "0")}`;
+}
+
+export function textToUrl(text: string) {
+  return text
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^a-zA-Z0-9-]/g, "");
 }

@@ -5,8 +5,8 @@
     <WidgetsBreadCrumb style="margin-top: 100px;" />
     <section>
         <div class="page">
-            <div id="content">
-                <div>
+            <div class="content">
+                <div id="content-area">
                     <slot></slot>
                 </div>
                 <TableOfContent />
@@ -16,7 +16,7 @@
     <Footer></Footer>
 </template>
 <style scoped>
-#content {
+.content {
     display: grid;
     grid-template-columns: 1fr 250px;
     gap: 1em;

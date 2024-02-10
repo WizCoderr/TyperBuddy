@@ -22,6 +22,10 @@
     font-family: 'Albert Sans';
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 /* 210 40 150 230 281 310 350*/
 :root {
     --page-margin: 2rem;
@@ -67,6 +71,8 @@
     --max-page-width: 1020px;
     --page-gap: 24px;
 
+    --text-color: rgb(54, 54, 54);
+
 
 }
 
@@ -83,18 +89,20 @@
     margin-right: var(--page-gap);
 }
 
-.page p, .page li{
-    color: rgb(54, 54, 54);
+.page p,
+.page li {
+    color: var(--text-color);
     font-size: var(--medium-font);
 }
 
-.page ul, .page ol{
+.page ul,
+.page ol {
     padding: 0;
     padding-left: 1em;
     line-height: 1.5em;
 }
 
-.page li{
+.page li {
     margin-bottom: 0.5em;
 }
 
