@@ -1,13 +1,10 @@
-<script setup lang='ts'>
-import { useSeoMeta } from '#imports';
-import CommonLayout from '../layouts/CommonLayout.vue';
+<script setup lang="ts">
+import { useSeoMeta } from "#imports";
+import CommonLayout from "../layouts/CommonLayout.vue";
 
 useSeoMeta({
-    title: 'FAQ',
-
-})
-
-
+    title: "FAQ",
+});
 </script>
 <template>
     <CommonLayout>
@@ -16,5 +13,4 @@ useSeoMeta({
         <!-- <p>Last updated:10-feb-2024 </p> -->
     </CommonLayout>
 </template>
-<style scoped>
-</style>
+<style scoped></style>

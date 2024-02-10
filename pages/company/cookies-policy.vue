@@ -14,11 +14,11 @@ useSeoMeta({
         <h1>Cookies Policy</h1>
         <p>This Cookie Policy explains how TyperBuddy ("we", "us", or "our") uses cookies and similar tracking technologies
             when you visit our website.</p>
-        <h1>What are cookies?</h1>
+        <h3>What are cookies?</h3>
         <p>Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies
             are widely used by website owners in order to make their websites work, or to work more efficiently, as well as
             to provide reporting information.</p>
-        <h1>How We Use Cookies</h1>
+        <h3>How We Use Cookies</h3>
         <p>We use cookies to improve your experience on our website, including:</p>
         <ol>
             <li>
@@ -45,11 +45,11 @@ useSeoMeta({
         <p>You can manage your cookie preferences by clicking on the "Cookie Settings" link in the footer of our
             website.
         </p>
-        <h1>Third-Party Cookies</h1>
+        <h3>Third-Party Cookies</h3>
         <p>Some cookies on our website may be set by third-party services that we use to enhance the user experience,
             analyze website traffic, and deliver targeted advertisements. These third-party services may also collect
             information about your use of other websites.</p>
-        <h1>Changes to this Cookie Policy</h1>
+        <h3>Changes to this Cookie Policy</h3>
         <p>We may update this Cookie Policy from time to time. Any changes will be reflected on this page. We encourage
             you
             to review this policy periodically for any updates.
