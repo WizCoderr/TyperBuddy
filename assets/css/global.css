@@ -70,6 +70,8 @@
 
 }
 
+
+/*  ---------------------- page ----------------------- */
 .page {
 
     margin: 0 calc(max(0px, ((100% - var(--max-page-width)) * 0.5) - var(--page-gap) * 2));
@@ -80,6 +82,29 @@
     margin-left: var(--page-gap);
     margin-right: var(--page-gap);
 }
+
+.page p, .page li{
+    color: rgb(54, 54, 54);
+    font-size: var(--medium-font);
+}
+
+.page ul, .page ol{
+    padding: 0;
+    padding-left: 1em;
+    line-height: 1.5em;
+}
+
+.page li{
+    margin-bottom: 0.5em;
+}
+
+
+
+
+
+
+
+
 
 body {
     background-color: var(--color-surface);
