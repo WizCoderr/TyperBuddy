@@ -11,7 +11,7 @@ import { usePracticeLessonStore } from '~/store/practiceLesson'
 import { useProfileStore } from '~/store/profile'
 import { ref, onMounted } from 'vue';
 import { useSeoMeta } from '#imports';
-import GameLayout from '../layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 const reportStore = usePracticeReportStore()
 const lessonStore = usePracticeLessonStore()

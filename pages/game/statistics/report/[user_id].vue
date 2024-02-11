@@ -8,7 +8,7 @@ import { useFetch } from 'nuxt/app';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSeoMeta } from '#imports';
-import GameLayout from '~/pages/layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 const isGraphHidden = ref(true)
 const graphType = ref('bar')

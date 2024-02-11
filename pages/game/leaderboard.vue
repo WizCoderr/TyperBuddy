@@ -9,7 +9,7 @@ import { type RGBColor, getColor } from '~/lib/utils';
 import { useProfileStore } from '~/store/profile';
 
 import { ArrowUpIcon } from '../../components/icons'
-import GameLayout from '../layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 const isLoaded = ref(false)
 const leaderboard = ref<Array<Leaderboard>>()

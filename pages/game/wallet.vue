@@ -8,7 +8,7 @@ import Paginate from '~/components/widgets/Paginate.vue';
 import ApiWallet from '~/lib/api/ApiWallet';
 import type { WalletPageData } from '~/lib/DataType';
 import { formatDateTime } from '~/lib/utils';
-import GameLayout from '../layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 const $toast = useToast()
 
 const walletPageData = ref<WalletPageData>()

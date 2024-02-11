@@ -2,7 +2,7 @@
 <script setup lang='ts'>
 import { onMounted, useSeoMeta } from '#imports';
 import { useToast } from 'vue-toast-notification';
-import GameLayout from '~/pages/layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 const $toast = useToast();
 
 onMounted(function () {

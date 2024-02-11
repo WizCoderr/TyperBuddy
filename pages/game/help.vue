@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { onMounted, useSeoMeta } from '#imports';
 import Chatbox from '~/components/Chatbox.vue';
-import GameLayout from '../layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 useSeoMeta({
     title: 'Help',

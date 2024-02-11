@@ -13,7 +13,7 @@ import { useProfileStore } from '~/store/profile';
 import { useRoute } from '#vue-router';
 import ApiTournament from '~/lib/api/ApiTournament';
 import ApiParticipant from '~/lib/api/ApiParticipant';
-import GameLayout from '~/pages/layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 
 const router = useRouter()

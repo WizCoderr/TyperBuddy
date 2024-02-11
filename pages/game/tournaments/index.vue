@@ -8,7 +8,7 @@ import ApiTournament from '~/lib/api/ApiTournament';
 import { useProfileStore } from '~/store/profile';
 import type { TournamentData } from '~/lib/DataType';
 import { useToast } from 'vue-toast-notification';
-import GameLayout from '~/pages/layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 
 useSeoMeta({
     title: 'Tournaments',

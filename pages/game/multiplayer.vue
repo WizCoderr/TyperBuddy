@@ -8,7 +8,7 @@ import { useToast } from 'vue-toast-notification';
 import { generateAvatar } from "~/lib/utils";
 import { ref, onMounted, onUnmounted } from "vue";
 import { useSeoMeta } from "#imports";
-import GameLayout from "../layouts/GameLayout.vue";
+import GameLayout from "@/layouts/GameLayout.vue";
 const $toast = useToast();
 
 

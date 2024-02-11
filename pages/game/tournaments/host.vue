@@ -9,7 +9,7 @@ import TournamentCreateCard from '~/components/tournament/TournamentCreateCard.v
 import { type TournamentRawData, TournamentStatus } from '~/lib/DataType';
 import ApiTournament from '~/lib/api/ApiTournament';
 import { getTimeLeft, isTodayDate } from '~/lib/utils';
-import GameLayout from '~/pages/layouts/GameLayout.vue';
+import GameLayout from '@/layouts/GameLayout.vue';
 import { useProfileStore } from '~/store/profile';
 const $toast = useToast();
 const router = useRouter()

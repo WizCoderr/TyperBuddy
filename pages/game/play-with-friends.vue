@@ -9,7 +9,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useRoute } from "vue-router";
 import RightPanel from "~/components/RightPanel.vue";
 import { useSeoMeta } from "#imports";
-import GameLayout from "../layouts/GameLayout.vue";
+import GameLayout from "@/layouts/GameLayout.vue";
 const $toast = useToast();
 
 const route = useRoute()

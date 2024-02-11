@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { useSeoMeta } from '#imports';
-import CommonLayout from '../layouts/CommonLayout.vue';
+import CommonLayout from '@/layouts/CommonLayout.vue';
 
 useSeoMeta({
     title: 'Cookies Policy',

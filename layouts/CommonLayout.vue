@@ -3,10 +3,18 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const isFaq = ref(false);
+const isTableOfContent = ref(false);
 onMounted(() => {
     const route = useRoute()
+
+    // filter for some routes
     if (!route.path.includes('faq')) {
         isFaq.value = true;
+    }
+
+    const sub = route.path.split('/')
+    if (sub.length && sub[sub.length - 1] != 'blogs') {
+        isTableOfContent.value = true;
     }
 })
 </script>
@@ -20,7 +28,7 @@ onMounted(() => {
                     <slot></slot>
                     <FAQ v-if="isFaq" />
                 </div>
-                <TableOfContent />
+                <TableOfContent v-if="isTableOfContent" />
             </div>
         </div>
     </section>
@@ -33,6 +41,7 @@ onMounted(() => {
     gap: 1em;
     padding-bottom: 200px;
 }
+
 
 @media only screen and (max-width: 900px) {
     .content {

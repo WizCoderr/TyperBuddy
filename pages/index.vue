@@ -8,7 +8,6 @@ import Header from '~/components/Header.vue';
 useSeoMeta({
     title: 'Home',
     description: 'Enhance your typing skills with our interactive practice sessions. Choose from a variety of exercises tailored to your skill level and track your progress effortlessly. Start practicing today!',
-
 })
 
 
