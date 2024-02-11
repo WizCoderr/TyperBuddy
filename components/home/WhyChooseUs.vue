@@ -2,6 +2,7 @@
 </script>
 <template>
     <section>
+        <span class="wave top"></span>
         <div class="page">
             <h2>Why you'll love TyperBuddy.com</h2>
             <p>At TypeBuddy.com, we make typing fun and rewarding. With interactive practice sessions, thrilling multiplayer
@@ -40,12 +41,23 @@
             </p>
 
         </div>
+        <span class="wave"></span>
     </section>
 </template>
 <style scoped>
 section {
-    background-color: white;
-    padding: 5em 0;
+    background-color: #004378;
+    padding: 7em 0;
+    position: relative;
+}
+
+
+section * {
+    color: white;
+}
+
+section p {
+    opacity: 0.7;
 }
 
 section .page {
@@ -71,10 +83,12 @@ section .cards-holder .card {
     align-items: center;
     text-align: center;
     gap: 1em;
-    border: 1px solid rgb(235, 235, 235);
+    border: 1px solid rgba(255, 255, 255, 0.116);
 }
 
 .card h3 {
     margin: 0;
 }
+
+
 </style>
