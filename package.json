@@ -1,16 +1,19 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev --port 3030",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "url": "node raw-to-url.js"
   },
   "devDependencies": {
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/sitemap": "^5.1.0",
+    "@types/inquirer": "^9.0.7",
     "@types/node": "^18",
     "nuxt": "^3.10.1"
   },
@@ -22,6 +25,7 @@
     "@vueuse/core": "^10.7.1",
     "axios": "^1.5.0",
     "chart.js": "^4.3.0",
+    "inquirer": "^9.2.14",
     "marked": "^11.1.1",
     "pinia": "^2.1.6",
     "query-string": "^8.1.0",

@@ -5,7 +5,6 @@ import defaultImg from '@/assets/img/blogs/default.jpg';
 <template>
     <BlogPostLayout>
         <h3>How to create a post for typerbuddy?</h3>
-        <img :src="defaultImg" alt="">
 
     </BlogPostLayout>
 </template>
