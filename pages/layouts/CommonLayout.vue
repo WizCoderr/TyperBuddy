@@ -1,4 +1,14 @@
 <script setup lang='ts'>
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+const isFaq = ref(false);
+onMounted(() => {
+    const route = useRoute()
+    if (!route.path.includes('faq')) {
+        isFaq.value = true;
+    }
+})
 </script>
 <template>
     <Header :auto="false"></Header>
@@ -8,7 +18,7 @@
             <div class="content">
                 <div id="content-area">
                     <slot></slot>
-                    <FAQ/>
+                    <FAQ v-if="isFaq" />
                 </div>
                 <TableOfContent />
             </div>
