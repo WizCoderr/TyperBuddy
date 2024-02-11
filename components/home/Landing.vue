@@ -90,6 +90,7 @@
     animation-timing-function: linear;
     animation-iteration-count: infinite;
     animation-direction: alternate;
+    background-size: 1650px 120px;
 }
 
 .landing .cloud1 {
@@ -128,7 +129,7 @@
     }
 
     100% {
-        background-position-x: 1000%;
+        background-position-x: 1650px;
     }
 
 }
