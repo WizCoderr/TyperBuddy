@@ -25,6 +25,8 @@ defineProps({
 function createBlogUrl(id: string) {
     return `/blogs/${id}`;
 }
+
+const limit = 130
 </script>
 <template>
     <NuxtLink :to="createBlogUrl(id)">
@@ -32,7 +34,7 @@ function createBlogUrl(id: string) {
             <img :src="image ? image : defaultImg" :alt="alt">
             <div class="header">
                 <h4>{{ title }}</h4>
-                <p>{{ description.slice(0, 60) }}{{ description.length > 60 ? '...' : '' }}</p>
+                <p>{{ description.slice(0, limit) }}{{ description.length > limit ? '...' : '' }}</p>
             </div>
         </div>
     </NuxtLink>

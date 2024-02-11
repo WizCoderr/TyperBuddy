@@ -2,25 +2,31 @@
 import { onMounted, ref } from 'vue';
 import CommonLayout from './CommonLayout.vue';
 import defaultImg from '@/assets/img/blogs/default.jpg';
+import { getPostData } from '@/data/blog-post-data';
+import { useRoute } from '#imports';
 
-const prop = defineProps({
-    title: {
-        type: String,
-        default: 'Untitled Blog Post',
-    },
-    description: {
-        type: String,
-        default: 'This is a blog post',
-    },
-    image: {
-        type: String,
-        default: defaultImg,
-    },
-    alt: {
-        type: String,
-        default: 'blog',
-    }
-})
+const route = useRoute();
+const sub = route.path.split('/')
+const post = getPostData(sub[sub.length - 1]);
+
+// const prop = defineProps({
+//     title: {
+//         type: String,
+//         default: 'Untitled Blog Post',
+//     },
+//     description: {
+//         type: String,
+//         default: 'This is a blog post',
+//     },
+//     image: {
+//         type: String,
+//         default: defaultImg,
+//     },
+//     alt: {
+//         type: String,
+//         default: 'blog',
+//     }
+// })
 
 
 </script>
@@ -28,9 +34,9 @@ const prop = defineProps({
     <CommonLayout>
         <div class="blog-post">
             <div class="blog-header">
-                <img :src="image" :alt="alt">
-                <h1>{{ title }}</h1>
-                <p>{{ description }}</p>
+                <img :src="post!!.image" :alt="post!!.alt">
+                <h1>{{ post!!.title }}</h1>
+                <p>{{ post!!.description }}</p>
                 <hr />
             </div>
             <slot></slot>
@@ -50,7 +56,7 @@ const prop = defineProps({
     border-radius: var(--border-radius-3);
 }
 
-.blog-post{
+.blog-post {
     padding-bottom: 100px;
 }
 </style>
