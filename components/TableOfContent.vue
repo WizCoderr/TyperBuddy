@@ -74,7 +74,7 @@ function setupTableOfContent() {
     min-height: 200px;
     height: max-content;
     border-radius: 10px;
-    border: 1px dashed rgb(201, 201, 201);
+    border: 1px dashed var(--border-color);
     padding: 0.2em;
 }
 

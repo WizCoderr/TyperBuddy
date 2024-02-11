@@ -43,4 +43,8 @@
     padding: 3em;
     background-color: rgb(235, 235, 235);
 }
+
+#content-area p {
+    margin: 1em 0;
+}
 </style>
