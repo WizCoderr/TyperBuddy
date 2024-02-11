@@ -4,6 +4,7 @@ import { useProfileStore } from '~/store/profile';
 import { uid } from "uid";
 import { onMounted } from 'vue';
 import { NuxtPage, NuxtLayout, NuxtLoadingIndicator } from "#components";
+import { SpeedInsights } from "@vercel/speed-insights/nuxt"
 
 const profileStore = useProfileStore()
 
@@ -19,5 +20,6 @@ onMounted(function () {
   <NuxtLoadingIndicator color="#D33396" />
   <NuxtLayout>
     <NuxtPage />
+    <SpeedInsights />
   </NuxtLayout>
 </template>
