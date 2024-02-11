@@ -25,7 +25,9 @@ import ChatIcon from "./ChatIcon.vue";
 import VisibleIcon from "./VisibleIcon.vue";
 import InVisibleIcon from "./InVisibleIcon.vue";
 import ArrowRightIcon from "./ArrowRightIcon.vue";
+import SubIcon from "./SubIcon.vue";
 export {
+  SubIcon,
   VisibleIcon,
   ArrowRightIcon,
   InVisibleIcon,

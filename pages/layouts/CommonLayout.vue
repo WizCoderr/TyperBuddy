@@ -8,6 +8,7 @@
             <div class="content">
                 <div id="content-area">
                     <slot></slot>
+                    <FAQ/>
                 </div>
                 <TableOfContent />
             </div>
