@@ -42,6 +42,7 @@ const limit = 130
 <style scoped>
 .blog-card {
     width: 100%;
+    height: 100%;
     background-color: white;
     border-radius: var(--border-radius-3);
 }
