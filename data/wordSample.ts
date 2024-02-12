@@ -8,7 +8,7 @@ const commonWords = [
     'body', 'book', 'born', 'both', 'bowl', 'burn', 'busy', 'bust', 'cake', 'call', 'came', 'camp', 'care',
     'cars', 'case', 'cash', 'cast', 'cats', 'chef', 'chip', 'city', 'clap', 'clay', 'club', 'coat', 'code',
     'cold', 'come', 'cook', 'cool', 'cope', 'core', 'cost', 'crop', 'dark', 'data', 'date', 'dead', 'dear',
-    'deep', 'desk', 'dial', 'dick', 'diet', 'disk', 'dock', 'does', 'done', 'door', 'dose', 'down', 'draw',
+    'deep', 'desk', 'dial', 'diet', 'disk', 'dock', 'does', 'done', 'door', 'dose', 'down', 'draw',
     'drop', 'drug', 'drum', 'duel', 'duke', 'dust', 'duty', 'ease', 'east', 'easy', 'edge', 'else', 'even',
     'ever', 'evil', 'exam', 'exit', 'face', 'fact', 'fall', 'farm', 'fast', 'fear', 'feed', 'feel', 'file',
     'film', 'find', 'fire', 'firm', 'fish', 'five', 'flag', 'flat', 'flow', 'fold', 'food', 'foot', 'form',
@@ -232,5 +232,3 @@ export function generateSentence(count: number, addPunctuation: boolean, addCapi
 
     return sentence
 }
-
-

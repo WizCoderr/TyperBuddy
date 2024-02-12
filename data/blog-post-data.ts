@@ -1,5 +1,6 @@
 import essentialTipsImage from "@/assets/img/blogs/essential-tips-for-speed-accuracy-and-efficiency.jpg";
 import TypeFaster from "@/assets/img/blogs/blog1.jpg";
+import TypeAndEarn from "@/assets/img/blogs/type_and_earn.jpeg";
 export interface BlogPostData {
     id: string;
     title: string;
@@ -27,6 +28,15 @@ export const blogPostData: BlogPostData[] = [
             "In today's fast-paced digital world, typing efficiently is a valuable skill that can significantly enhance your productivity and effectiveness, whether you're a student, a professional, or someone who spends a lot of time on a computer. In this blog, we'll explore various techniques and tools to help you type faster and more efficiently, ultimately saving you time and energy.",
         image: TypeFaster,
         alt: "TypeFaster and Effiently",
+    },
+    {
+        id: "type-and-earn",
+        title: "Type and Earn",
+        date: "2024-02-10",
+        description:
+            "In a world where words wield power and speed is of the essence, mastering the art of typing isn't just a useful skill—it's a gateway to success. Welcome to Typerbuddy, where keystrokes pave the way to triumph and earning potential knows no bounds.",
+        image: TypeAndEarn,
+        alt: "Type and Earn",
     },
 ];
 
