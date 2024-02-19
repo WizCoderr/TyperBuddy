@@ -1,6 +1,7 @@
 import essentialTipsImage from "@/assets/img/blogs/essential-tips-for-speed-accuracy-and-efficiency.jpg";
 import TypeFaster from "@/assets/img/blogs/blog1.jpg";
 import TypeAndEarn from "@/assets/img/blogs/type_and_earn.jpeg";
+import overcomeTypingAnxiety from "@/assets/img/blogs/how-to-overcome-typing-anxiety-and-build-confidence.jpg";
 export interface BlogPostData {
     id: string;
     title: string;
@@ -37,6 +38,14 @@ export const blogPostData: BlogPostData[] = [
             "In a world where words wield power and speed is of the essence, mastering the art of typing isn't just a useful skill—it's a gateway to success. Welcome to Typerbuddy, where keystrokes pave the way to triumph and earning potential knows no bounds.",
         image: TypeAndEarn,
         alt: "Type and Earn",
+    },
+    {
+        id: "how-to-overcome-typing-anxiety-and-build-confidence",
+        title: "How to Overcome Typing Anxiety and Build Confidence",
+        date: "2024-02-10",
+        description: "Building Confidence One Keystroke at a Time.",
+        image: overcomeTypingAnxiety,
+        alt: "overcomeTypingAnxiety",
     },
 ];
 
