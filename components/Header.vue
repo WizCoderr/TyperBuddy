@@ -43,7 +43,7 @@ function onScroll() {
                         <NuxtLink to="/game/multiplayer">Multiplayer</NuxtLink>
                         <NuxtLink to="/game/practice">Practice</NuxtLink>
                         <NuxtLink to="/company/about">About</NuxtLink>
-                        <NuxtLink to="/company/blogs">Blogs</NuxtLink>
+                        <NuxtLink to="/blogs">Blogs</NuxtLink>
                         <NuxtLink to="/company/contact">Contact</NuxtLink>
                     </div>
                 </div>

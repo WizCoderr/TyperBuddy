@@ -2,6 +2,7 @@ import essentialTipsImage from "@/assets/img/blogs/essential-tips-for-speed-accu
 import TypeFaster from "@/assets/img/blogs/blog1.jpg";
 import TypeAndEarn from "@/assets/img/blogs/type_and_earn.jpeg";
 import overcomeTypingAnxiety from "@/assets/img/blogs/how-to-overcome-typing-anxiety-and-build-confidence.jpg";
+import incresed_efficiency from "@/assets/img/blogs/typing-shortcuts-and-tricks-for-increased-efficiency.jpg";
 export interface BlogPostData {
     id: string;
     title: string;
@@ -46,6 +47,14 @@ export const blogPostData: BlogPostData[] = [
         description: "Building Confidence One Keystroke at a Time.",
         image: overcomeTypingAnxiety,
         alt: "overcomeTypingAnxiety",
+    },
+    {
+        id: "typing-shortcuts-and-tricks-for-increased-efficiency",
+        title: "Typing Shortcuts and Tricks for Increased Efficiency",
+        date: "2024-02-19",
+        description: "Essential Typing Shortcuts and Tricks",
+        image: incresed_efficiency,
+        alt: "typing-shortcuts-and-tricks-for-increased-efficiency",
     },
 ];
 
